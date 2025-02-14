@@ -1,0 +1,55 @@
+.main {
+    gap: 15px;
+    padding: 20px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    transition: all 1s ease;
+}
+
+.main:hover{
+    cursor: pointer;
+    background-color: rgb(55, 56, 57);
+}
+
+.imageContainer {
+    display: flex;
+    border-radius: 50%;
+    border: 0px solid rgba(255, 255, 255, 0);
+    transition: border-width 0.5s ease, border-color 0.5s ease-in-out; 
+}
+
+.imageContainer:hover {
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.image {
+    width: 70px;
+    height: 70px;
+    margin: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 1s ease;
+}
+
+.name {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.textBox{
+    gap: 10px;
+    display: flex;
+    font-size: 15px;
+    cursor: pointer;
+    flex-direction: column;
+}
+
+.date{
+    font-size: 10   px;
+}

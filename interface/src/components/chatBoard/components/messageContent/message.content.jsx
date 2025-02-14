@@ -1,5 +1,5 @@
 
-const ChatBoard = () => {
+const MessageContent = () => {
     return ( 
         <div>
             
@@ -7,4 +7,4 @@ const ChatBoard = () => {
      );
 }
  
-export default ChatBoard;
+export default MessageContent;

@@ -10,7 +10,15 @@ exports.getUser = async (req, res) => {
     catch(err){
         console.log(err)
     }
-}
+};
 
-
-;
+exports.getSpecialUser = async (req, res) => {
+    try{
+        const conn = await db.connexion;
+        const users = await conn.query(`SELECT * FROM Consummer WHERE id=${req.params.id}`)
+        return  res.status(200).json( users )
+    }
+    catch(err){
+        console.log(err)
+    }
+} 

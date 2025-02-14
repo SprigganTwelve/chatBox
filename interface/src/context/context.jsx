@@ -7,7 +7,11 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const [users, setUsers] = useState(() => {
         const savedUsers = localStorage.getItem("users"); 
         return savedUsers ? JSON.parse(savedUsers) : []; 
-    });  
+    });
+    const [currentChatId, setCurrentChatId] = useState(()=>{
+        const savedId = localStorage.getItem('currentChatId')
+        return savedId ? JSON.parse(savedId) : 0;
+    })
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null); 
 
@@ -16,7 +20,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
             setLoading(true);
             const response = await axios.get("http://localhost:3000/users");
             setUsers(response.data); 
-            localStorage.setItem("users", JSON.stringify(response.data)); // ✅ Stocke dans localStorage
+            localStorage.setItem("users", JSON.stringify(response.data)); 
         } catch (err) {
             setError(err.message); 
         } finally {
@@ -31,7 +35,10 @@ const ChatBoxApiContextProvider = ({ children }) => {
     }, []);
 
     return ( 
-        <ChatBoxApiContext.Provider value={{ users, loading, error, fetchUsersAll }}>
+        <ChatBoxApiContext.Provider value={{ 
+            users, loading, error, 
+            fetchUsersAll, setCurrentChatId, currentChatId }}
+        >
             {children}
         </ChatBoxApiContext.Provider>
     );

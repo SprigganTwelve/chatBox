@@ -1,5 +1,5 @@
-import UserBoard from './components/user-board/user.board'
-import ChatBoard from './components/chat-board/chat.board'
+import UserBoard from './components/userBoard/user.board'
+import ChatBoard from './components/chatBoard/chat.board'
 import Settings from './components/settings/settings'
 import { ChatBoxApiContextProvider } from './context/context'
 

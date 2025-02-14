@@ -24,6 +24,8 @@
     border-color: rgba(255, 255, 255, 0.7);
 }
 
+
+
 .image {
     width: 70px;
     height: 70px;
@@ -51,5 +53,5 @@
 }
 
 .date{
-    font-size: 10   px;
+    font-size: 10px;
 }

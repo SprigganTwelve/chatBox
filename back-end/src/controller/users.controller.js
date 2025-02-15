@@ -21,4 +21,17 @@ exports.getSpecialUser = async (req, res) => {
     catch(err){
         console.log(err)
     }
-} 
+};
+
+exports.getSpeechBetweenTwoUsers = async (req, res) => {
+    try{
+        const conn = await db.connexion;
+        const { sender, receiver } = req.params;
+        
+    }
+    catch (err)
+    {
+        console.log(`Something wrong hapenned : ${err}`)
+        res.status(404).json({ message: "Something wrong happend" })
+    }
+}

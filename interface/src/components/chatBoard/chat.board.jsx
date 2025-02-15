@@ -17,8 +17,8 @@ const ChatBoard = () => {
                 currentChatId !== 0 ? 
                     <div>
                         <ChatHeader currentChatId={ currentChatId } />
-                        <MessageContent />
-                        <MessageSender />
+                        <MessageContent currentChatId={ currentChatId } />
+                        <MessageSender currentChatId={ currentChatId } />
                     </div>
 
                 :   <div className={styles.welcomeSection}>

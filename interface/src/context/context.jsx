@@ -39,7 +39,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
             users, loading, error, 
             fetchUsersAll, setCurrentChatId, currentChatId }}
         >
-            {children}
+                {children}
         </ChatBoxApiContext.Provider>
     );
 };

@@ -3,15 +3,20 @@ import { ChatBoxApiContext } from "../../context/context"
 import UserCard from "./components/userCard/user.card";
 import SideBarMenu from "./components/sideBarMenu/sidebar.menu";
 import SearchBar from "./components/searchbar"
+
+import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
 import styles from "./user.board.module.css"
 
 const UserBoard = () => {
 
-    const { friends, setCurrentChatId, setTalkSphereId } = useContext(ChatBoxApiContext)
+    const { friends, setCurrentChatId, setTalkSphereId,setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
 
     return (
         <div  className={styles.container}>
-            <span className={styles.title}>ChatBox</span>
+            <div className={styles.title}>
+                <img src={SVGbox} width={30} alt="" />
+                ChatBox
+            </div>
             <SideBarMenu />
             <SearchBar />
             { friends.map((friend, index)=>(
@@ -25,6 +30,10 @@ const UserBoard = () => {
                                 setTalkSphereId(friend.talkSphereId)
                                 localStorage.setItem("currentChatId", JSON.stringify(friend.id));
                                 localStorage.setItem("talkSphereId", JSON.stringify(friend.talkSphereId));
+                                setUsersTemporaryChat(()=> ({
+                                    id: friend.talkSphereId,
+                                    messages: []
+                                }))
                             } } 
                             />
                         ))

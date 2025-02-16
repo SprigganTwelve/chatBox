@@ -20,6 +20,7 @@
 
 .emptyChatContainer{
     display: flex;
+    height: 100%;
     color: white;
     align-items: center;
     justify-content: center;

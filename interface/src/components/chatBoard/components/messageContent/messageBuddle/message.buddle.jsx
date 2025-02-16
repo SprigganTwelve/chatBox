@@ -12,7 +12,6 @@ const MessageBuddle = (
 
     const { currentChatId } = useContext(ChatBoxApiContext)
 
-
     return ( 
         <div className={`${styles.bubble} ${ sender !== currentChatId ? styles.sent : styles.received}`}>
             <p className={styles.message} >{content}</p>

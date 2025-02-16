@@ -1,16 +1,25 @@
-//Used By the socket
+const db = require("../database/connexion")
 
-const db = require('../database/connexion')
-
-exports.insertIntoMessage = async (data) => {
-    try{
-        const { senderId, talkSphereId, content  } = data;
+exports.insertIntoMessage = async ({ senderId, talkSphereId, content, createdAt }) => {
+    try {
         const connexion = await db.connexion;
-        const date = new Date();
-        const data = await connexion.query("INSERT INTO Message(content, senderId, createdAt, talkSphereId) values (?,?,?,?)", [content, senderId, date, talkSphereId]);
-        return { talkSphereId, content }
+
+        let dateObj = createdAt instanceof Date ? createdAt : new Date(createdAt);
+
+        if (isNaN(dateObj.getTime())) {
+            console.error(`Date invalide reçue: ${createdAt}`);
+            return; 
+        }
+
+        const formattedDate = dateObj.toISOString().slice(0, 19).replace("T", " "); 
+
+        console.log(formattedDate);
+
+        await connexion.query(
+            "INSERT INTO Message(content, senderId, createdAt, talkSphereId) values (?,?,?,?)",
+            [content, senderId, formattedDate, talkSphereId]
+        );
+    } catch (err) {
+        console.error("Erreur lors de l'insertion du message :", err);
     }
-    catch(err){
-        console.log(err)
-    }
-}
+};

@@ -1,23 +1,34 @@
 
-import { useState } from "react";
-import { io } from "socket.io-client"
+import { useContext, useState } from "react";
 import SVGsend from "/src/assets/svg/send-email-svgrepo-com.svg"
 import styles from './message.sender.module.css'
+import { insertFormattedDate } from "/src/utils/function"
+import { ChatBoxApiContext } from "../../../../context/context";
 
 
-const MessageSender = ({ talkSphereId }) => {
+const MessageSender = ({ talkSphereId,  currentChatId}) => {
 
     const [value, setValue] = useState("")
+    const { socket, usersTemporaryChat, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         try{
-            const socket = io("http://localhost:3000")
-            socket.emit("message",{senderId: 13, talkSphereId, content: value})
+            if(socket){
+                const createdAt = new Date();
+                socket.current.emit("privateMessage",{ senderId: 13, receiverId: currentChatId , talkSphereId, content: value, createdAt })
+                const dataSent = { senderId:13, talkSphereId, content: value, createdAt}
 
-            socket.on('message', (data) => {
-                console.log('Message reçu:', data);
-            });
+                insertFormattedDate(dataSent)
+                console.log(dataSent)
+                setUsersTemporaryChat((previous)=>(
+                        {
+                            id: talkSphereId,
+                            messages: [...previous.messages, dataSent]
+                        }
+                ))
+                console.log(usersTemporaryChat)
 
+            }
         }
         catch(error){
             console.log(error)
@@ -34,7 +45,7 @@ const MessageSender = ({ talkSphereId }) => {
                 value={value}
                 onChange={(event)=> setValue(event.target.value)}
                 onKeyDown={(event)=>{
-                    if(event.target.key == "Enter"){
+                    if(event.key == "Enter"){
                         sendMessage()
                     }
                 }}

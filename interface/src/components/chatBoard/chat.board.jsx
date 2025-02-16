@@ -16,7 +16,7 @@ const ChatBoard = () => {
                 <div>
                     <ChatHeader currentChatId={currentChatId} />
                     <MessageContent talkSphereId={talkSphereId} />
-                    <MessageSender currentChatId={talkSphereId} />
+                    <MessageSender talkSphereId={talkSphereId} currentChatId={currentChatId} />
                 </div>
             ) : (
                 <div className={styles.welcomeSection}>

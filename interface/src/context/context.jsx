@@ -4,23 +4,29 @@ import axios from "axios";
 const ChatBoxApiContext = createContext();
 
 const ChatBoxApiContextProvider = ({ children }) => {
-    const [users, setUsers] = useState(() => {
-        const savedUsers = localStorage.getItem("users"); 
-        return savedUsers ? JSON.parse(savedUsers) : []; 
-    });
-    const [currentChatId, setCurrentChatId] = useState(()=>{
-        const savedId = localStorage.getItem('currentChatId')
-        return savedId ? JSON.parse(savedId) : 0;
-    })
+
+    const [currentChatId, setCurrentChatId] = useState(
+        ()=>{
+            const saved = JSON.parse(localStorage.getItem("currentChatId"))
+            return saved != null ? saved : 0;
+        }
+    )
+    const [talkSphereId, setTalkSphereId] = useState(
+        ()=>{
+            const saved = JSON.parse(localStorage.getItem("talkSphereId"))
+            return saved != null ? saved : null;
+    }
+    );
+
+    const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null); 
 
-    const fetchUsersAll = useCallback(async () => {
+    const fetchUserFriend = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await axios.get("http://localhost:3000/users");
-            setUsers(response.data); 
-            localStorage.setItem("users", JSON.stringify(response.data)); 
+            const response = await axios.get("http://localhost:3000/users/13/friends");
+            setFriends(response.data); 
         } catch (err) {
             setError(err.message); 
         } finally {
@@ -29,15 +35,16 @@ const ChatBoxApiContextProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (users.length === 0) { 
-            fetchUsersAll();
+        if (friends.length === 0) { 
+            fetchUserFriend();
         }
     }, []);
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            users, loading, error, 
-            fetchUsersAll, setCurrentChatId, currentChatId }}
+            fetchUserFriend, setTalkSphereId, setCurrentChatId,
+            friends, loading, error, talkSphereId,currentChatId
+        }}
         >
                 {children}
         </ChatBoxApiContext.Provider>

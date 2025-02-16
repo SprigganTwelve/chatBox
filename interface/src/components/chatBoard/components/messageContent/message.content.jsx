@@ -1,28 +1,105 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import MessageBuddle from "./messageBuddle/message.buddle";
 
-import styles from "./message.content.module.css"
+import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
+import styles from "./message.content.module.css";
 
-const MessageContent = ({currentChatId}) => {
+const MessageContent = ({ talkSphereId }) => {
+    const [usersChat, setUsersChat] = useState([]);
 
-    useEffect(()=>{
-        const fetchUserChat = axios.get(`http://localhost:3000/users/messages/4/${currentChatId}`)
-    }, [currentChatId])
+    const getUserChat = async () => {
+        if (!talkSphereId) return; 
+        try {
+            let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
+            const data = response.data;
+            for (const message of data) {
+                const dateObj = new Date(message.createdAt);
+                if (isNaN(dateObj.getTime())) {
+                    console.warn(`Date invalide: ${message.createdAt}`);
+                    continue; 
+                }
+    
+                const formattedDate = new Intl.DateTimeFormat("fr-FR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                }).format(dateObj);
 
+                const formattedHours = new Intl.DateTimeFormat("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }).format(dateObj);
+                
+                message.date = dateObj;
+                message.formattedDate = formattedDate;
+                message.formattedHours = formattedHours;
 
+            }
+    
+            data.sort((a, b)=> a.date.getTime() - b.date.getTime() )
+            console.log(data);
+            setUsersChat(data); 
+    
+        } catch (error) {
+            console.error("Erreur lors de la récupération des messages:", error);
+        }
+    };
+    
 
-    return ( 
-        <div className={styles.container}>
-            <div>
-                <p>Salue comment tu vas ça fait un baille</p>
-                <span>12:20:30</span>
+    useEffect(() => {
+        getUserChat();
+    }, [talkSphereId]);
+    return (
+        <>
+            <div className={styles.space} />
+            <div className={styles.container}>
+                {usersChat.length > 0 ? (
+                    usersChat.map((message, index) => {
+                        return (
+                            <MessageBuddle
+                                key={index}
+                                content={message.content}
+                                time={message.formattedHours}
+                                sender={message.senderId}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className={styles.emptyChatContainer}>
+                        <img src={SVGsmile} alt="" />
+                        <span>Soyez le premier à envoyer un message  !!</span>
+                    </div>
+                )
+                }
+                    <MessageBuddle
+                                content={"Tu fais quoi actu ?"}
+                                time={"12:20"}
+                                sender={1}
+                    />
+                    <MessageBuddle
+                                content={"Bof rien de special et toi"}
+                                time={"12:21"}
+                                sender={0}
+                    />
+                    <MessageBuddle
+                                content={"Ok got it"}
+                                time={"12:21"}
+                                sender={1}
+                    />
+                    <MessageBuddle
+                                content={"Et toi"}
+                                time={"12:21"}
+                                sender={0}
+                    />
             </div>
-            <div>
-                <p>Ouais ça va et de ton côté</p>
-                <span>12:20:30</span>
-            </div>
-        </div>
-     );
-}
- 
+        </>
+    );
+};
+
 export default MessageContent;

@@ -25,7 +25,10 @@ app.use(express.json())
 app.use(cors(corsOptions))
 
 const usersRouter = require("./routes/users.routes")
+const talkSphereRouter = require('./routes/talksphere.routes')
+
 app.use("/users", usersRouter )
+app.use("/talkSphere", talkSphereRouter )
 
 io.on("connection",( socket )=>{
     console.log('User est bien connecté !!')

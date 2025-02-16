@@ -1,8 +1,11 @@
 
-const MessageSender = () => {
+import styles from './message.sender.module.css'
+
+
+const MessageSender = ({ talkSphereId }) => {
     return ( 
-        <div>
-            
+        <div className={styles.container}>
+            <input type="text" />
         </div>
      );
 }

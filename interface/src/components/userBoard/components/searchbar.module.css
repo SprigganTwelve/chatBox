@@ -1,0 +1,26 @@
+.container{
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.input{
+    flex: 1;
+    border: none;
+    padding: 5px;
+    color: white;
+    outline: none;
+    font-size: 17px;
+    border-radius:5px ;
+    margin-bottom: 3px;
+    background-color: rgb(67, 65, 65);
+}
+
+.inderline{
+    border-bottom: 2px solid rgb(134, 131, 131) ;
+}
+
+.btn{
+    width: 20px;
+    height: 20px;
+}

@@ -1,4 +1,29 @@
 
+.space{
+    height: 100px;
+}
+
 .container{
+    gap: 25px;
+    display: flex;
+    width: 900px;
     color: white;
+    overflow-y: scroll;
+    flex-direction: column;
+    scrollbar-width: none;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.emptyChatContainer{
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+.emptyChatContainer > img {
+    width: 50px;
 }

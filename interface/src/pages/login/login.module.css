@@ -1,4 +1,16 @@
 
 .container{
-    color: black;
+    height: 100%;
+    position: relative;
+    background-color: rgb(67, 65, 65, 60%);
+}
+
+.formContainer{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    color: white;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
 }

@@ -1,0 +1,16 @@
+.icon {
+    top: 20px;
+    z-index: 20;
+    right: 10px;
+    width: 30px;
+    padding: 5px;
+    cursor: pointer;
+    position: absolute;
+    transition: all 1s ease;
+}
+
+.icon:hover{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}

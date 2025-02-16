@@ -30,11 +30,15 @@ const talkSphereRouter = require('./routes/talksphere.routes')
 app.use("/users", usersRouter )
 app.use("/talkSphere", talkSphereRouter )
 
+const socketController  = require("./controller/socket.controller");
+const { emit } = require('process');
 io.on("connection",( socket )=>{
+    console.log(socket.id)
     console.log('User est bien connecté !!')
     
-    io.on("message", () => {
-
+    io.on("message", (data) => {
+        socketController.insertIntoMessage(data)
+        io.to(socket.id).emit()
     })
 
 

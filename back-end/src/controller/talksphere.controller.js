@@ -1,6 +1,8 @@
 
 const db = require("../database/connexion")
 
+//Used By router
+
 exports.getTalkSphere = async (req, res) => {
     try{
         const { id } = req.params;
@@ -27,3 +29,4 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
         return res.status(404).json({ message: "Something wrong happend" })
     }
 }
+

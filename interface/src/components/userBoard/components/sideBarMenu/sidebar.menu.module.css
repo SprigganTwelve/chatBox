@@ -1,0 +1,39 @@
+
+.container{
+    left: 0;
+    height: 80%;
+    display: flex;
+    margin-top: 50px;
+    position: absolute;
+    flex-direction: column;
+    align-items: center;
+    transition: all 1s ease;
+    justify-content: space-between;
+}
+
+.menu{
+    gap: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.img {
+    width: 30px;
+    padding: 5px;
+    height: 30px;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.img:hover{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}
+
+.profil > img{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}

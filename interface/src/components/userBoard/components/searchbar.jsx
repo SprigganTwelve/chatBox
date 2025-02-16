@@ -1,6 +1,5 @@
 
 import styles from "./searchbar.module.css"
-import SearchIcon from "../../../assets/svg/search-alt-2-svgrepo-com.svg"
 
 const SearchBar = () => {
     return ( 

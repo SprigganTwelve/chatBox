@@ -2,7 +2,14 @@
     width: 350px;
     color: white;
     flex-direction: column;
-    padding: 20px 0 0 20px;
+    padding: 20px 0 0 30px;
+    position: relative;
     border-right: 1px solid rgb(117, 114, 114);
     background-color: #2b2b2b;
+}
+
+.title{
+    margin: 10px;
+    font-size: 20px;
+    font-weight: bold;
 }

@@ -1,9 +1,10 @@
 
+import SVGsettings from "/src/assets/svg/settings-gear-svgrepo-com.svg"
+import styles from "./settings.module.css"
+
 const Settings = () => {
     return ( 
-        <div>
-            
-        </div>
+        <img src={SVGsettings}  className={styles.icon} />
      );
 }
  

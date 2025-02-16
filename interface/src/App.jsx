@@ -1,21 +1,20 @@
-import UserBoard from './components/userBoard/user.board'
-import ChatBoard from './components/chatBoard/chat.board'
-import Settings from './components/settings/settings'
-import { ChatBoxApiContextProvider } from './context/context'
-
-import styles from "./App.module.css"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Layout from "./pages/layout"
+import Login from "./pages/login/login"
+import Home from "./pages/home/home"
 
 
 function App() {
 
   return (  
-    <ChatBoxApiContextProvider>
-      <div className={styles.container}>
-        <UserBoard />
-        <ChatBoard />
-        <Settings />
-      </div>
-    </ChatBoxApiContextProvider>
+      <BrowserRouter>
+          <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Login />}/>
+                <Route path="/home"  element={<Home />}/>
+              </Route>
+          </Routes>
+      </BrowserRouter>
   )
 }
 

@@ -56,8 +56,7 @@ const MessageContent = ({ talkSphereId }) => {
         getUserChat();
     }, [talkSphereId]);
     return (
-        <>
-            <div className={styles.space} />
+
             <div className={styles.container}>
                 {usersChat.length > 0 ? (
                     usersChat.map((message, index) => {
@@ -69,7 +68,7 @@ const MessageContent = ({ talkSphereId }) => {
                                 sender={message.senderId}
                             />
                         );
-                    })
+                    }) 
                 ) : (
                     <div className={styles.emptyChatContainer}>
                         <img src={SVGsmile} alt="" />
@@ -94,11 +93,30 @@ const MessageContent = ({ talkSphereId }) => {
                     />
                     <MessageBuddle
                                 content={"Et toi"}
-                                time={"12:21"}
+                                time={"12:22"}
                                 sender={0}
                     />
+                    <MessageBuddle
+                                content={"Je regarde la télé avec mes p'tits frères"}
+                                time={"12:23"}
+                                sender={1}
+                    />
+                    <MessageBuddle
+                                content={"Dis ça te dit qu'on se rencontre demain ou après demain ? j'ai quelque chose d'important à te raconter"}
+                                time={"12:23"}
+                                sender={1}
+                    />
+                    <MessageBuddle
+                                content={"Demain je ne suis pas sur mais un autre jour c'est possible"}
+                                time={"12:23"}
+                                sender={0}
+                    />
+                    <MessageBuddle
+                                content={"Ok on se voit là"}
+                                time={"12:23"}
+                                sender={1}
+                    />
             </div>
-        </>
     );
 };
 

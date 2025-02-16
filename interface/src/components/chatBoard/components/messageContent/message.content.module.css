@@ -1,16 +1,17 @@
 
-.space{
+.topSpace{
     height: 100px;
 }
 
 .container{
     gap: 25px;
-    display: flex;
     width: 900px;
+    display: flex;
     color: white;
+    height: 490px;
+    margin-top: 20px;
     overflow-y: scroll;
     flex-direction: column;
-    scrollbar-width: none;
 }
 
 .container::-webkit-scrollbar {
@@ -26,4 +27,8 @@
 
 .emptyChatContainer > img {
     width: 50px;
+}
+
+.bottomSpace{
+    height: 500px;
 }

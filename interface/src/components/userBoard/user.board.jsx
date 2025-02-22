@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { ChatBoxApiContext } from "../../context/context"
 import UserCard from "./components/userCard/user.card";
-import SideBarMenu from "./components/sideBarMenu/sidebar.menu";
 import SearchBar from "./components/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
@@ -17,7 +16,6 @@ const UserBoard = () => {
                 <img src={SVGbox} width={30} alt="" />
                 ChatBox
             </div>
-            <SideBarMenu />
             <SearchBar />
             { friends.map((friend, index)=>(
                         <UserCard  

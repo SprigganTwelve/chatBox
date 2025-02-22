@@ -10,7 +10,11 @@ const UserCard = ({
         <div className={styles.main} onClick={onClick}>
             <div>
                 <div id="imageContainer" className={styles.imageContainer}>
-                    <img id="image" src={url != "" ? url : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"} className={styles.image} alt="image" />
+                    <img id="image"
+                         src={url ? "http://localhost:3000/uploads/" + url : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"}
+                         className={styles.image}
+                         alt="image"
+                    />
                 </div>
             </div>
             <div className={styles.textBox}>

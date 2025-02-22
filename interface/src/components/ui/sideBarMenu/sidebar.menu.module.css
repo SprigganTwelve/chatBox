@@ -3,12 +3,13 @@
     left: 0;
     height: 80%;
     display: flex;
-    margin-top: 50px;
+    margin-top: 8%;
     position: absolute;
     flex-direction: column;
     align-items: center;
     transition: all 1s ease;
     justify-content: space-between;
+    z-index: 10;
 }
 
 .menu{
@@ -53,5 +54,6 @@
     gap: 20px;
     width: 30px;
     height: 30px;
+    object-fit: cover;
     border-radius: 50%;
 }

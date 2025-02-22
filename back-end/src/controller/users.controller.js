@@ -27,6 +27,7 @@ exports.getSpecialUser = async (req, res) => {
             user = response[0]
         }
         return res.status(200).json(user);
+
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Erreur serveur" });
@@ -84,6 +85,11 @@ exports.getLoginConnection = async (req, res) => {
             return res.json({ message: "Incorrect password" });
         }
 
+        await conn.query(
+            "INSERT INTO Consumer(online) VALUE(?)", 
+            [1]
+        );
+
         delete user.password;
 
         return res.status(200).json({ message: "", user });
@@ -121,7 +127,7 @@ exports.getSignedUpToBDD = async (req, res) => {
         if(file){
 
             const fileName = Date.now() + path.extname(file.originalname)
-            const fileUploadPath = path.join(__dirname, "../upload/")
+            const fileUploadPath = path.join(__dirname, "../uploads/")
             const filePath = path.join(fileUploadPath, fileName)
 
 

@@ -6,7 +6,7 @@
     position: relative;
     align-items: center;
     justify-content: center;
-    background-color: rgb(67, 65, 65);
+    background-color: rgb(67, 65, 65) !important;
 }
 .welcomeSection{
     display: flex;

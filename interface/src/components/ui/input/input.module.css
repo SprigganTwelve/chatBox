@@ -1,0 +1,50 @@
+.inputContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.title{
+    font-size: 15px;
+    margin-bottom: 2px;
+    color: rgba(133, 131, 131, 0.5);
+}
+
+.input{
+    width: 290px;
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 15px;
+}
+
+.inputFiles{
+    display: none;
+    overflow: hidden;
+}
+
+.label{
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    border-radius: 1000px;
+    text-transform: ellipsis;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+input::placeholder{
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+input:focus{
+    outline: none;
+}
+
+.underline {
+    height: 2px;
+    width: 100%;
+    background-color: rgba(154, 150, 150, 0.5);
+}

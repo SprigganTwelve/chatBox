@@ -1,10 +1,17 @@
 
+import { useContext } from "react"
 import SVGmessage from "/src/assets/svg/message-square-list-svgrepo-com.svg"
 import SVGinvit from "/src/assets/svg/invitation-svgrepo-com.svg"
 import SVGstatus from  "/src/assets/svg/status2-svgrepo-com.svg"
+// import SVGsettings from  "/src/assets/svg/settings-gear-svgrepo-com.svg"
+import { ChatBoxApiContext } from "../../../../context/context"
 import styles from "./sidebar.menu.module.css"
 
 const SideBarMenu = () => {
+
+    const { userData } = useContext(ChatBoxApiContext)
+    console.log(userData)
+
     return ( 
         <div className={styles.container}>
             <div className={styles.menu}>
@@ -13,7 +20,7 @@ const SideBarMenu = () => {
                 <img className={styles.img} src={SVGstatus} alt="status" />
             </div>
             <div className={styles.profil}>
-                <img  src="/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png" alt="" />
+                <img  src= {userData?.image ? userData.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png" } alt="" />
             </div>
         </div>
      );

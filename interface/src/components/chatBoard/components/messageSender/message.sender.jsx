@@ -41,8 +41,8 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
             <div className={styles.inputbefore} />
             <input
                 type="text"
-                placeholder='Entrez votre message ici'
                 value={value}
+                placeholder='Entrez votre message ici'
                 onChange={(event)=> setValue(event.target.value)}
                 onKeyDown={(event)=>{
                     if(event.key == "Enter"){

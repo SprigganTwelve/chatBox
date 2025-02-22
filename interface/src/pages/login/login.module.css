@@ -9,8 +9,48 @@
     height: 100%;
     width: 100%;
     display: flex;
-    color: white;
     position: absolute;
     align-items: center;
     justify-content: center;
+}
+
+.formContainer > .span {
+    width: 100%;
+    background-color: red;
+} 
+
+.next{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.next > span {
+    font-size: 15px;
+    transition: all 1s ease;
+    cursor: pointer;
+    color: rgba(21, 21, 21, 0.5);
+}
+
+.next > span:hover{
+    color: blue;
+    text-decoration: underline;
+}
+
+.icon{
+    padding: 0;
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.icon:hover{
+    margin: 10px;
+    padding: 5px;
+    background-color: rgba(21, 21, 21, 0.5);
 }

@@ -1,14 +1,13 @@
 import { useContext } from "react";
+import { ChatBoxApiContext } from "../../context/context";
 import ChatHeader from "./components/chatHeader/chat.header";
 import MessageContent from "./components/messageContent/message.content";
 import MessageSender from "./components/messageSender/message.sender";
 import MessageSVG from "/src/assets/svg/chat-round-line-svgrepo-com.svg";
 import styles from './chat.board.module.css';
-import { ChatBoxApiContext } from "../../context/context";
 
 const ChatBoard = () => {
     const { talkSphereId, currentChatId } = useContext(ChatBoxApiContext)
-
 
     return (
         <div className={styles.container}>

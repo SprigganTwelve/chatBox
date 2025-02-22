@@ -32,7 +32,25 @@
     background-color: rgb(55, 56, 57);
 }
 
+.profil{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profil > * {
+    cursor: pointer;
+    transition: all 1s ease;
+    background-color: rgb(55, 56, 57);
+}
+
+.profil > *:hover{
+    padding: 10px;
+
+}
+
 .profil > img{
+    gap: 20px;
     width: 30px;
     height: 30px;
     border-radius: 50%;

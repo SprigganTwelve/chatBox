@@ -6,6 +6,13 @@ const ChatBoxApiContext = createContext();
 
 const ChatBoxApiContextProvider = ({ children }) => {
 
+    const [userId, setUserId] = useState(()=>{
+        const saved = JSON.parse(localStorage.getItem("userId"))
+        return saved != null ? saved : null;
+    })
+
+    const [userData, setUserData] = useState(null)
+
     const [currentChatId, setCurrentChatId] = useState(
         ()=>{
             const saved = JSON.parse(localStorage.getItem("currentChatId"))
@@ -29,18 +36,24 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const socket = useRef(null)
 
     const fetchUserFriend = useCallback(async () => {
-        try {
-            socket.current = io("http://localhost:3000")
-            setLoading(true);
-            const response = await axios.get("http://localhost:3000/users/13/friends");
-            socket.current.emit("register", {userId: 13})
-            setFriends(response.data); 
-        } catch (err) {
-            setError(err.message); 
-        } finally {
-            setLoading(false);
+        if(userId){
+            try {
+                setLoading(true);
+
+                socket.current = io("http://localhost:3000")
+                const requestForUserData = await axios.get(`http://localhost:3000/users/${userId}`)
+                const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
+                socket.current.emit("register", {userId: userId})
+
+                setUserData(requestForUserData.data)
+                setFriends(requestForFriendship.data); 
+            } catch (err) {
+                setError(err.message); 
+            } finally {
+                setLoading(false);
+            }
         }
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         if (friends.length === 0) { 
@@ -56,8 +69,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            fetchUserFriend, setTalkSphereId, setCurrentChatId,setUsersTemporaryChat,
-            friends, loading, error, talkSphereId,currentChatId , usersTemporaryChat, socket
+            fetchUserFriend, setTalkSphereId, setCurrentChatId,setUsersTemporaryChat, setUserId,
+            friends, loading, error, talkSphereId,currentChatId , usersTemporaryChat, socket, userId, userData
         }}
         >
                 {children}

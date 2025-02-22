@@ -12,8 +12,9 @@ const io = new Server(server, {
     }
 });
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const usersRouter = require("./routes/users.routes");
 const talkSphereRouter = require('./routes/talksphere.routes');

@@ -35,7 +35,7 @@ const ChatHeader = ({ currentChatId }) => {
                     {/* TODO: Menu for parameter */}
                 </div>
             ) : (
-                <p style={{color: "white"}}>Chargement...</p> 
+                <div style={{color: "white"}} /> 
             )}
         </>
     );

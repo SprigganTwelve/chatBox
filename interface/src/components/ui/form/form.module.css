@@ -1,8 +1,49 @@
 
 .container{
+    gap: 50px;
+    display: flex;
+    font-family: 'Courier New', Courier, monospace sans-serif;
+    align-items: center;
+    border-radius: 5px;
+    min-height: 450px;
+    color: black;
+    flex-direction: column;
+    background-color: white;
+    padding: 30px 25px;
+}
 
+.form{
+}
+
+.container > span{
+    font-size: 27px;
+    font-weight: bold;
 }
 
 .container form {
-    
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
+
+.errorMessage{
+    color: red;
+    font-size: 15px;
+    margin-bottom: -5px;
+    text-align: center;
+}
+
+.container button {
+    border: none;
+    width: 100%;
+    margin-top: 9px;
+    color: white;
+    padding: 1em 2em;
+    cursor: pointer;
+    position: relative;
+    border-radius: 1000px;
+    background-color: #161a20;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+

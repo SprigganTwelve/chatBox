@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { ChatBoxApiContext } from "../../context/context"
 import UserCard from "./components/userCard/user.card";
-import SearchBar from "./components/searchbar"
+import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
 import styles from "./user.board.module.css"

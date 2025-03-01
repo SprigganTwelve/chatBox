@@ -33,6 +33,12 @@
     background-color: rgb(55, 56, 57);
 }
 
+.isActive{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}
+
 .profil{
     gap: 10px;
     display: flex;

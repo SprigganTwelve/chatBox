@@ -1,0 +1,148 @@
+.container{
+    gap: 20px;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    color: white;
+    justify-content: flex-start;
+    background-color: rgb(67, 65, 65) !important;
+}
+
+.leftBoard{
+    gap: 20px;
+    display: flex;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 2rem 0rem 2rem 4rem;
+    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #2b2b2b !important;
+}
+
+
+.imageContainer{
+    width: 290px;
+    position: relative;
+    height: 290px;
+    cursor:pointer;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.imageContainer:hover{
+    background-color: rgb(67, 65, 65) !important;
+}
+
+.imageContainer:hover::before {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    width: 150px;
+    height: 150px;
+    left: 50%;
+    top: 50%; 
+    transform: translate(-50%, -50%);
+    background-image: url("/src/assets/svg/camera-rotate-svgrepo-com.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: FadeOpactity 2s ease ;
+}
+
+@keyframes FadeOpactity {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.imageProfil{
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: cover;
+    transition: all 2s ease;
+}
+
+
+.leftBoard > .textSection > p {
+    width: 200px;
+    text-align: start;
+    line-height: 1.2;
+}
+
+.textSection{
+    width: 95%;
+}
+
+.userName{
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.userName::first-letter{
+    font-size: 2em;
+}
+
+.userPseudo{
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.textSection > .separator {
+    width: 100%;
+    margin: 10px 0;
+    height: 0.5px;
+    background-color: white;
+}
+
+.textSection > .separator + div{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textSection > div button  {
+    width: 100%;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 1s ease;
+}
+
+.textSection > div button:not(:last-child){   
+        color: black;
+        background-color: #ffffff !important;
+}
+
+.isActive{
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+.deconnexion{
+    color: white;
+    background-color: red;
+}
+
+.rightBoard{
+    width: 68%;
+    margin: 2rem 0;
+    overflow: hidden;
+    border-radius: 10px;
+    overflow-y: scroll;
+    transition: all 1s ease;
+    background-color: #101010c9  !important;
+}
+
+.rightBoard::-webkit-scrollbar {
+    display: none; /* Masque la barre de défilement */
+}

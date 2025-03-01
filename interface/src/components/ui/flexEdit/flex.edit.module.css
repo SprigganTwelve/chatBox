@@ -1,0 +1,36 @@
+
+.container{
+    gap: 15px;
+    padding: 20px;
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: #2a2a2b !important;
+}
+
+.title{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.container > div {
+    display: flex;
+}
+
+.icon{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transform: all 1s ease;
+}
+
+
+.input{
+    width: 150px;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+    background-color: #2a2a2b !important ;
+}

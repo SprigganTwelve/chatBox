@@ -1,0 +1,20 @@
+
+.container{
+    gap: 40px;
+    padding: 20px;
+    display:  flex;
+    flex-direction: column;
+}
+
+.header{
+    gap: 14px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.options{
+    gap: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}

@@ -31,7 +31,8 @@ const Login = () => {
         if(formResponse?.data.user){
             navigate("/home")
             setUserId(formResponse.data.user.id)
-            localStorage.setItem("userId", JSON.stringify(formResponse.data.user.id) )
+            localStorage.setItem("userId", JSON.stringify(formResponse.data.user.id))
+            window.location.reload();
         }
     }, [formResponse])
     

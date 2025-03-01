@@ -1,0 +1,67 @@
+.container{
+    gap: 20px;
+    width: 350px;
+    display: flex;
+    color: white;
+    margin-top: 3rem;
+    overflow: hidden;
+    margin-left: 5rem;
+    font-weight: bold;
+    padding: 20px 5px;
+    position: relative;
+    align-items: center;
+    white-space: nowrap;
+    border-radius:  20px;
+    text-overflow: ellipsis;
+    background-color: rgb(55, 56, 57);
+}
+
+
+.profilImage{
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.textSection{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.userName{
+    font-size: 15;
+
+    word-spacing: 5px;
+}
+
+.textSection > div {
+    display: flex;
+    gap: 5px;
+}
+
+
+.icon{
+    width: 20px;
+    height: 20px;
+}
+
+.invitButton{
+    position: absolute;
+    right: 1rem;
+    border: none;
+    font-size: 17px;
+    bottom: 1rem;
+    padding: 5px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+    transition: all 1s ease;
+}
+
+.invitButton:hover{
+    padding: 5px 25px;
+}

@@ -86,8 +86,8 @@ exports.getLoginConnection = async (req, res) => {
         }
 
         await conn.query(
-            "INSERT INTO Consumer(online) VALUE(?)", 
-            [1]
+            "UPDATE Consumer SET online= ? WHERE id=?", 
+            [1, user.id]
         );
 
         delete user.password;
@@ -109,8 +109,8 @@ exports.getSignedUpToBDD = async (req, res) => {
         const file = req.file
         const { name, pseudo, email, password } = req.body
         
-        if(!name || !pseudo || !email || !password){
-            return res.json( {message: "Fields must not be empty"} )
+        if(!name || !email || !password){
+            return res.json( {message: "Name, email and password must not be empty"} )
         }
         
         const conn = await db.connexion;

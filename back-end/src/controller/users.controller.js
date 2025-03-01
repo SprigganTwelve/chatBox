@@ -153,3 +153,23 @@ exports.getSignedUpToBDD = async (req, res) => {
         return res.status(404).json( { message: "Something went wrong" } )
     }
 }
+
+exports.changeKeyValueInBDD = async (req, res) => {
+    try{
+        const conn = await db.connexion;
+        const { id, key, value } = req.params;
+        if(!id || !key || !value ){
+            return res.status(400).json( { message: "Props missing" } )
+        }
+       if (key !== "image") {
+            await conn.query(`UPDATE Consumer SET ${key}=? WHERE id= ?`, [ value, id ])
+            return res.status(200).json({  message: "" })
+       }else{
+            return res.status(200).json({ message: "you cannot update the image through this route" })
+       }
+    }
+    catch(err){
+        console.log("Something went wrong : " + err)
+        return res.status(500).json( { message: "something went wrong" } )
+    }
+}

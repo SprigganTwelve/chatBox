@@ -114,8 +114,9 @@
 }
 
 .userInvitationCardSection{
+    gap: 40px;
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
-    overflow-y: scroll;
+    margin-left: 5rem;
 }

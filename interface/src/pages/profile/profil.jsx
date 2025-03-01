@@ -33,7 +33,7 @@ const Profil = () => {
                     </div>
                     <div className={styles.textSection}>
                         <p>
-                            <span className={styles.userName}>{userData?.name.charAt(0).toUpperCase() + userData?.name.slice(1).toLowerCase()} {userData?.pseudo && "/" + userData?.pseudo}</span>
+                            <span className={styles.userName}>{userData?.name.charAt(0).toUpperCase() + userData?.name.slice(1).toLowerCase()} {userData?.pseudo !="..." && "/" + userData?.pseudo}</span>
                         </p>
                         <div className={styles.separator} />
                         <div>
@@ -65,7 +65,7 @@ const Profil = () => {
                                 className={styles.deconnexion}
                                 onClick={() => {
                                     localStorage.clear()
-                                    navigate("/login")
+                                    navigate("/")
                                 }}
                             >
                                 Déconnexion

@@ -12,8 +12,18 @@
     background-color: #2a2a2b !important;
 }
 
+.textSection{
+    display: flex;
+    gap: 10px;
+}
+
 .textSection p {
     margin-top: 2px;
     font-size: 13px;
     font-weight: normal;
+}
+
+.leading{
+    width: 20px;
+    width: 20px;
 }

@@ -3,7 +3,11 @@
     height: 20px;
     position: relative;
     border-radius: 20px;
-    background-color: #008cff;
+}
+
+.text{
+    position: absolute;
+    left: -2rem;
 }
 
 .rond{
@@ -11,8 +15,7 @@
     height: 20px;
     position: absolute;
     border-radius: 20px;
-    background-color: #e100ff !important;
-    transition: all 2s ease;
+    transition: all 1s ease;
 }
 
 .toRight{

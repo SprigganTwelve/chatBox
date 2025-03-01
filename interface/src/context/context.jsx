@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback, useRef } from "react";
+import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
@@ -48,7 +48,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 setUserData(requestForUserData.data)
                 setFriends(requestForFriendship.data); 
             } catch (err) {
-                setError(err.message); 
+                setError("Something went wrong while retreiving unser data");
+                console.log(err) 
             } finally {
                 setLoading(false);
             }
@@ -69,13 +70,17 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            fetchUserFriend, setTalkSphereId, setCurrentChatId,setUsersTemporaryChat, setUserId,
-            friends, loading, error, talkSphereId,currentChatId , usersTemporaryChat, socket, userId, userData
+            fetchUserFriend, setTalkSphereId, setCurrentChatId,setUsersTemporaryChat, setUserId, setError,
+            friends, loading, error, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData
         }}
         >
                 {children}
         </ChatBoxApiContext.Provider>
     );
 };
+
+ChatBoxApiContextProvider.propTypes = {
+    children: React.Children
+}
 
 export { ChatBoxApiContext, ChatBoxApiContextProvider };

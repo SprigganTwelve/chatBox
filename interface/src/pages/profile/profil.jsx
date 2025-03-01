@@ -1,14 +1,23 @@
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { ChatBoxApiContext } from "../../context/context";
+import { ChatBoxApiContext } from "/src/context/context";
 import EditProfileSettings from '/src/components/profile/editProfileSettings/edit.profile.settings'
+import NotificationSettings from "/src/components/profile/notificationSettings/notification.settings"
+import DiscussionSettings from "/src/components/profile/discussionSettings/discussion.settings"
 import styles from "./profil.module.css"
 
 const Profil = () => {
-    const { userData } = useContext(ChatBoxApiContext)
+    const { userId, userData } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
     const [isButtonActive, setIsButtonActive] = useState("Edit")
+
+    useEffect(()=>{
+        if(!userId){
+            navigate("/")
+        }
+    },
+    [userId])
 
     return (
         <div className={styles.container}>
@@ -56,7 +65,7 @@ const Profil = () => {
                                 className={styles.deconnexion}
                                 onClick={() => {
                                     localStorage.clear()
-                                    navigate("")
+                                    navigate("/login")
                                 }}
                             >
                                 Déconnexion
@@ -68,6 +77,16 @@ const Profil = () => {
                     {
                         userData && isButtonActive=="Edit" && (
                             <EditProfileSettings userData={userData}/>
+                        )
+                    }
+                    {
+                        userData && isButtonActive =="Discussion" && (
+                            <DiscussionSettings />
+                        )
+                    }
+                    {
+                        userData && isButtonActive == "Notification" && (
+                            <NotificationSettings />
                         )
                     }
                 </div>

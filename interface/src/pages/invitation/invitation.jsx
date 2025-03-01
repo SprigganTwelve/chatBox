@@ -55,7 +55,7 @@ const Invitation = () => {
                 </div>
             </nav>
             <div className={styles.separator} />
-            <div>
+            <div className={styles.userInvitationCardSection}>
                 {userVisibleList?.length > 0 && userVisibleList.map((user, index)=> userId!= user.id &&(
                         <UserInvitationCard
                             key= {index}

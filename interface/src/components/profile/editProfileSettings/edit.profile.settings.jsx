@@ -19,7 +19,7 @@ const EditProfileSettings = ({ userData }) => {
                          }, 
                          {
                             title: "Pseudo",
-                            value: userData.pseudo
+                            value: userData.pseudo ?? "..."
                          },
                          {
                             title: "Email",

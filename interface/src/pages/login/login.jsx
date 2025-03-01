@@ -69,7 +69,7 @@ const Login = () => {
                                 />
                                 <Input
                                     title="pseudo"
-                                    placeholder=" 🔒 Type pseudo"
+                                    placeholder=" 🔒 Type pseudo (optionel)"
                                 />
                                 <Input
                                     title="email"

@@ -112,3 +112,10 @@
     margin-left: 3.6rem;
     background-color: rgba(255, 255, 255, 0.297);
 }
+
+.userInvitationCardSection{
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    overflow-y: scroll;
+}

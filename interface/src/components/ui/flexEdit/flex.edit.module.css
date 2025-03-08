@@ -26,8 +26,8 @@
 }
 
 
-.input{
-    width: 150px;
+.textarea{
+    overflow:hidden;
     border: none;
     outline: none;
     color: white;

@@ -31,8 +31,8 @@
     bottom: -5px;
     position: absolute;
     border-left: 10px solid transparent;
-    border-top: 10px solid #0078ff;
-    border-right: 10px solid #0078ff;
+    border-top: 10px solid var(--dynamic-color);
+    border-right: 10px solid var(--dynamic-color);
     border-bottom: 10px solid transparent;
   }
   

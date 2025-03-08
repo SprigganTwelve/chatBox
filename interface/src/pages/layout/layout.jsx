@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ErrorBox from "/src/components/ui/errorBox/error.box"
+import Modal from "/src/components/ui/modal/modal"
 import SideBarMenu from '/src/components/ui/sideBarMenu/sidebar.menu';
 import styles from "./layout.module.css"
 
@@ -9,6 +10,7 @@ const Layout = () => {
         <div className={styles.layoutContainer}>
             {location.pathname !== '/' && <SideBarMenu/> }
             <Outlet />
+            <Modal />
             <ErrorBox />
         </div>
     );

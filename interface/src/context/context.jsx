@@ -29,6 +29,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null); 
+    const [modal, setModal] = useState(null);
+    
     const [usersTemporaryChat, setUsersTemporaryChat] = useState({
         id: talkSphereId,
         messages: []
@@ -70,8 +72,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            fetchUserFriend, setTalkSphereId, setCurrentChatId,setUsersTemporaryChat, setUserId, setError,
-            friends, loading, error, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData
+            fetchUserFriend, setTalkSphereId, setError, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId,
+            friends, loading, error, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData
         }}
         >
                 {children}

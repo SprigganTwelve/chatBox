@@ -1,7 +1,8 @@
 import axios from "axios";
+import PropTypes from "prop-types"
 import { useEffect, useContext,useState, useRef } from "react";
-import { ChatBoxApiContext } from "../../../../context/context";
-import MessageBuddle from "./messageBuddle/message.buddle";
+import { ChatBoxApiContext } from "/src/context/context";
+import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
 import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/function";
 
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
@@ -102,5 +103,9 @@ const MessageContent = ({ talkSphereId }) => {
             </div>
     );
 };
+
+MessageContent.propTypes = {
+    talkSphereId: PropTypes.number
+}
 
 export default MessageContent;

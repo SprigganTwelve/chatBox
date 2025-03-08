@@ -5,27 +5,31 @@ import SVGedit from "/src/assets/svg/edit-2-svgrepo-com.svg"
 import SVGclose from "/src/assets/svg/close-circle-svgrepo-com.svg"
 
 const FlexEdit = ({ 
+    row,
     title,
+    resize = "horizontal",
     defaultValue,
     description,
     callback = ()=>{},
     errorController = ()=>{ return null }
 }) => {
-    const inputRef = useRef(null)
+    const textareaRef = useRef(null)
     const [isEditing, setIsEditing] = useState(false);
-    const [inputValue, setInputValue] = useState(defaultValue ?? "")
+    const [textareaValue, settextareaValue] = useState(defaultValue ?? "")
 
     const handleEditing = ()=>{
             setIsEditing(!isEditing)
-            setTimeout(() => inputRef.current?.focus(), 0); 
+            setTimeout(() => textareaRef.current?.focus(), 0); 
     }
 
     useEffect(()=>{
         if(!isEditing ){
-            const errorChecker = errorController(inputValue);
+            const errorChecker = errorController(textareaValue);
             if(!errorChecker){
-                inputValue.trim() !=="" ? callback(inputValue)
+                textareaValue.trim() !=="" ? callback(textareaValue)
                 : callback("...")
+            }else{
+                settextareaValue(defaultValue)
             }
         }
     },[isEditing, callback])
@@ -38,14 +42,16 @@ const FlexEdit = ({
             {title && <span className={styles.title}>{title}</span>}
             {description && <span className={styles.description}>{description}</span>}
             <div>
-                <input
+                <textarea
                     type="text"
-                    value={inputValue}
-                    ref={inputRef}
-                    className={styles.input}
+                    rows={row ?? "2"}
+                    value={textareaValue}
+                    ref={textareaRef}
+                    className={styles.textarea}
+                    style={{ resize: +resize ?  "none" : resize}}
                     disabled = {isEditing ? false : true}
                     onChange={(e)=>{
-                        setInputValue(e.target.value)
+                        settextareaValue(e.target.value)
                     }}
                     onKeyDown={(e)=>{
                         if (e.key === "Enter") {
@@ -65,7 +71,9 @@ const FlexEdit = ({
 }
 
 FlexEdit.propTypes = {
+    row: PropTypes.string,
     title: PropTypes.string,
+    resize: PropTypes.string,
     defaultValue: PropTypes.string,
     description: PropTypes.string,
     callback: PropTypes.func,

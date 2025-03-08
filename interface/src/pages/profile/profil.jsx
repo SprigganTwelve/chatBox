@@ -32,9 +32,9 @@ const Profil = () => {
                         />
                     </div>
                     <div className={styles.textSection}>
-                        <p>
-                            <span className={styles.userName}>{userData?.name.charAt(0).toUpperCase() + userData?.name.slice(1).toLowerCase()} {userData?.pseudo !="..." && "/" + userData?.pseudo}</span>
-                        </p>
+                            <p>
+                                <span className={styles.userName}>{userData?.name.charAt(0).toUpperCase() + userData?.name.slice(1).toLowerCase()} {userData?.pseudo !="..." && "/" + userData?.pseudo}</span>
+                            </p>
                         <div className={styles.separator} />
                         <div>
                              <button 

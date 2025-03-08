@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import PropTypes from "prop-types"
-import { ChatBoxApiContext } from "../../../../../context/context"
+import { ChatBoxApiContext } from "../../../context/context"
 import styles from "./message.buddle.module.css"
 
 const MessageBuddle = (
@@ -15,7 +15,14 @@ const MessageBuddle = (
     const { currentChatId } = useContext(ChatBoxApiContext)
 
     return ( 
-        <div style={{ backgroundColor: backgroundColor}} className={`${styles.bubble} ${ sender !== currentChatId ? styles.sent : styles.received}`}>
+        <div style={{ 
+                backgroundColor: backgroundColor,
+                "--dynamic-color": backgroundColor ?? "#0078ff"
+            }}
+            className={`${styles.bubble} 
+                ${ sender !== currentChatId ? styles.sent 
+                : styles.received}`}
+            >
             <p className={styles.message} >{content}</p>
             <div className={styles.time}>{time}</div>
         </div>

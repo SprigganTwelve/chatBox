@@ -18,6 +18,20 @@ import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
 
 const EditProfileSettings = ({ userData }) => {
     const { setError } = useContext( ChatBoxApiContext )
+
+    const flexEditErrorController = (value, item) => {
+            if (item.key == "email") {
+                const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
+                if (regex.test(value)) {
+                    return false // return false if the value is fine
+                }else{
+                    setError("Your email must be a convenient one")
+                    return true //return true you want to stop the action
+                }
+            }
+            return null
+    }
+
     return ( 
         <div className={styles.container}>
             <div className={styles.header}>
@@ -52,12 +66,9 @@ const EditProfileSettings = ({ userData }) => {
                                     console.log(`http://localhost:3000/users/${userData?.id}/${item.key}/${value}`)
                                     axios.patch(`http://localhost:3000/users/${userData?.id}/${item.key}/${value}`)
                                 }}
-                                errorController= {(value) => {
-                                    if (item.key == "email") {
-                                        //TODO: IMPLEMENT
-                                    }
-                                    return null
-                                } }
+                                errorController= {(value)=>{
+                                   return flexEditErrorController(value,item)
+                                }}
                             />)
                         )
                     }
@@ -80,7 +91,7 @@ const EditProfileSettings = ({ userData }) => {
                         }}
                     />
                 </ViewOption>
-                <ViewOption 
+                <ViewOption
                         title="Visible"
                         leading={SVGdvisibility}
                         description="Allow us to show you at the global user invit list"

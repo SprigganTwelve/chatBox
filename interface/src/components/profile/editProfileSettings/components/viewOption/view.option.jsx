@@ -3,9 +3,12 @@ import PropTypes from "prop-types"
 import styles from "./view.option.module.css"
 
 
-const ViewOption = ({ title, description = "",leading, children }) => {
+const ViewOption = ({ title, description = "",leading, children, onClick = () => {} }) => {
     return ( 
-        <div className={styles.container}>
+        <div 
+            className={styles.container}
+            onClick={onClick}
+        >
             <div className={styles.textSection}>
                 {leading && <img className={styles.leading} src={leading} alt="" /> }
                 <div>
@@ -22,7 +25,8 @@ ViewOption.propTypes = {
     title: PropTypes.string.isRequired,
     description:PropTypes.string,
     leading: PropTypes.object,
-    children: React.Children
+    children: React.Children,
+    onClick: PropTypes.func
 }
  
 export default ViewOption;

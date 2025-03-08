@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<!-- saved from url=(0028)http://localhost:5173/profil -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="module">
+import RefreshRuntime from "/@react-refresh"
+RefreshRuntime.injectIntoGlobalHook(window)
+window.$RefreshReg$ = () => {}
+window.$RefreshSig$ = () => (type) => type
+window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+    <script type="module" src="./Vite + React_files/client"></script>
+
+    
+    <link rel="icon" type="image/svg+xml" href="http://localhost:5173/vite.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite + React</title>
+  <style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/index.css">*{
+  margin: 0;
+  padding: 0;
+}
+
+#root{
+  width: 100%;
+  height: 100vh;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/errorBox/error.box.module.css">
+._container_lv619_3{
+    right: 20px;
+    bottom: -70px;
+    position: absolute;
+    transition: all 3s ease-in-out;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/messageBuddle/message.buddle.module.css">._bubble_1gx6w_1 {
+    max-width: 350px;
+    padding: 15px 25px 15px 25px;
+    border-radius: 15px;
+    font-size: 14px;
+    position: relative;
+    font-size: 17px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Message envoyé (à droite) */
+  ._sent_1gx6w_23 {
+    color: white;
+    align-self: flex-end;
+    background-color: #0078ff;
+  }
+
+  ._time_1gx6w_35{
+    width: 350px;
+    margin-top:5px ;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 10px;
+  }
+  
+  ._sent_1gx6w_23::after {
+    content: "";
+    right: 0;
+    width: 0;
+    height: 0;
+    bottom: -5px;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-top: 10px solid var(--dynamic-color);
+    border-right: 10px solid var(--dynamic-color);
+    border-bottom: 10px solid transparent;
+  }
+  
+  /* Message reçu (à gauche) */
+  ._received_1gx6w_79 {
+    background-color: #e0e0e0;
+    color: black;
+    align-self: flex-start;
+  }
+  
+  ._received_1gx6w_79::after {
+    bottom: 0;
+    width: 0;
+    height: 0;
+    left: 0px;
+    content: "";
+    bottom: -5px;
+    position: absolute;
+    border-top: 10px solid #e0e0e0;
+    border-left: 10px solid #e0e0e0;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+  </style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/modal/modal.module.css">._container_98y9d_1{
+    
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/sideBarMenu/sidebar.menu.module.css">
+._container_1b136_3{
+    left: 0;
+    height: 80%;
+    display: flex;
+    margin-top: 8%;
+    position: absolute;
+    flex-direction: column;
+    align-items: center;
+    transition: all 1s ease;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+._menu_1b136_29{
+    gap: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+._img_1b136_43 {
+    width: 30px;
+    padding: 5px;
+    height: 30px;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+._img_1b136_43:hover{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}
+
+._isActive_1b136_71{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}
+
+._profil_1b136_83{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+._profil_1b136_83 > * {
+    cursor: pointer;
+    transition: all 1s ease;
+    background-color: rgb(55, 56, 57);
+}
+
+._profil_1b136_83 > *:hover{
+    padding: 10px;
+
+}
+
+._profil_1b136_83 > img{
+    gap: 20px;
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/layout/layout.module.css">._layoutContainer_63l1p_1{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/userInvitation/user.invitaion.card.module.css">._container_swdye_1{
+    gap: 20px;
+    width: 350px;
+    display: flex;
+    color: white;
+    margin-top: 3rem;
+    overflow: hidden;
+    font-weight: bold;
+    padding: 20px 5px;
+    position: relative;
+    align-items: center;
+    white-space: nowrap;
+    border-radius:  20px;
+    text-overflow: ellipsis;
+    background-color: rgb(55, 56, 57);
+}
+
+
+._profilImage_swdye_37{
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+._textSection_swdye_53{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+._userName_swdye_65{
+    font-size: 15;
+
+    word-spacing: 5px;
+}
+
+._textSection_swdye_53 > div {
+    display: flex;
+    gap: 5px;
+}
+
+
+._icon_swdye_89{
+    width: 20px;
+    height: 20px;
+}
+
+._invitButton_swdye_99{
+    position: absolute;
+    right: 1rem;
+    border: none;
+    font-size: 17px;
+    bottom: 1rem;
+    padding: 5px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+    transition: all 1s ease;
+}
+
+._invitButton_swdye_99:hover{
+    padding: 5px 25px;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/searchBar/searchbar.module.css">._container_c4hf0_1{
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+}
+
+._input_c4hf0_13{
+    flex: 1;
+    border: none;
+    padding: 5px;
+    color: white;
+    outline: none;
+    font-size: 17px;
+    border-radius:5px ;
+    margin-bottom: 3px;
+    background-color: rgb(67, 65, 65);
+}
+
+._inderline_c4hf0_37{
+    border-bottom: 2px solid rgb(134, 131, 131) ;
+}
+
+._btn_c4hf0_45{
+    width: 20px;
+    height: 20px;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/invitation/invitation.module.css">._container_1prko_1{
+    width: 100%;
+    height: 100%;
+    color: white;
+    background-color: rgb(67, 65, 65) !important;
+}
+
+
+._navBarContainer_1prko_17{
+    display: flex;
+    padding-left: 2rem;
+    padding-top: 2rem;
+    padding-right: 2rem;
+    align-items:flex-end;
+    justify-content: space-between;
+}
+
+._headerLeft_1prko_35{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+._headerLeft_1prko_35 > div {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+._headerLeft_1prko_35 > div + div {
+    padding: 20px;
+    padding-bottom: 0;
+}
+
+
+._title_1prko_71{
+    gap: 10px;
+    display: flex;
+    font-size: 25px;
+    padding-left: 2.5rem;
+    font-weight: bold;
+    align-items: center;
+}
+
+._networkIcon_1prko_89{
+    width: 40px;
+    height: 40px;
+}
+
+._serchIcon_1prko_99{
+    width: 30px;
+    height: 30px;
+    padding: -5px;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+._serchIcon_1prko_99:hover{
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(33, 34, 34);
+}
+
+._headerRight_1prko_127 {
+    display: flex;
+    gap: 4rem;
+    margin-bottom: 14px;
+}
+
+._headerRight_1prko_127 > div {
+    padding: 5px;
+    font-size: 19px;
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    transition: all 1s ease;
+    border-radius: 5px 5px 0 0;
+}
+
+._headerRight_1prko_127 > div:hover {
+    padding: 10px;
+    background-color: rgba(55, 56, 57, 0.211);
+}
+
+
+._headerRight_1prko_127 > div:hover::after{
+    content: "";
+    left: 0;
+    width: 0;
+    bottom: 0;
+    height: 1px;
+    position: absolute;
+    z-index: 10;
+    animation: _progressColor_1prko_1 1s ease forwards;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+@keyframes _progressColor_1prko_1 {
+    from{
+        width: 0;
+    }
+    to{
+        width: 100%;
+    }
+}
+
+._separator_1prko_213{
+    width: 95%;
+    height: 2px;
+    margin-top: 10px;
+    border-radius: 10px;
+    margin-left: 3.6rem;
+    background-color: rgba(255, 255, 255, 0.297);
+}
+
+._userInvitationCardSection_1prko_231{
+    gap: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    margin-left: 5rem;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/switch/switch.module.css">._container_qwbt7_1{
+    width: 40px;
+    height: 20px;
+    position: relative;
+    border-radius: 20px;
+}
+
+._text_qwbt7_15{
+    position: absolute;
+    left: -2rem;
+}
+
+._rond_qwbt7_25{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 20px;
+    transition: all 1s ease;
+}
+
+._toRight_qwbt7_41{
+    right: 0;
+}
+
+._toLeft_qwbt7_49{
+    left: 0;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/flexEdit/flex.edit.module.css">
+._container_dvjy8_3{
+    gap: 15px;
+    padding: 20px;
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: #2a2a2b !important;
+}
+
+._title_dvjy8_23{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+._container_dvjy8_3 > div {
+    display: flex;
+}
+
+._icon_dvjy8_41{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transform: all 1s ease;
+}
+
+
+._textarea_dvjy8_57{
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 15px;
+    resize: none;
+    background-color: #2a2a2b !important ;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/profile/editProfileSettings/components/viewOption/view.option.module.css">
+._container_8ieda_3{
+    border: none;
+    display: flex;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 20px 20px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2a2a2b !important;
+}
+
+._textSection_8ieda_29{
+    display: flex;
+    gap: 10px;
+}
+
+._textSection_8ieda_29 p {
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+._leading_8ieda_51{
+    width: 20px;
+    width: 20px;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/profile/editProfileSettings/edit.profile.settings.module.css">
+._container_eya3q_3{
+    gap: 40px;
+    padding: 20px;
+    display:  flex;
+    flex-direction: column;
+}
+
+._header_eya3q_17{
+    gap: 14px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+._options_eya3q_29{
+    gap: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/profile/notificationSettings/notification.settings.module.css">._container_ioly2_1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/profile/discussionSettings/discussion.settings.module.css"></style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/profile/profil.module.css">._container_3l9bm_1{
+    gap: 20px;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    color: white;
+    justify-content: flex-start;
+    background-color: rgb(67, 65, 65) !important;
+}
+
+._leftBoard_3l9bm_21{
+    gap: 20px;
+    display: flex;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 2rem 0rem 2rem 4rem;
+    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #2b2b2b !important;
+}
+
+
+._imageContainer_3l9bm_47{
+    width: 290px;
+    position: relative;
+    height: 290px;
+    cursor:pointer;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+._imageContainer_3l9bm_47:hover{
+    background-color: rgb(67, 65, 65) !important;
+}
+
+._imageContainer_3l9bm_47:hover::before {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    width: 150px;
+    height: 150px;
+    left: 50%;
+    top: 50%; 
+    transform: translate(-50%, -50%);
+    background-image: url("data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20'-//W3C//DTD%20SVG%201.1//EN'%20'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width='800px'%20height='800px'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cg%20id='SVGRepo_bgCarrier'%20stroke-width='0'/%3e%3cg%20id='SVGRepo_tracerCarrier'%20stroke-linecap='round'%20stroke-linejoin='round'/%3e%3cg%20id='SVGRepo_iconCarrier'%3e%3cpath%20opacity='0.5'%20d='M9.77778%2021H14.2222C17.3433%2021%2018.9038%2021%2020.0248%2020.2646C20.51%2019.9462%2020.9267%2019.5371%2021.251%2019.0607C22%2017.9601%2022%2016.4279%2022%2013.3636C22%2010.2994%2022%208.76721%2021.251%207.6666C20.9267%207.19014%2020.51%206.78104%2020.0248%206.46268C19.3044%205.99013%2018.4027%205.82123%2017.022%205.76086C16.3631%205.76086%2015.7959%205.27068%2015.6667%204.63636C15.4728%203.68489%2014.6219%203%2013.6337%203H10.3663C9.37805%203%208.52715%203.68489%208.33333%204.63636C8.20412%205.27068%207.63685%205.76086%206.978%205.76086C5.59733%205.82123%204.69555%205.99013%203.97524%206.46268C3.48995%206.78104%203.07328%207.19014%202.74902%207.6666C2%208.76721%202%2010.2994%202%2013.3636C2%2016.4279%202%2017.9601%202.74902%2019.0607C3.07328%2019.5371%203.48995%2019.9462%203.97524%2020.2646C5.09624%2021%206.65675%2021%209.77778%2021Z'%20stroke='%23ffffff'%20stroke-width='1.5'/%3e%3cpath%20d='M14.5197%2010.6799L14.2397%2010.4C13.0026%209.16288%2010.9969%209.16288%209.75984%2010.4C8.52276%2011.637%208.52276%2013.6427%209.75984%2014.8798C10.9969%2016.1169%2013.0026%2016.1169%2014.2397%2014.8798C14.7665%2014.353%2015.069%2013.6868%2015.1471%2013M14.5197%2010.6799L13%2011M14.5197%2010.6799V9'%20stroke='%23ffffff'%20stroke-width='1.5'%20stroke-linecap='round'%20stroke-linejoin='round'/%3e%3c/g%3e%3c/svg%3e");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: _FadeOpactity_3l9bm_1 2s ease;
+}
+
+@keyframes _FadeOpactity_3l9bm_1 {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+._imageProfil_3l9bm_125{
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: cover;
+    transition: all 2s ease;
+}
+
+
+._leftBoard_3l9bm_21 > ._textSection_3l9bm_143 > p {
+    width: 200px;
+    text-align: start;
+    line-height: 1.2;
+}
+
+._textSection_3l9bm_143{
+    width: 95%;
+}
+
+._userName_3l9bm_163{
+    font-size: 22px;
+    font-weight: bold;
+}
+
+._userName_3l9bm_163::first-letter{
+    font-size: 2em;
+}
+
+._userPseudo_3l9bm_181{
+    font-size: 20px;
+    font-weight: 100;
+}
+
+._textSection_3l9bm_143 > ._separator_3l9bm_191 {
+    width: 100%;
+    margin: 10px 0;
+    height: 0.5px;
+    background-color: white;
+}
+
+._textSection_3l9bm_143 > ._separator_3l9bm_191 + div{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+._textSection_3l9bm_143 > div button  {
+    width: 100%;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 2s ease-in-out;
+}
+
+._textSection_3l9bm_143 > div button:not(:last-child){   
+        color: black;
+        background-color: #ffffff !important;
+}
+
+._isActive_3l9bm_253{
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+._deconnexion_3l9bm_261{
+    color: white;
+    background-color: red;
+}
+
+._rightBoard_3l9bm_271{
+    width: 68%;
+    margin: 2rem 0;
+    overflow: hidden;
+    border-radius: 10px;
+    overflow-y: scroll;
+    transition: all 1s ease;
+    background-color: #101010c9  !important;
+}
+
+._rightBoard_3l9bm_271::-webkit-scrollbar {
+    display: none; /* Masque la barre de défilement */
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/form/form.module.css">
+._container_102qs_3{
+    gap: 50px;
+    display: flex;
+    font-family: 'Courier New', Courier, monospace sans-serif;
+    align-items: center;
+    border-radius: 5px;
+    min-height: 450px;
+    color: black;
+    flex-direction: column;
+    background-color: white;
+    padding: 30px 25px;
+}
+
+._form_102qs_29{
+}
+
+._container_102qs_3 > span{
+    font-size: 27px;
+    font-weight: bold;
+}
+
+._container_102qs_3 form {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+._errorMessage_102qs_59{
+    color: red;
+    font-size: 15px;
+    margin-bottom: -5px;
+    text-align: center;
+}
+
+._container_102qs_3 button {
+    border: none;
+    width: 100%;
+    margin-top: 9px;
+    color: white;
+    padding: 1em 2em;
+    cursor: pointer;
+    position: relative;
+    border-radius: 1000px;
+    background-color: #161a20;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/ui/input/input.module.css">._inputContainer_7vpyb_1{
+    display: flex;
+    flex-direction: column;
+}
+
+._title_7vpyb_11{
+    font-size: 15px;
+    margin-bottom: 2px;
+    color: rgba(133, 131, 131, 0.5);
+}
+
+._input_7vpyb_1{
+    width: 290px;
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 15px;
+}
+
+._inputFiles_7vpyb_39{
+    display: none;
+    overflow: hidden;
+}
+
+._label_7vpyb_49{
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    border-radius: 1000px;
+    text-transform: ellipsis;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+input::placeholder{
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+input:focus{
+    outline: none;
+}
+
+._underline_7vpyb_91 {
+    height: 2px;
+    width: 100%;
+    background-color: rgba(154, 150, 150, 0.5);
+}
+</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/login/login.module.css">
+._container_6fk6z_3{
+    height: 100%;
+    position: relative;
+    background-color: rgb(67, 65, 65, 60%);
+}
+
+._formContainer_6fk6z_15{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+}
+
+._formContainer_6fk6z_15 > ._span_6fk6z_33 {
+    width: 100%;
+    background-color: red;
+} 
+
+._next_6fk6z_43{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+._next_6fk6z_43 > span {
+    font-size: 15px;
+    transition: all 1s ease;
+    cursor: pointer;
+    color: rgba(21, 21, 21, 0.5);
+}
+
+._next_6fk6z_43 > span:hover{
+    color: blue;
+    text-decoration: underline;
+}
+
+._icon_6fk6z_83{
+    padding: 0;
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+._icon_6fk6z_83:hover{
+    margin: 10px;
+    padding: 5px;
+    background-color: rgba(21, 21, 21, 0.5);
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/userBoard/components/userCard/user.card.module.css">._main_177rj_1 {
+    gap: 15px;
+    padding: 20px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    transition: all 1s ease;
+}
+
+._main_177rj_1:hover{
+    cursor: pointer;
+    background-color: rgb(55, 56, 57);
+}
+
+._imageContainer_177rj_29 {
+    display: flex;
+    border-radius: 50%;
+    border: 0px solid rgba(255, 255, 255, 0);
+    transition: border-width 0.5s ease, border-color 0.5s ease-in-out; 
+}
+
+._imageContainer_177rj_29:hover {
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+
+
+._image_177rj_29 {
+    width: 70px;
+    height: 70px;
+    margin: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    object-fit: cover;
+    border-radius: 50%;
+    object-position: center;
+    transition: all 1s ease;
+}
+
+._name_177rj_83 {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+._textBox_177rj_95{
+    gap: 10px;
+    display: flex;
+    font-size: 15px;
+    cursor: pointer;
+    flex-direction: column;
+}
+
+._date_177rj_111{
+    font-size: 10px;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/userBoard/user.board.module.css">._container_1sksu_1{
+    width: 350px;
+    color: white;
+    flex-direction: column;
+    padding: 20px 0 0 30px;
+    position: relative;
+    border-right: 1px solid rgb(117, 114, 114);
+    background-color: #2b2b2b;
+}
+
+._title_1sksu_21{
+    gap: 10px;
+    margin: 10px;
+    display: flex;
+    font-size: 20px;
+    font-weight: bold;
+    align-items: center;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/chatBoard/components/chatHeader/chat.header.module.css">._header_xglc3_1{
+    top: 0;
+    left: 0;
+    gap: 10px;
+    z-index: 10;
+    width: 100%;
+    display: flex;
+    color: white;
+    position: absolute;
+    align-items: center;
+    background-color: #2b2b2b;
+}
+
+._header_xglc3_1 > img {
+    margin: 5px;
+    width: 50px;
+    width: 70px;
+    height: 50px;
+    height: 70px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    object-fit: cover;
+    border-radius: 50%; 
+    object-position: center;
+}
+
+._name_xglc3_55 {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/chatBoard/components/messageContent/message.content.module.css">
+._topSpace_iax59_3{
+    height: 100px;
+}
+
+._container_iax59_11{
+    gap: 25px;
+    width: 900px;
+    display: flex;
+    color: white;
+    height: 490px;
+    margin-top: 20px;
+    overflow-y: scroll;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+._container_iax59_11::-webkit-scrollbar {
+    display: none;
+}
+
+._emptyChatContainer_iax59_43{
+    display: flex;
+    height: 100%;
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+._emptyChatContainer_iax59_43 > img {
+    width: 50px;
+}
+
+._bottomSpace_iax59_67{
+    height: 500px;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/chatBoard/components/messageSender/message.sender.module.css">
+._container_487c8_3{
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    color: white;
+    display: flex;
+    gap: 5px;
+    padding: 10px 0;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    background-color: #2b2b2b;
+}
+
+._container_487c8_3 >  input {
+    width: 85%;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    color: white;
+    position: relative;
+    background-color: #2b2b2b;
+}
+
+._container_487c8_3 >  ._inputbefore_487c8_53{
+    width: 1.5px;
+    height: 100%;
+    margin-right: 5px;
+    background-color: white;
+
+}
+
+._input_487c8_53{
+    color: white;
+}
+
+input::placeholder{
+    font-size: 14px;
+}
+
+._container_487c8_3 >  img {
+    width: 20px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+._container_487c8_3 >  img:hover {
+    width: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 1s ease;
+    background-color: rgb(55, 56, 57);
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/chatBoard/chat.board.module.css">._container_hcnsb_1{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(67, 65, 65) !important;
+}
+._welcomeSection_hcnsb_21{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/components/action/action.module.css">._icon_17mtq_1 {
+    top: 20px;
+    z-index: 20;
+    right: 10px;
+    width: 30px;
+    padding: 5px;
+    cursor: pointer;
+    position: absolute;
+    transition: all 1s ease;
+}
+
+._icon_17mtq_1:hover{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(55, 56, 57);
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/home/home.module.css">._container_drosk_1{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background-color: #eceff1;
+}</style><style type="text/css" data-vite-dev-id="C:/About_Me/Ecole/webProjects/chatBox/interface/src/pages/status/status.module.css">._container_1go00_1{
+    width: 100%;
+    min-height: 100%;
+    color: white;
+    background-color: rgb(67, 65, 65) !important;
+}</style><style>
+        @font-face {
+            font-family: 'NotoSans_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-regular.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_medium_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-medium.ttf);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_bold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-bold.woff);
+        }
+
+        @font-face {
+            font-family: 'NotoSans_semibold_online_security'; 
+            src: url(chrome-extension://llbcnfanfmjhpedaedhbcnpgeepdnnok/assets/fonts/noto-sans-semibold.ttf);
+        }
+</style></head>
+  <body>
+    <div id="root"><div class="_layoutContainer_63l1p_1"><div class="_container_1b136_3"><div class="_menu_1b136_29"><img class="_img_1b136_43 _isActive_1b136_71" alt="message" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M10%209H17M10%2013H17M7%209H7.01M7%2013H7.01M21%2020L17.6757%2018.3378C17.4237%2018.2118%2017.2977%2018.1488%2017.1656%2018.1044C17.0484%2018.065%2016.9277%2018.0365%2016.8052%2018.0193C16.6672%2018%2016.5263%2018%2016.2446%2018H6.2C5.07989%2018%204.51984%2018%204.09202%2017.782C3.71569%2017.5903%203.40973%2017.2843%203.21799%2016.908C3%2016.4802%203%2015.9201%203%2014.8V7.2C3%206.07989%203%205.51984%203.21799%205.09202C3.40973%204.71569%203.71569%204.40973%204.09202%204.21799C4.51984%204%205.0799%204%206.2%204H17.8C18.9201%204%2019.4802%204%2019.908%204.21799C20.2843%204.40973%2020.5903%204.71569%2020.782%205.09202C21%205.51984%2021%206.0799%2021%207.2V20Z&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;2&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"><img class="_img_1b136_43" alt="invitation" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20fill=&#39;%23ffffff&#39;%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%201920%201920&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M338.79-.011v527.66L-.034%20821.298V1919.99h1920V821.297l-338.71-293.647V-.011H338.79Zm112.94%201203.953V112.93h1016.471v1091.012l-189.289%20151.34H641.02l-189.29-151.34Zm1129.526-526.87%20225.882%20195.726v60.085l-225.882%20180.706V677.07ZM112.907%20932.881v-60.084L338.79%20677.071v436.518L112.907%20932.883Zm1694.23%20144.678v623.323l-238.08-301.553-88.658%2070.023%20266.654%20337.695H172.88l266.767-337.695-88.659-70.023-238.08%20301.553V1077.56l488.47%20390.777h717.29l488.47-390.777Zm-790.666-795.207v282.353h282.353v112.941H1016.47V960H903.529V677.647H621.176V564.706H903.53V282.353h112.942Z&#39;%20fill-rule=&#39;evenodd&#39;/%3e%3c/g%3e%3c/svg%3e"><img class="_img_1b136_43" alt="status" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2048%2048&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20fill=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cdefs%3e%3cstyle%3e.a{fill:none;stroke:%23ffffff;stroke-linecap:round;stroke-linejoin:round;}%3c/style%3e%3c/defs%3e%3cpath%20class=&#39;a&#39;%20d=&#39;M33.9978,4.6277a9.3577,9.3577,0,0,1,8.4671,10.1705c-.47,5.1467-4.8547,8.1237-10.17,8.4672,0,0-2.98.4263-8.6675-1.476a20.1536,20.1536,0,0,0-11.018-.3107s4.5439-18.6935,21.39-16.8509&#39;/%3e%3cpath%20class=&#39;a&#39;%20d=&#39;M14.0022,43.3723A9.3577,9.3577,0,0,1,5.5351,33.2018c.47-5.1465,4.8547-8.1237,10.1705-8.4672,0,0,2.98-.4263,8.6675,1.476a20.1536,20.1536,0,0,0,11.018.3107s-4.5439,18.6935-21.39,16.8509&#39;/%3e%3c/g%3e%3c/svg%3e"></div><div class="_profil_1b136_83"><img alt="" src="./Vite + React_files/1740789007251.jpeg"></div></div><div class="_container_3l9bm_1"><div class="_leftBoard_3l9bm_21"><div class="_imageContainer_3l9bm_47"><img class="_imageProfil_3l9bm_125" alt="" src="./Vite + React_files/1740789007251.jpeg"></div><div class="_textSection_3l9bm_143"><p><span class="_userName_3l9bm_163">... </span></p><div class="_separator_3l9bm_191"></div><div><button class="_isActive_3l9bm_253">Account Settings</button><button class="">Discussion settings</button><button class="">Notification</button><button class="_deconnexion_3l9bm_261">Déconnexion</button></div></div></div><div class="_rightBoard_3l9bm_271"><div class="_container_eya3q_3"><div class="_header_eya3q_17"><div class="_container_dvjy8_3"><span class="_title_dvjy8_23">Name</span><div><textarea type="text" class="_textarea_dvjy8_57">Ryomen sukuna</textarea><img class="_icon_dvjy8_41" alt="Edit icon" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M14.5%209.50002L9.5%2014.5M9.49998%209.5L14.5%2014.5&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;/%3e%3cpath%20d=&#39;M7%203.33782C8.47087%202.48697%2010.1786%202%2012%202C17.5228%202%2022%206.47715%2022%2012C22%2017.5228%2017.5228%2022%2012%2022C6.47715%2022%202%2017.5228%202%2012C2%2010.1786%202.48697%208.47087%203.33782%207&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"></div></div><div class="_container_dvjy8_3"><span class="_title_dvjy8_23">Pseudo</span><div><textarea type="text" class="_textarea_dvjy8_57" disabled="">...</textarea><img class="_icon_dvjy8_41" alt="Edit icon" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M20.1497%207.93997L8.27971%2019.81C7.21971%2020.88%204.04971%2021.3699%203.27971%2020.6599C2.50971%2019.9499%203.06969%2016.78%204.12969%2015.71L15.9997%203.84C16.5478%203.31801%2017.2783%203.03097%2018.0351%203.04019C18.7919%203.04942%2019.5151%203.35418%2020.0503%203.88938C20.5855%204.42457%2020.8903%205.14781%2020.8995%205.90463C20.9088%206.66146%2020.6217%207.39189%2020.0997%207.93997H20.1497Z&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cpath%20d=&#39;M21%2021H12&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"></div></div><div class="_container_dvjy8_3"><span class="_title_dvjy8_23">Email</span><div><textarea type="text" class="_textarea_dvjy8_57" disabled="">sukuna@jjk.com</textarea><img class="_icon_dvjy8_41" alt="Edit icon" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M20.1497%207.93997L8.27971%2019.81C7.21971%2020.88%204.04971%2021.3699%203.27971%2020.6599C2.50971%2019.9499%203.06969%2016.78%204.12969%2015.71L15.9997%203.84C16.5478%203.31801%2017.2783%203.03097%2018.0351%203.04019C18.7919%203.04942%2019.5151%203.35418%2020.0503%203.88938C20.5855%204.42457%2020.8903%205.14781%2020.8995%205.90463C20.9088%206.66146%2020.6217%207.39189%2020.0997%207.93997H20.1497Z&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cpath%20d=&#39;M21%2021H12&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"></div></div><div class="_container_dvjy8_3"><span class="_title_dvjy8_23">Phone number</span><div><textarea type="text" class="_textarea_dvjy8_57" disabled="">...</textarea><img class="_icon_dvjy8_41" alt="Edit icon" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M20.1497%207.93997L8.27971%2019.81C7.21971%2020.88%204.04971%2021.3699%203.27971%2020.6599C2.50971%2019.9499%203.06969%2016.78%204.12969%2015.71L15.9997%203.84C16.5478%203.31801%2017.2783%203.03097%2018.0351%203.04019C18.7919%203.04942%2019.5151%203.35418%2020.0503%203.88938C20.5855%204.42457%2020.8903%205.14781%2020.8995%205.90463C20.9088%206.66146%2020.6217%207.39189%2020.0997%207.93997H20.1497Z&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cpath%20d=&#39;M21%2021H12&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"></div></div></div><div class="_options_eya3q_29"><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%20512%20512&#39;%20version=&#39;1.1&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20xmlns:xlink=&#39;http://www.w3.org/1999/xlink&#39;%20fill=&#39;%23000000&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3ctitle%3eabout-filled%3c/title%3e%3cg%20id=&#39;Page-1&#39;%20stroke=&#39;none&#39;%20stroke-width=&#39;1&#39;%20fill=&#39;none&#39;%20fill-rule=&#39;evenodd&#39;%3e%3cg%20id=&#39;drop&#39;%20fill=&#39;%23ffffff&#39;%20transform=&#39;translate(42.666667,%2042.666667)&#39;%3e%3cpath%20d=&#39;M213.333333,3.55271368e-14%20C331.154987,3.55271368e-14%20426.666667,95.51168%20426.666667,213.333333%20C426.666667,331.153707%20331.154987,426.666667%20213.333333,426.666667%20C95.51296,426.666667%203.55271368e-14,331.153707%203.55271368e-14,213.333333%20C3.55271368e-14,95.51168%2095.51296,3.55271368e-14%20213.333333,3.55271368e-14%20Z%20M234.713387,192%20L192.04672,192%20L192.04672,320%20L234.713387,320%20L234.713387,192%20Z%20M213.55008,101.333333%20C197.99616,101.333333%20186.713387,112.5536%20186.713387,127.704107%20C186.713387,143.46752%20197.698773,154.666667%20213.55008,154.666667%20C228.785067,154.666667%20240.04672,143.46752%20240.04672,128%20C240.04672,112.5536%20228.785067,101.333333%20213.55008,101.333333%20Z&#39;%20id=&#39;Shape&#39;%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/g%3e%3c/svg%3e"><div><span>Description</span><p>What do you usually do ?</p></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20fill=&#39;%23ffffff&#39;%20version=&#39;1.1&#39;%20id=&#39;Capa_1&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20xmlns:xlink=&#39;http://www.w3.org/1999/xlink&#39;%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2033.263%2033.263&#39;%20xml:space=&#39;preserve&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cg%3e%3cpath%20d=&#39;M30.121,16.633c0,6.328-4.854,11.538-11.035,12.112c-0.057-0.297-0.125-0.604-0.221-0.934%20c-0.021-0.079-0.231-0.784-0.613-1.665c5.117-0.159,9.23-4.359,9.23-9.515s-4.113-9.354-9.23-9.515%20c0.383-0.886,0.594-1.595,0.615-1.675c0.094-0.325,0.162-0.63,0.219-0.924C25.265,5.095,30.121,10.305,30.121,16.633z%20M3.496,9.364%20c-0.189,2.355-0.299,4.717-0.342,7.077H3.142c0.002,0.063,0.006,0.127,0.006,0.19c0,0.062-0.004,0.127-0.006,0.188h0.012%20c0.043,2.362,0.151,4.724,0.342,7.077c0.494,6.165,5.34,10.26,10.088,9.197c0.207-0.042,0.426-0.044,0.621-0.125%20c1.156-0.479,2.115-1.376,3.183-2.036c1.359-0.854-1.573-8.095-3.392-7.159c-0.672,0.352-2.528,1.722-3.274,1.825%20c-0.665,0.093-1.188-0.788-1.253-1.604c-0.175-2.149-0.018-4.896-0.003-7.177h0.003c0-0.061-0.002-0.128-0.002-0.188%20c0-0.062,0.002-0.13,0.002-0.19H9.465c-0.015-2.28-0.172-5.026,0.003-7.176c0.065-0.814,0.588-1.697,1.253-1.603%20c0.746,0.104,2.603,1.475,3.274,1.824c1.818,0.937,4.752-6.308,3.392-7.158c-1.067-0.662-2.026-1.559-3.183-2.036%20c-0.195-0.081-0.414-0.084-0.621-0.125C8.835-0.893,3.99,3.201,3.496,9.364z%20M12.267,19.312h4.237l0.228-1.071h-2.703%20c0.104-0.128,0.222-0.239,0.354-0.337c0.134-0.098,0.376-0.254,0.726-0.471l0.56-0.345c0.473-0.29,0.823-0.554,1.055-0.791%20c0.349-0.354,0.568-0.762,0.666-1.219c0.128-0.599,0.037-1.077-0.272-1.441c-0.312-0.362-0.793-0.544-1.447-0.544%20c-0.827,0-1.469,0.309-1.924,0.928c-0.239,0.323-0.426,0.748-0.555,1.275h1.182c0.086-0.347,0.184-0.603,0.295-0.761%20c0.193-0.275,0.475-0.414,0.844-0.414c0.271,0,0.461,0.087,0.568,0.261c0.107,0.173,0.135,0.392,0.076,0.652%20c-0.067,0.321-0.258,0.616-0.566,0.889c-0.203,0.173-0.627,0.461-1.271,0.862c-0.744,0.461-1.246,0.896-1.506,1.31%20C12.552,18.462,12.371,18.867,12.267,19.312z%20M21.908,17.028h-0.701l0.824-3.866h-1.365l-3.071,3.757l-0.228,1.062h2.449%20l-0.281,1.332h1.189l0.281-1.332h0.701L21.908,17.028z%20M18.468,17.028l2.115-2.673l-0.566,2.673H18.468z&#39;/%3e%3c/g%3e%3c/g%3e%3c/svg%3e"><div><span>Disponibile</span><p>Tell everyone if you are disponible</p></div></div><div class="_container_qwbt7_1" style="background-color: rgb(225, 0, 255);"><span class="_text_qwbt7_15">On</span><div class="_rond_qwbt7_25 _toRight_qwbt7_41" style="background-color: rgb(0, 140, 255);"></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20fill=&#39;%23ffffff&#39;%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M12%204.5C7%204.5%202.73%207.61%201%2012c1.73%204.39%206%207.5%2011%207.5s9.27-3.11%2011-7.5c-1.73-4.39-6-7.5-11-7.5zM12%2017c-2.76%200-5-2.24-5-5s2.24-5%205-5%205%202.24%205%205-2.24%205-5%205zm0-8c-1.66%200-3%201.34-3%203s1.34%203%203%203%203-1.34%203-3-1.34-3-3-3z&#39;/%3e%3c/g%3e%3c/svg%3e"><div><span>Visible</span><p>Allow us to show you at the global user invit list</p></div></div><div class="_container_qwbt7_1" style="background-color: rgb(225, 0, 255);"><span class="_text_qwbt7_15">On</span><div class="_rond_qwbt7_25 _toRight_qwbt7_41" style="background-color: rgb(0, 140, 255);"></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20fill=&#39;%23ffffff&#39;%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2030%2030&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M4.5%2022c-1.614%200-2.597.884-3.04%201.867C1.013%2024.85%201%2025.915%201%2026.5c0%20.497-.114%201.14-.285%201.664-.113.418-.305.796-.463.902-.445.256-.263.935.25.934H4c1.415%200%202.457-.728%203.09-1.568.632-.84.91-1.76.91-2.432%200-.525-.01-1.48-.467-2.36C7.076%2022.756%206.093%2022%204.5%2022zm0%201c1.307%200%201.826.485%202.144%201.1.318.614.356%201.408.356%201.9%200%20.345-.22%201.175-.71%201.83C5.795%2028.485%205.083%2029%204%2029H1.44c.077-.17.16-.332.224-.525.203-.62.336-1.332.336-1.975%200-.555.04-1.49.37-2.223C2.703%2023.545%203.216%2023%204.5%2023zM29.424.002c-.102-.006-.182.006-.263.02-.162.033-.33.09-.533.167-.404.155-.93.4-1.566.732-1.272.66-2.983%201.658-4.91%202.902-3.857%202.49-8.574%205.962-12.305%209.694-1.31%201.31-1.857%202.706-1.845%203.972.012%201.267.57%202.378%201.35%203.16.783.783%201.883%201.338%203.15%201.35%201.267.012%202.673-.533%203.983-1.844%203.732-3.73%207.204-8.448%209.693-12.304%201.245-1.928%202.24-3.64%202.903-4.913.33-.637.576-1.163.73-1.567.08-.202.135-.37.167-.533.016-.082.027-.162.02-.264-.004-.102-.022-.254-.17-.402-.15-.15-.3-.166-.403-.172zm-.642%201.217c-.138.33-.315.728-.59%201.26-.64%201.232-1.625%202.923-2.855%204.83-2.46%203.81-5.908%208.487-9.56%2012.14-1.16%201.16-2.298%201.56-3.277%201.55-.98-.01-1.826-.44-2.442-1.057-.616-.615-1.05-1.484-1.058-2.463-.01-.978.39-2.095%201.552-3.255%203.653-3.653%208.328-7.1%2012.14-9.56%201.906-1.23%203.597-2.216%204.83-2.856.53-.277.927-.453%201.26-.59z&#39;/%3e%3c/g%3e%3c/svg%3e"><div><span>Change password</span><p>Here change your password if needed</p></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20fill=&#39;%23ffffff&#39;%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2030%2030&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M4.5%2022c-1.614%200-2.597.884-3.04%201.867C1.013%2024.85%201%2025.915%201%2026.5c0%20.497-.114%201.14-.285%201.664-.113.418-.305.796-.463.902-.445.256-.263.935.25.934H4c1.415%200%202.457-.728%203.09-1.568.632-.84.91-1.76.91-2.432%200-.525-.01-1.48-.467-2.36C7.076%2022.756%206.093%2022%204.5%2022zm0%201c1.307%200%201.826.485%202.144%201.1.318.614.356%201.408.356%201.9%200%20.345-.22%201.175-.71%201.83C5.795%2028.485%205.083%2029%204%2029H1.44c.077-.17.16-.332.224-.525.203-.62.336-1.332.336-1.975%200-.555.04-1.49.37-2.223C2.703%2023.545%203.216%2023%204.5%2023zM29.424.002c-.102-.006-.182.006-.263.02-.162.033-.33.09-.533.167-.404.155-.93.4-1.566.732-1.272.66-2.983%201.658-4.91%202.902-3.857%202.49-8.574%205.962-12.305%209.694-1.31%201.31-1.857%202.706-1.845%203.972.012%201.267.57%202.378%201.35%203.16.783.783%201.883%201.338%203.15%201.35%201.267.012%202.673-.533%203.983-1.844%203.732-3.73%207.204-8.448%209.693-12.304%201.245-1.928%202.24-3.64%202.903-4.913.33-.637.576-1.163.73-1.567.08-.202.135-.37.167-.533.016-.082.027-.162.02-.264-.004-.102-.022-.254-.17-.402-.15-.15-.3-.166-.403-.172zm-.642%201.217c-.138.33-.315.728-.59%201.26-.64%201.232-1.625%202.923-2.855%204.83-2.46%203.81-5.908%208.487-9.56%2012.14-1.16%201.16-2.298%201.56-3.277%201.55-.98-.01-1.826-.44-2.442-1.057-.616-.615-1.05-1.484-1.058-2.463-.01-.978.39-2.095%201.552-3.255%203.653-3.653%208.328-7.1%2012.14-9.56%201.906-1.23%203.597-2.216%204.83-2.856.53-.277.927-.453%201.26-.59z&#39;/%3e%3c/g%3e%3c/svg%3e"><div><span>Change Key Friend</span><p>A key friend is a tool that allow user to directly acces to ...</p></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%20512%20512&#39;%20version=&#39;1.1&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20xmlns:xlink=&#39;http://www.w3.org/1999/xlink&#39;%20fill=&#39;%23ffffff&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3ctitle%3edouble-check%3c/title%3e%3cg%20id=&#39;Page-1&#39;%20stroke=&#39;none&#39;%20stroke-width=&#39;1&#39;%20fill=&#39;none&#39;%20fill-rule=&#39;evenodd&#39;%3e%3cg%20id=&#39;add&#39;%20fill=&#39;%23ffffff&#39;%20transform=&#39;translate(43.973345,%20142.401162)&#39;%3e%3cpath%20d=&#39;M29.3866437,92.7988498%20L118.095989,177.108171%20L140.695,144.951%20L171.978,174.67%20L124.596148,242.098499%20L-2.84217094e-14,123.732159%20L29.3866437,92.7988498%20Z%20M391.905232,0%20L426.814745,24.5310087%20L273.929481,242.098499%20L149.333333,123.732159%20L178.719977,92.7988498%20L267.429322,177.108171%20L391.905232,0%20Z%20M242.571899,0%20L277.481411,24.5310087%20L221.567,104.101%20L190.298,74.375%20L242.571899,0%20Z&#39;%20id=&#39;Combined-Shape&#39;%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/g%3e%3c/svg%3e"><div><span>Checking by double facteurs</span><p>Use double factor authentification for important purpose</p></div></div><div class="_container_qwbt7_1" style="background-color: rgb(225, 0, 255);"><span class="_text_qwbt7_15">On</span><div class="_rond_qwbt7_25 _toRight_qwbt7_41" style="background-color: rgb(0, 140, 255);"></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%201024%201024&#39;%20fill=&#39;%23ffffff&#39;%20class=&#39;icon&#39;%20version=&#39;1.1&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M962.4%201012.8s0%200.8%200%200h25.6-25.6zM704%20338.4C704%20195.2%20588.8%2078.4%20445.6%2078.4S187.2%20195.2%20187.2%20338.4s116%20260%20258.4%20260S704%20481.6%20704%20338.4z%20m-472%200c0-118.4%2096-214.4%20213.6-214.4s213.6%2096%20213.6%20214.4-96%20214.4-213.6%20214.4S232%20456.8%20232%20338.4z&#39;%20fill=&#39;&#39;/%3e%3cpath%20d=&#39;M456.8%20621.6c196.8%200%20361.6%20136%20394.4%20324h45.6C863.2%20732%20677.6%20576.8%20456%20576.8c-221.6%200-406.4%20155.2-440.8%20368.8h45.6C96%20756.8%20260%20621.6%20456.8%20621.6z&#39;%20fill=&#39;&#39;/%3e%3cpath%20d=&#39;M770.4%20578.4l-24-8.8%2020.8-14.4c65.6-46.4%20104.8-122.4%20103.2-202.4-1.6-128-102.4-232.8-228-241.6v47.2c100%208.8%20180%2092.8%20180.8%20194.4%200.8%2052.8-19.2%20102.4-56%20140.8-36.8%2037.6-86.4%2059.2-139.2%2060-24.8%200-50.4%200-75.2%201.6-15.2%201.6-41.6%200-54.4%209.6-1.6%200.8-3.2%200-4.8%200l-9.6%2012c-0.8%201.6-2.4%203.2-4%204.8%200.8%201.6-0.8%2016%200%2017.6%2012%204%2071.2%200%20156.8%202.4%20179.2%201.6%20326.4%20160.8%20340.8%20338.4l47.2%203.2c-9.6-156-108-310.4-254.4-364.8z&#39;%20fill=&#39;&#39;/%3e%3c/g%3e%3c/svg%3e"><div><span>Add a new account</span><p></p></div></div></div><div class="_container_8ieda_3"><div class="_textSection_8ieda_29"><img class="_leading_8ieda_51" alt="" src="data:image/svg+xml,%3c!DOCTYPE%20svg%20PUBLIC%20&#39;-//W3C//DTD%20SVG%201.1//EN&#39;%20&#39;http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd&#39;%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Transformed%20by:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width=&#39;800px&#39;%20height=&#39;800px&#39;%20viewBox=&#39;0%200%2024%2024&#39;%20fill=&#39;none&#39;%20xmlns=&#39;http://www.w3.org/2000/svg&#39;%20stroke=&#39;%23ffffff&#39;%3e%3cg%20id=&#39;SVGRepo_bgCarrier&#39;%20stroke-width=&#39;0&#39;/%3e%3cg%20id=&#39;SVGRepo_tracerCarrier&#39;%20stroke-linecap=&#39;round&#39;%20stroke-linejoin=&#39;round&#39;/%3e%3cg%20id=&#39;SVGRepo_iconCarrier&#39;%3e%3cpath%20d=&#39;M14.5%209.50002L9.5%2014.5M9.49998%209.5L14.5%2014.5&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;/%3e%3cpath%20d=&#39;M7%203.33782C8.47087%202.48697%2010.1786%202%2012%202C17.5228%202%2022%206.47715%2022%2012C22%2017.5228%2017.5228%2022%2012%2022C6.47715%2022%202%2017.5228%202%2012C2%2010.1786%202.48697%208.47087%203.33782%207&#39;%20stroke=&#39;%23ffffff&#39;%20stroke-width=&#39;1.5&#39;%20stroke-linecap=&#39;round&#39;/%3e%3c/g%3e%3c/svg%3e"><div><span>Delete my account</span><p>This action can't be undone...</p></div></div></div></div></div></div></div><div class="_container_98y9d_1"><div>Modal</div><div><button>Cancel</button><button>Ok</button></div></div><div class="_container_lv619_3" style="bottom: -70px;"></div></div></div>
+    <script type="module" src="./Vite + React_files/main.jsx"></script>
+  
+
+</body></html>

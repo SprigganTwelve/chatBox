@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
 import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
-import styles from "./error.box.module.css";
+import styles from "./pop.up.module.css";
 
-const ErrorBox = () => {
-    const { error, setError } = useContext(ChatBoxApiContext);
+const PopUp = () => {
+    const { popUp, setPopUp } = useContext(ChatBoxApiContext);
     const [verticalPosition, setVerticalPosition] = useState("-70px");
 
     useEffect(() => {
-        if (error && error.trim() !== "") {
+        if (popUp && popUp.message.trim() !== "") {
             setVerticalPosition("10px");
 
             const timeout = setTimeout(() => {
@@ -17,22 +17,22 @@ const ErrorBox = () => {
 
             return () => {
                 clearTimeout(timeout)
-                setError("")
+                setPopUp(null)
             };
         }
-    }, [error]);
+    }, [popUp]);
 
     return ( 
         <div 
             className={styles.container}
             style={{ bottom: verticalPosition }}
         >
-            { error && error.trim() !== "" &&  <MessageBuddle 
-                content={error}
-                backgroundColor="red"
+            { popUp && popUp.message && popUp.message.trim() !== "" &&  <MessageBuddle 
+                content={popUp.message}
+                backgroundColor={ popUp?.type.trim() === "sucess" ? "green" : "red" }
             />}
         </div>
     );
 };
 
-export default ErrorBox;
+export default PopUp;

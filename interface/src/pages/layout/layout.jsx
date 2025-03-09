@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import ErrorBox from "/src/components/ui/errorBox/error.box"
+import PopUp from "/src/components/ui/popUp/pop.up"
 import Modal from "/src/components/ui/modal/modal"
 import SideBarMenu from '/src/components/ui/sideBarMenu/sidebar.menu';
 import styles from "./layout.module.css"
@@ -11,7 +11,7 @@ const Layout = () => {
             {location.pathname !== '/' && <SideBarMenu/> }
             <Outlet />
             <Modal />
-            <ErrorBox />
+            <PopUp />
         </div>
     );
 }

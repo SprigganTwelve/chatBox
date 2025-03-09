@@ -127,7 +127,7 @@ exports.getSignedUpToBDD = async (req, res) => {
         if(file){
 
             const fileName = Date.now() + path.extname(file.originalname)
-            const fileUploadPath = path.join(__dirname, "../uploads/")
+            const fileUploadPath = path.join(__dirname, "../uploads/users/")
             const filePath = path.join(fileUploadPath, fileName)
 
 
@@ -157,16 +157,16 @@ exports.getSignedUpToBDD = async (req, res) => {
 exports.changeKeyValueInBDD = async (req, res) => {
     try{
         const conn = await db.connexion;
-        const { id, key, value } = req.params;
+        const { id, key, value } = req.body;
         if(!id || !key || !value ){
             return res.status(400).json( { message: "Props missing" } )
         }
-       if (key !== "image") {
-            await conn.query(`UPDATE Consumer SET ${key}=? WHERE id= ?`, [ value, id ])
-            return res.status(200).json({  message: "" })
-       }else{
-            return res.status(200).json({ message: "you cannot update the image through this route" })
-       }
+        if (key !== "image" && key!=="password" && key !==  "keyFriend" ) {
+                await conn.query(`UPDATE Consumer SET ${key}=? WHERE id= ?`, [ value, id ])
+                return res.status(200).json({  message: "" })
+        }else{
+                return res.status(200).json({ message: "you cannot update the image through this route" })
+        }
     }
     catch(err){
         console.log("Something went wrong : " + err)

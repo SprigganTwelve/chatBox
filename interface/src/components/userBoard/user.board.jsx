@@ -8,7 +8,8 @@ import styles from "./user.board.module.css"
 
 const UserBoard = () => {
 
-    const { friends, setCurrentChatId, setTalkSphereId,setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
+    const { friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
+    console.log(friends)
 
     return (
         <div  className={styles.container}>

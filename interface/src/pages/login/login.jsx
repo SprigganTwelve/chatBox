@@ -1,13 +1,15 @@
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { ChatBoxApiContext } from "/src/context/context";
+
 import ChatBoxForm from "/src/components/ui/form/form";
 import Input from "/src/components/ui/input/input";
+
 import SVGOutlook from "/image/social/outlook.png"
 import SVGYahoot from "/image/social/yahoot.png"
 import SVGGoogle from "/image/social/google-icon.png"
 import styles from "./login.module.css"
-import { ChatBoxApiContext } from "/src/context/context";
 
 const Login = () => {
 

@@ -23,8 +23,8 @@
 
 .imageContainer{
     width: 290px;
-    position: relative;
     height: 290px;
+    position: relative;
     cursor:pointer;
     border-radius: 50%;
     position: relative;
@@ -66,6 +66,7 @@
     z-index: 1;
     object-fit: cover;
     transition: all 2s ease;
+    object-position: center;
 }
 
 

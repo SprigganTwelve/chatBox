@@ -79,11 +79,22 @@
 
 .headerRight > div:hover {
     padding: 10px;
-    background-color: rgba(55, 56, 57, 0.211);
 }
 
 
 .headerRight > div:hover::after{
+    content: "";
+    left: 0;
+    width: 0;
+    bottom: 0;
+    height: 1px;
+    position: absolute;
+    z-index: 10;
+    animation: progressColor 1s ease forwards;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+.isActive::after {
     content: "";
     left: 0;
     width: 0;

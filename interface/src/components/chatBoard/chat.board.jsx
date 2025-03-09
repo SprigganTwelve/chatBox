@@ -14,7 +14,7 @@ const ChatBoard = () => {
             {talkSphereId !== null ? (
                 <div>
                     <ChatHeader currentChatId={currentChatId} />
-                    <MessageContent talkSphereId={talkSphereId} />
+                    <MessageContent talkSphereId={talkSphereId} currentChatId={currentChatId}/>
                     <MessageSender talkSphereId={talkSphereId} currentChatId={currentChatId} />
                 </div>
             ) : (

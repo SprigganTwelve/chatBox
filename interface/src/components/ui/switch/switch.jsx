@@ -3,13 +3,12 @@ import clsx from "clsx";
 import PropTypes from "prop-types"; 
 import styles from "./switch.module.css";
 
-const Switch = ({ defaultValue ,callback = () => {} }) => {
+const Switch = ({ defaultValue , callback = () => {} }) => {
     const [isOn, setIsOn] = useState(defaultValue);
 
     const handleClick = () => {
-        const newState = !isOn;
-        setIsOn(newState);
-        callback(newState);
+        setIsOn((state) => !state);
+        callback(!isOn);
     };
 
     return (

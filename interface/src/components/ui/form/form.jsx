@@ -1,8 +1,17 @@
 import React, { useRef } from "react";
+import PropTypes from 'prop-types'
 import axios from 'axios'
 import styles from "./form.module.css";
 
-const ChatBoxForm = ({ title, children, btnContent, url="", backendResponse = null, setBackendResponse }) => {
+const ChatBoxForm = ({
+    title,
+    url="",
+    children,
+    btnContent,
+    formStyle = {},
+    setBackendResponse,
+    backendResponse = null,
+}) => {
     
     const ComponentAtTheBottom = [];
     const formRef = useRef()
@@ -43,8 +52,11 @@ const ChatBoxForm = ({ title, children, btnContent, url="", backendResponse = nu
     };
     
     return (
-        <div className={styles.container}>
-            <span>{title}</span>
+        <div 
+            className={styles.container}
+            style={formStyle}
+        >
+            {title && <span>{title}</span>}
             <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
                 {React.Children.map(children, (child) => {
                     
@@ -62,5 +74,15 @@ const ChatBoxForm = ({ title, children, btnContent, url="", backendResponse = nu
         </div>
     );
 };
+
+ChatBoxForm.propTypes = {
+    title: PropTypes.string,
+    url: PropTypes.string,
+    children: PropTypes.node,
+    btnContent: PropTypes.string,
+    formStyle: PropTypes.object,
+    setBackendResponse: PropTypes.func,
+    backendResponse: PropTypes.object,
+}
 
 export default ChatBoxForm;

@@ -1,27 +1,33 @@
 
 .container{
     gap: 15px;
-    padding: 20px;
+    padding: 5px;
     display: flex;
     width: fit-content;
     flex-direction: column;
     border-radius: 10px;
-    background-color: #2a2a2b !important;
+    background-color: #2a2a2b;
 }
 
 .title{
+    margin-top: 5px;
+    margin-left: 5px;
     font-size: 17px;
     font-weight: bold;
 }
 
 .container > div {
     display: flex;
+    position: relative;
 }
 
 .icon{
     width: 20px;
     height: 20px;
     cursor: pointer;
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
     transform: all 1s ease;
 }
 
@@ -30,7 +36,9 @@
     overflow:hidden;
     border: none;
     outline: none;
+    width: 100%;
     color: white;
     font-size: 15px;
+    padding-right: 35px;
     background-color: #2a2a2b !important ;
 }

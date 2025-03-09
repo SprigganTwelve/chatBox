@@ -1,8 +1,11 @@
+
 import { useContext, useEffect, useState } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import UserInvitationCard from "/src/components/userInvitation/user.invitation.card"
+import clsx from "clsx"
+
+import UserInvitationCard from "/src/components/userInvitation/userInvitationCard/user.invitation.card"
+import InvitationRequests from "/src/components/userInvitation/invitationRequests/invitation.requests"
 import SearchBar from "/src/components/ui/searchBar/searchbar"
 import SVGsendInvit from "/src/assets/svg/send-svgrepo-com.svg"
 import SVGsearch from "/src/assets/svg/search-alt-2-svgrepo-com.svg"
@@ -12,17 +15,7 @@ const Invitation = () => {
     const navigate = useNavigate()
     const { userId } = useContext(ChatBoxApiContext)
 
-    
-    const [userVisibleList, setUserVisbibleList] = useState([])
-
-    const getVisibleUser = async () => {
-        try{
-            const response = await axios.get("http://localhost:3000/invitation/userVisible")
-            setUserVisbibleList(response.data)
-        }catch(error){
-            console.log(error)
-        }
-    }
+    const [ isActive, setIsActive ] = useState(1);
 
     useEffect(()=>{
         if(!userId){
@@ -30,10 +23,6 @@ const Invitation = () => {
         }
     }, [userId])
 
-    useEffect(()=>{
-        getVisibleUser()
-    }, [])
-    
 
     return ( 
         <div className={styles.container}>
@@ -48,23 +37,38 @@ const Invitation = () => {
                         <img src={SVGsearch} className={styles.serchIcon} alt="" />
                     </div>
                 </div>
-                <div className={styles.headerRight}>
-                    <div><span>Make request</span></div>
-                    <div><span>See demand</span></div>
-                    <div><span>Use key friend</span></div>
+                <div
+                    className={styles.headerRight}
+                >
+                    <div
+                        className={clsx(styles.headerRight, isActive==1 && styles.isActive)}
+                        onClick={() => setIsActive(1)}
+                    >
+                        <span>Make request</span>
+                    </div>
+                    <div
+                        className={clsx(styles.headerRight, isActive==2 && styles.isActive)}
+                        onClick={() => setIsActive(2)}
+                    >
+                        <span>See demand</span>
+                    </div>
+                    <div
+                        className={clsx(styles.headerRight, isActive==3 && styles.isActive)}
+                        onClick={() => setIsActive(3)}
+                    >
+                        <span >Use key friend</span>
+                    </div>
                 </div>
             </nav>
             <div className={styles.separator} />
             <div className={styles.userInvitationCardSection}>
-                {userVisibleList?.length > 0 && userVisibleList.map((user, index)=> userId!= user.id &&(
-                        <UserInvitationCard
-                            key= {index}
-                            userId = {user.id}
-                            userName={user.name}
-                            userImage={user.image}
-                            userAvaibility={user.avaibility}
-                        />
-                ))}
+                { isActive == 1 && 
+                            <UserInvitationCard userId={userId}/>
+                }
+
+                {
+                   isActive == 2 &&  <InvitationRequests userId={userId} />
+                }
             </div>
         </div>
      );

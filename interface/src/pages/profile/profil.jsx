@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { ChatBoxApiContext } from "/src/context/context";
 import EditProfileSettings from '/src/components/profile/editProfileSettings/edit.profile.settings'
 import NotificationSettings from "/src/components/profile/notificationSettings/notification.settings"
-import DiscussionSettings from "/src/components/profile/discussionSettings/discussion.settings"
+import InterfaceSettings from "/src/components/profile/interfaceSettings/interface.settings"
+import Confidentiality from "/src/components/profile/confidentiality/confidentiality"
 import styles from "./profil.module.css"
 
 const Profil = () => {
@@ -26,7 +27,7 @@ const Profil = () => {
                 <div className={styles.leftBoard}>
                     <div className={styles.imageContainer}>
                         <img
-                            src={userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png" }
+                            src={userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/randomUser.png" }
                             className={styles.imageProfil}
                             alt=""
                         />
@@ -51,7 +52,15 @@ const Profil = () => {
                                     setIsButtonActive("Discussion")
                                 }}
                             >
-                                Discussion settings
+                                Interface settings
+                            </button>
+                            <button
+                                className={isButtonActive == "confidentiality" ? styles.isActive : ""}
+                                onClick={() => {
+                                    setIsButtonActive("confidentiality")
+                                }}
+                            >
+                                Confiedentality
                             </button>
                             <button
                                 className={isButtonActive == "Notification" ? styles.isActive : ""}
@@ -81,7 +90,12 @@ const Profil = () => {
                     }
                     {
                         userData && isButtonActive =="Discussion" && (
-                            <DiscussionSettings />
+                            <InterfaceSettings />
+                        )
+                    }
+                    {
+                        userData && isButtonActive == "confidentiality" && (
+                            <Confidentiality />
                         )
                     }
                     {

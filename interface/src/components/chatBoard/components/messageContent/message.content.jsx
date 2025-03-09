@@ -8,7 +8,7 @@ import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/fu
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
-const MessageContent = ({ talkSphereId }) => {
+const MessageContent = ({ talkSphereId, currentChatId }) => {
 
     const container = useRef(null)
     const [usersChat, setUsersChat] = useState([]);
@@ -74,7 +74,7 @@ const MessageContent = ({ talkSphereId }) => {
                                 key={index}
                                 content={message.content}
                                 time={message.formattedHours}
-                                sender={message.senderId}
+                                isSent={message.senderId !== currentChatId}
                             />
                         );
                     }) 
@@ -87,7 +87,7 @@ const MessageContent = ({ talkSphereId }) => {
                                     key={index}
                                     content={message.content}
                                     time={message.formattedHours}
-                                    sender={message.senderId}
+                                    isSent={message.senderId !== currentChatId}
                             />
                             ))
                         )
@@ -105,7 +105,8 @@ const MessageContent = ({ talkSphereId }) => {
 };
 
 MessageContent.propTypes = {
-    talkSphereId: PropTypes.number
+    talkSphereId: PropTypes.number,
+    currentChatId: PropTypes.number
 }
 
 export default MessageContent;

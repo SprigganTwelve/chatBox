@@ -18,7 +18,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/uploads", express.static(path.join(__dirname, 'uploads')))
+app.use("/uploads/", express.static(path.join(__dirname, 'uploads/users')))
+app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
 
 const usersRouter = require("./routes/users.routes");
 const talkSphereRouter = require('./routes/talksphere.routes');

@@ -6,6 +6,8 @@ const ChatBoxApiContext = createContext();
 
 const ChatBoxApiContextProvider = ({ children }) => {
 
+    const ContainerX = useRef(null)
+
     const [userId, setUserId] = useState(()=>{
         const saved = JSON.parse(localStorage.getItem("userId"))
         return saved != null ? saved : null;
@@ -28,7 +30,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const [popUp, setPopUp] = useState(null); 
     const [modal, setModal] = useState(null);
     
     const [usersTemporaryChat, setUsersTemporaryChat] = useState({
@@ -50,7 +52,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 setUserData(requestForUserData.data)
                 setFriends(requestForFriendship.data); 
             } catch (err) {
-                setError("Something went wrong while retreiving unser data");
+                setPopUp({ message: "Something went wrong while retreiving user data", type: "error" }
+                );
                 console.log(err) 
             } finally {
                 setLoading(false);
@@ -72,8 +75,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            fetchUserFriend, setTalkSphereId, setError, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId,
-            friends, loading, error, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData
+            fetchUserFriend, setTalkSphereId, setPopUp, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId,
+            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, ContainerX
         }}
         >
                 {children}

@@ -11,7 +11,7 @@ const Action = () => {
         <>
             {
                 currentChatId && (
-                    <div style={styles.container}>
+                    <div className={styles.container}>
                         <img src={SVGcall} className={styles.icon}/>
                         <img src={SVGvideo} className={styles.icon} />
                     </div>

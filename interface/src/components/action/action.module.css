@@ -1,11 +1,16 @@
-.icon {
+.container{
     top: 20px;
     z-index: 20;
     right: 10px;
+    display: flex;
+    gap: 20px;
+    position: absolute;
+}
+
+.icon {
     width: 30px;
     padding: 5px;
     cursor: pointer;
-    position: absolute;
     transition: all 1s ease;
 }
 

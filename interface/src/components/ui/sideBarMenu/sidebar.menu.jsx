@@ -12,7 +12,17 @@ const SideBarMenu = () => {
 
     const navigate = useNavigate()
     const { userData } = useContext(ChatBoxApiContext)
-    const [isActive, setIsActive] = useState("message")    
+    const [isActive, setIsActive] = useState(()=>{
+        const saved = JSON.parse(localStorage.getItem("menu"))
+        return saved ?? "message"
+    })
+
+    const handleChangeActiveMenu = (menu, route) => {
+            setIsActive(menu)
+            navigate(route)
+            localStorage.setItem("menu", JSON.stringify(menu))
+            window.location.reload()
+    }
 
 
     return ( 
@@ -21,38 +31,26 @@ const SideBarMenu = () => {
                 <img 
                     className={clsx(styles.img,isActive === "message" ? styles.isActive : "")}
                     src={SVGmessage}
-                    onClick={()=>{
-                        setIsActive("message")
-                        navigate("/home")
-                    }}
+                    onClick={()=> handleChangeActiveMenu("message", "/home")}
                     alt="message"
                 />
                 <img
                     className={clsx(styles.img,isActive === "invit" ? styles.isActive : "")}
                     src={SVGinvit}
-                    onClick={()=> {
-                        setIsActive("invit")
-                        navigate("/invitation")
-                    }}
+                    onClick={()=> handleChangeActiveMenu("invit","/invitation") }
                     alt="invitation"
                 />
                 <img className={clsx(styles.img,isActive === "status" ? styles.isActive : "")}
                      src={SVGstatus}
-                     onClick={()=> {
-                        setIsActive("status")
-                        navigate("/status")
-                    }}
+                     onClick={()=> handleChangeActiveMenu("status","/status") }
                      alt="status"
                 />
             </div>
             <div className={styles.profil}>
                 <img
                     src= {userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png" }
-                    onClick={()=> {
-                        setIsActive("")
-                        navigate("/profil")
-                    } }
-                    alt=""
+                    onClick={()=> handleChangeActiveMenu("", "/profil")}
+                    alt="profil"
                 />
             </div>
         </div>

@@ -7,15 +7,25 @@ import MessageSVG from "/src/assets/svg/chat-round-line-svgrepo-com.svg";
 import styles from './chat.board.module.css';
 
 const ChatBoard = () => {
-    const { talkSphereId, currentChatId } = useContext(ChatBoxApiContext)
+    const { talkSphereId, currentChatId, userChatDefaultSettings,  usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
 
     return (
         <div className={styles.container}>
             {talkSphereId !== null ? (
                 <div>
                     <ChatHeader currentChatId={currentChatId} />
-                    <MessageContent talkSphereId={talkSphereId} currentChatId={currentChatId}/>
-                    <MessageSender talkSphereId={talkSphereId} currentChatId={currentChatId} />
+                    <MessageContent
+                        socket={socket}
+                        talkSphereId={talkSphereId}
+                        currentChatId={currentChatId}
+                        usersTemporaryChat = {usersTemporaryChat}
+                        setUsersTemporaryChat= {setUsersTemporaryChat}
+                        userChatDefaultSettings= {userChatDefaultSettings}
+                    />
+                    <MessageSender
+                        talkSphereId={talkSphereId}
+                        currentChatId={currentChatId}
+                    />
                 </div>
             ) : (
                 <div className={styles.welcomeSection}>

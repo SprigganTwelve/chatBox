@@ -5,10 +5,11 @@ import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
 import styles from "./user.board.module.css"
+import axios from "axios";
 
 const UserBoard = () => {
 
-    const { friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
+    const { userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
     const [isUserActive, setIsUserActive] = useState({})
 
     const toggleInvite = (id) => {
@@ -16,6 +17,27 @@ const UserBoard = () => {
             [id]: !prev[id]
         }));
     };
+
+    const handleOnClick = async (friend, index) => { 
+       
+        setCurrentChatId(friend.id)
+        setTalkSphereId(friend.talkSphereId)
+        
+        localStorage.setItem("currentChatId", JSON.stringify(friend.id));
+        const response = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
+
+        if (response.status === 200) {
+            localStorage.setItem("talkSphereId", JSON.stringify(response.data.id));
+            setUsersTemporaryChat(()=> ({
+                id: friend.talkSphereId,
+                messages: []
+            }))
+        }else{
+            console.log(response)
+        }
+
+        toggleInvite(index)
+    }
 
     return (
         <div  className={styles.container}>
@@ -31,17 +53,7 @@ const UserBoard = () => {
                             name={friend.name}
                             online={false}
                             isActive={isUserActive[index]}
-                            onClick={ ()=>{ 
-                                setCurrentChatId(friend.id)
-                                setTalkSphereId(friend.talkSphereId)
-                                localStorage.setItem("currentChatId", JSON.stringify(friend.id));
-                                localStorage.setItem("talkSphereId", JSON.stringify(friend.talkSphereId));
-                                setUsersTemporaryChat(()=> ({
-                                    id: friend.talkSphereId,
-                                    messages: []
-                                }))
-                                toggleInvite(index)
-                            } } 
+                            onClick={ ()=> handleOnClick(friend, index) } 
                             />
                         ))
                     }        

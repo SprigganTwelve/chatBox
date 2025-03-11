@@ -56,9 +56,8 @@ exports.getMyFriends = async (req, res) => {
         const friendIdArray = await connexion.query( "SELECT * from IsBeFriended where consumer1Id = ?", [id]);
         
         for(const friendId  of friendIdArray){
-            const [ { talkSphereId } ] = await connexion.query("SELECT talkSphereId from ConsumerTalkSphere where consumerId= ?", [friendId.consumer2Id])
             const [{ name, image, description, online }] = await connexion.query("SELECT name, image, description, online FROM Consumer where id = ?", [friendId.consumer2Id] );
-             allFriendData.push({ id: friendId.consumer2Id, name, image, description, online, talkSphereId })
+             allFriendData.push({ id: friendId.consumer2Id, name, image, description, online })
         }
 
        return res.status(200).json( allFriendData )

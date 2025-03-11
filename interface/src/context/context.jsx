@@ -24,7 +24,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const [talkSphereId, setTalkSphereId] = useState(
         ()=>{
             const saved = JSON.parse(localStorage.getItem("talkSphereId"))
-            return saved != null ? saved : null;
+            return saved != null && saved != undefined ? saved : null;
     }
     );
 
@@ -40,6 +40,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
     });
     const socket = useRef(null)
 
+
+
     const fetchUserFriend = useCallback(async () => {
         if(userId){
             try {
@@ -50,6 +52,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
                 socket.current.emit("register", {userId: userId})
                 const { defaultSettings }  = requestForUserData.data;
+                console.log(requestForFriendship.data)
                 setUserChatDefaultSettings(defaultSettings)
                 setUserData(requestForUserData.data)
                 setFriends(requestForFriendship.data); 
@@ -78,7 +81,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     return ( 
         <ChatBoxApiContext.Provider value={{ 
             fetchUserFriend, setTalkSphereId, setPopUp, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId,
-            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, ContainerX, userChatDefaultSettings
+            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, ContainerX, userChatDefaultSettings,
         }}
         >
                 {children}

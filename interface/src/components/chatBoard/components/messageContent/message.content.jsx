@@ -1,47 +1,47 @@
 import axios from "axios";
 import PropTypes from "prop-types"
-import { useEffect, useContext,useState, useRef } from "react";
-import { ChatBoxApiContext } from "/src/context/context";
+import { useEffect, useRef, useState } from "react";
 import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
 import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/function";
 
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
-const MessageContent = ({ talkSphereId, currentChatId }) => {
+const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socket, setUsersTemporaryChat, userChatDefaultSettings }) => {
 
     const container = useRef(null)
     const [usersChat, setUsersChat] = useState([]);
-    const {userChatDefaultSettings, usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext);
+    
 
     const getUserChat = async () => {
         if (!talkSphereId) return; 
         try {
             let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
-            const data = response.data;
-            insertFormattedDateFromArray(data) 
 
-            socket.current.on("newMessage", (receivedMessage) => {
-                console.log(receivedMessage)
-                receivedMessage.createdAt = new Date(receivedMessage.createdAt); 
-                
+                const data = response.data;
+                insertFormattedDateFromArray(data)
+
                 socket.current.on("newMessage", (receivedMessage) => {
-                    receivedMessage.createdAt = new Date(receivedMessage.createdAt);
+                    console.log(receivedMessage)
+                    receivedMessage.createdAt = new Date(receivedMessage.createdAt); 
                     
-                    insertFormattedDate(receivedMessage);
-                
-                    setUsersTemporaryChat(() => ({
-                        id: talkSphereId,
-                        messages: [...receivedMessage]
-                    }));
+                    socket.current.on("newMessage", (receivedMessage) => {
+                        receivedMessage.createdAt = new Date(receivedMessage.createdAt);
+                        
+                        insertFormattedDate(receivedMessage);
+                    
+                        setUsersTemporaryChat(() => ({
+                            id: talkSphereId,
+                            messages: [...receivedMessage]
+                        }));
+                    });
                 });
-            });
 
-            console.log(usersTemporaryChat)
-
-            setUsersChat(data);
-
+                console.log(usersTemporaryChat)
+                setUsersChat(data);
+ 
         } catch (error) {
+            setUsersChat([]);
             console.error("Erreur lors de la récupération des messages:", error);
         }
     };
@@ -64,6 +64,9 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
 
     return (
         <>
+            <div className={styles.themesContainer}>
+                <div  />
+            </div>
             <div ref={container} className={styles.container}>
                 {usersChat.length > 0 && (
                     usersChat.map((message, index) => {
@@ -104,8 +107,14 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
 };
 
 MessageContent.propTypes = {
+    socket: PropTypes.object,
+    usersChat: PropTypes.array,
+    setUsersChat: PropTypes.func,
     talkSphereId: PropTypes.number,
-    currentChatId: PropTypes.number
+    currentChatId: PropTypes.number,
+    usersTemporaryChat: PropTypes.array,
+    setUsersTemporaryChat: PropTypes.func,
+    userChatDefaultSettings: PropTypes.object,
 }
 
 export default MessageContent;

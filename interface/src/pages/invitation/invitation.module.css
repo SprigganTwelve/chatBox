@@ -125,9 +125,10 @@
 }
 
 .userInvitationCardSection{
-    gap: 40px;
+    margin-top: 3rem;
     display: flex;
     flex-wrap: wrap;
-    overflow: hidden;
+    height: 700px;
+    overflow-y: auto;
     margin-left: 5rem;
 }

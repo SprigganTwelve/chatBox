@@ -80,91 +80,59 @@ exports.MakeAnAssocRequest = async (req, res) => {
     }
 }
 
-
 exports.ConfirmAnInvitation = async (req, res) => {
-    try {
-        const conn = await db.connexion;
-        const { senderId, receiverId } = req.body;
+    const conn = await db.connexion;
+    const { senderId, receiverId } = req.body;
 
+    try {
         await conn.beginTransaction();
 
-        const firstIsBeFriendedResponse = await conn.query(
-            "INSERT INTO IsBeFriended(consumer1Id, consumer2Id) VALUES(?, ?)",
+        // Insert friendship in both directions in a single query
+        const friendshipInsert = await conn.query(
+            "INSERT INTO IsBeFriended(consumer1Id, consumer2Id) VALUES (?, ?), (?, ?)",
+            [senderId, receiverId, receiverId, senderId]
+        );
+
+        if (friendshipInsert.affectedRows < 2) {
+            throw new Error("Failed to insert friendship records");
+        }
+
+        // Delete the invitation
+        const deleteInvitation = await conn.query(
+            "DELETE FROM AssocRequest WHERE senderId = ? AND receiverId = ?",
             [senderId, receiverId]
         );
-        
-        if (firstIsBeFriendedResponse.affectedRows > 0) {
-            const secondIsBeFriendedResponse = await conn.query(
-                "INSERT INTO IsBeFriended(consumer1Id, consumer2Id) VALUES(?, ?)",
-                [receiverId, senderId]
-            );
-            
-            if (secondIsBeFriendedResponse.affectedRows > 0) {
-                const deleteInvitation = await conn.query(
-                    "DELETE FROM AssocRequest WHERE senderId=? AND receiverId=?",
-                    [senderId, receiverId]
-                );
-                
-                if (deleteInvitation.affectedRows > 0) {
-                    const talkSphereResponse = await conn.query("INSERT INTO TalkSphere () VALUES ();")
-                    if (talkSphereResponse.affectedRows > 0) {
 
-                        const consumerTalkSphereResponse = await conn.query(
-                            "INSERT INTO ConsumerTalkSphere( consumerId, talkSphereId ) VALUES(?,?)",
-                            [receiverId, talkSphereResponse.insertId]
-                        )
-
-                        if (consumerTalkSphereResponse.affectedRows > 0) {
-
-                            const secondConsumerTalkSphereResponse = await conn.query(
-                                "INSERT INTO ConsumerTalkSphere( consumerId, talkSphereId ) VALUES(?,?)",
-                                [senderId, talkSphereResponse.insertId]
-                            )
-
-                            if (secondConsumerTalkSphereResponse.affectedRows > 0) {
-                                await conn.commit();
-                                return res.status(200).json({ message: "Now you just have got a friend" });
-                            }
-                            else{
-                                await conn.rollback();
-                                console.log("Failed to insert second record of talksphereId and consumerId record into consumertalksphere table");
-                                return res.status(500).json({ message: "Something went wrong when inserting the second record of talksphereId and consumerId record into consumertalksphere table" });
-                            }
-
-                        }
-                        else{
-                            await conn.rollback();
-                            console.log("Failed to insert first record of talksphereId and consumerId into consumertalksphere table");
-                            return res.status(500).json({ message: "Something went wrong when inserting the first record of talksphereId and consumerId into consumertalksphere table" });
-                        }
-
-                    }
-                    else{
-                        await conn.rollback();
-                        console.log("Failed to insert talksphere record into talkspher table");
-                        return res.status(500).json({ message: "Something went wrong when inserting  talksphere record into talkspher table" });
-                    }
-                } 
-                else {
-                    await conn.rollback();
-                    console.log("Failed to delete the invitation");
-                    return res.status(500).json({ message: "Something went wrong when deleting the invitation" });
-                }
-
-            } 
-            else {
-                await conn.rollback();
-                console.log("Failed to insert second record into IsBeFriended");
-                return res.status(500).json({ message: "Something went wrong when inserting the second record into IsBeFriended" });
-            }
-        } 
-        else {
-            await conn.rollback();
-            console.log("Failed to insert first record into IsBeFriended");
-            return res.status(500).json({ message: "Something went wrong when inserting the first record into IsBeFriended" });
+        if (deleteInvitation.affectedRows === 0) {
+            throw new Error("Failed to delete the invitation");
         }
-    } catch (err) {
-        console.log(err);
-        return res.status(400).json({ message: "Something went wrong" });
+
+        // Create a new TalkSphere
+        const talkSphereResponse = await conn.query("INSERT INTO TalkSphere () VALUES ()");
+
+        if (talkSphereResponse.affectedRows === 0) {
+            throw new Error("Failed to create TalkSphere");
+        }
+
+        const talkSphereId = talkSphereResponse.insertId;
+
+        // Insert both users into ConsumerTalkSphere
+        const consumerTalkSphereInsert = await conn.query(
+            "INSERT INTO ConsumerTalkSphere (consumerId, talkSphereId) VALUES (?, ?), (?, ?)",
+            [senderId, talkSphereId, receiverId, talkSphereId]
+        );
+
+        if (consumerTalkSphereInsert.affectedRows < 2) {
+            throw new Error("Failed to insert users into ConsumerTalkSphere");
+        }
+
+        // Commit transaction
+        await conn.commit();
+        return res.status(200).json({ message: "Now you just have got a friend" });
+
+    } catch (error) {
+        await conn.rollback();
+        console.error(error.message);
+        return res.status(500).json({ message: "Something went wrong", error: error.message });
     }
 };

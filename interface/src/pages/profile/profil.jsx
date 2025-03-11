@@ -9,7 +9,7 @@ import Confidentiality from "/src/components/profile/confidentiality/confidentia
 import styles from "./profil.module.css"
 
 const Profil = () => {
-    const { userId, userData } = useContext(ChatBoxApiContext)
+    const { userId, setUserId, userData } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
     const [isButtonActive, setIsButtonActive] = useState("Edit")
 
@@ -74,6 +74,7 @@ const Profil = () => {
                                 className={styles.deconnexion}
                                 onClick={() => {
                                     localStorage.clear()
+                                    setUserId(null)
                                     navigate("/")
                                 }}
                             >

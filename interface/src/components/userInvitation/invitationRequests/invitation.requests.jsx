@@ -13,7 +13,7 @@ const InvitationRequests = ({ userId }) => {
 
     const [userInvitationRequest, setUserInvitationRequest] = useState([])
 
-
+    //Handle the getting
     const userInvitationRequestHandler = useCallback(async () => {
         try{
             const response = await axios.get(`http://localhost:3000/invitation/userInvitation/${userId}`)
@@ -25,6 +25,7 @@ const InvitationRequests = ({ userId }) => {
         }
     }, [userId])
 
+    //handle the confirmation 
     const handleConfirmInvitation = async (id) => {
         try{
             const response = await axios.post(`http://localhost:3000/invitation/confirm/`,{
@@ -32,7 +33,9 @@ const InvitationRequests = ({ userId }) => {
                 receiverId: userId, 
             })
             if (response.status === 200) {
-                await userInvitationRequestHandler()
+                setUserInvitationRequest(prevRequests => 
+                    prevRequests.filter(request => request.id !== id)
+                );
                 setPopUp({ message: response.data?.message, type: "sucess"  })
             }
         }catch(err){

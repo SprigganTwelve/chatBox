@@ -36,8 +36,9 @@
     color: white;
 }
 
-input::placeholder{
+.input::placeholder{
     font-size: 14px;
+    color: white;
 }
 
 .container >  img {

@@ -21,8 +21,11 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
     try{
         const { id } = req.params
         const connexion = await db.connexion;
-        const data = await connexion.query("SELECT id, content, createdAt, senderId from Message where talkSphereId = ?",[id])
-        return res.status(200).json(data);
+        const data = await connexion.query("SELECT id, content, createdAt, senderId FROM Message where talkSphereId = ?",[id])
+        if (data.length > 0) {
+            return res.status(200).json(data);
+        }
+        return res.status(400).json({ message: "Something went wrong while retreiving the data" });
     }
     catch(err){
         console.log(`Something wrong hapenned : ${err}`)

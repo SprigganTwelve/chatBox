@@ -12,7 +12,7 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
 
     const container = useRef(null)
     const [usersChat, setUsersChat] = useState([]);
-    const { usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext);
+    const {userChatDefaultSettings, usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext);
 
     const getUserChat = async () => {
         if (!talkSphereId) return; 
@@ -22,6 +22,7 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
             insertFormattedDateFromArray(data) 
 
             socket.current.on("newMessage", (receivedMessage) => {
+                console.log(receivedMessage)
                 receivedMessage.createdAt = new Date(receivedMessage.createdAt); 
                 
                 socket.current.on("newMessage", (receivedMessage) => {
@@ -29,9 +30,9 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
                     
                     insertFormattedDate(receivedMessage);
                 
-                    setUsersTemporaryChat((previous) => ({
+                    setUsersTemporaryChat(() => ({
                         id: talkSphereId,
-                        messages: [...previous.messages, receivedMessage]
+                        messages: [...receivedMessage]
                     }));
                 });
             });
@@ -40,8 +41,6 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
 
             setUsersChat(data);
 
-
-    
         } catch (error) {
             console.error("Erreur lors de la récupération des messages:", error);
         }
@@ -50,7 +49,6 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
     useEffect(()=>{
         if (container) {
             container.current.scrollTo({ top : container.current.scrollHeight, behaviour: "smooth"});
-            console.log("eee")
         }
     })
 
@@ -65,7 +63,7 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
     }, [usersTemporaryChat])
 
     return (
-
+        <>
             <div ref={container} className={styles.container}>
                 {usersChat.length > 0 && (
                     usersChat.map((message, index) => {
@@ -101,6 +99,7 @@ const MessageContent = ({ talkSphereId, currentChatId }) => {
                     ) 
                 }
             </div>
+        </>
     );
 };
 

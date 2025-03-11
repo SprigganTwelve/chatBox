@@ -49,7 +49,7 @@ const UserInvitationCard = ({userId}) => {
     }, [getVisibleUser])
 
     return ( 
-        <>
+        <div className={styles.main}>
             {
                 userVisibleList.length > 0 && userVisibleList.map((user, key)=>{
                         if(user.id != userId){
@@ -98,7 +98,7 @@ const UserInvitationCard = ({userId}) => {
                         }
                 })
             }
-        </>
+        </div>
      );
 }
 

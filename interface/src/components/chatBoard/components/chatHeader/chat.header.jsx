@@ -1,4 +1,5 @@
 
+import PropTypes from "prop-types"
 import { useEffect, useState, useContext } from "react";
 import { ChatBoxApiContext } from "../../../../context/context"
 
@@ -30,7 +31,7 @@ const ChatHeader = ({ currentChatId }) => {
         <>
             { receiver ? (
                 <div className={styles.header}>
-                    <img src={receiver.image != "" ? receiver.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"} alt="profil" />
+                    <img src={receiver.image != "" ? "http://localhost:3000/uploads/" + receiver.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"} alt="profil" />
                     <span className={styles.name}>{receiver.name}</span>
                     {/* TODO: Menu for parameter */}
                 </div>
@@ -40,5 +41,9 @@ const ChatHeader = ({ currentChatId }) => {
         </>
     );
 };
+
+ChatHeader.propTypes = {
+    currentChatId: PropTypes.number,
+}
 
 export default ChatHeader;

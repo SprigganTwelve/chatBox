@@ -1,3 +1,11 @@
+.main{
+    gap: 50px;
+    height: 700px;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+}
+
 .container{
     gap: 20px;
     width: 350px;

@@ -1,4 +1,5 @@
 
+import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
 import SVGsend from "/src/assets/svg/send-email-svgrepo-com.svg"
 import styles from './message.sender.module.css'
@@ -9,13 +10,13 @@ import { ChatBoxApiContext } from "../../../../context/context";
 const MessageSender = ({ talkSphereId,  currentChatId}) => {
 
     const [value, setValue] = useState("")
-    const { socket, usersTemporaryChat, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const { socket, userId, usersTemporaryChat, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
 
     const sendMessage = async () => {
         try{
             if(socket){
                 const createdAt = new Date();
-                socket.current.emit("privateMessage",{ senderId: 13, receiverId: currentChatId , talkSphereId, content: value, createdAt })
+                socket.current.emit("privateMessage",{ senderId: userId, receiverId: currentChatId , talkSphereId, content: value, createdAt })
                 const dataSent = { senderId:13, talkSphereId, content: value, createdAt}
 
                 insertFormattedDate(dataSent)
@@ -42,6 +43,7 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
             <input
                 type="text"
                 value={value}
+                className={styles.input}
                 placeholder='Entrez votre message ici'
                 onChange={(event)=> setValue(event.target.value)}
                 onKeyDown={(event)=>{
@@ -55,6 +57,11 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
             }} />
         </div>
      );
+}
+
+MessageSender.propTypes = {
+    talkSphereId: PropTypes.number,
+    currentChatId: PropTypes.number
 }
  
 export default MessageSender;

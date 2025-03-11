@@ -1,13 +1,16 @@
 
+import PropTypes from "prop-types"
+import clsx from "clsx"
 import styles from "./user.card.module.css"
 
 const UserCard = ({
     url,
     name,
     onClick,
+    isActive,
 }) => {
     return ( 
-        <div className={styles.main} onClick={onClick}>
+        <div className={clsx(styles.main, isActive && styles.isActive)} onClick={onClick}>
             <div>
                 <div id="imageContainer" className={styles.imageContainer}>
                     <img id="image"
@@ -23,6 +26,13 @@ const UserCard = ({
             </div>
         </div>
      );
+}
+
+UserCard.propTypes = {
+    url: PropTypes.string,
+    name: PropTypes.string,
+    onClick: PropTypes.func,
+    isActive: PropTypes.bool
 }
  
 export default UserCard;

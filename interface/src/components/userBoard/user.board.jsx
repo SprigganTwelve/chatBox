@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../context/context"
 import UserCard from "./components/userCard/user.card";
 import SearchBar from "/src/components/ui/searchBar/searchbar"
@@ -9,7 +9,13 @@ import styles from "./user.board.module.css"
 const UserBoard = () => {
 
     const { friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
-    console.log(friends)
+    const [isUserActive, setIsUserActive] = useState({})
+
+    const toggleInvite = (id) => {
+        setIsUserActive((prev) => ({
+            [id]: !prev[id]
+        }));
+    };
 
     return (
         <div  className={styles.container}>
@@ -24,6 +30,7 @@ const UserBoard = () => {
                             url={friend.image}
                             name={friend.name}
                             online={false}
+                            isActive={isUserActive[index]}
                             onClick={ ()=>{ 
                                 setCurrentChatId(friend.id)
                                 setTalkSphereId(friend.talkSphereId)
@@ -33,6 +40,7 @@ const UserBoard = () => {
                                     id: friend.talkSphereId,
                                     messages: []
                                 }))
+                                toggleInvite(index)
                             } } 
                             />
                         ))

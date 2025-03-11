@@ -12,6 +12,11 @@
     background-color: rgb(55, 56, 57);
 }
 
+.isActive{
+    cursor: pointer;
+    background-color: rgb(55, 56, 57);
+}
+
 .imageContainer {
     display: flex;
     border-radius: 50%;

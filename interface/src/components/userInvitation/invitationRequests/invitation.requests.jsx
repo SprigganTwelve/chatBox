@@ -32,7 +32,7 @@ const InvitationRequests = ({ userId }) => {
                 receiverId: userId, 
             })
             if (response.status === 200) {
-                userInvitationRequestHandler()
+                await userInvitationRequestHandler()
                 setPopUp({ message: response.data?.message, type: "sucess"  })
             }
         }catch(err){

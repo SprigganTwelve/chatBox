@@ -24,11 +24,22 @@ exports.getSpecialUser = async (req, res) => {
         const conn = await db.connexion;
         const response = await conn.query("SELECT * FROM Consumer WHERE id = ?", [req.params.id]);
         if (response.length > 0) {
-            user = response[0]
+            const defaultSettingResponse = await conn.query(
+                "SELECT * FROM Settings WHERE consumerId =?",
+                [req.params.id]
+            )
+            if(defaultSettingResponse.length > 0){
+                user = response[0]
+                return res.status(200).json({
+                    ...user,
+                    defaultSettings: defaultSettingResponse
+                });
+            }
+            return res.status(400).json({ message: "Something went wron while retreiving the default settings" });
         }
-        return res.status(200).json(user);
-
-    } catch (err) {
+        return res.status(400).json({ message: "User doen't exist" });
+    } 
+    catch (err) {
         console.log(err);
         res.status(500).json({ message: "Erreur serveur" });
     }
@@ -103,6 +114,8 @@ exports.getLoginConnection = async (req, res) => {
 
 
 
+
+
 exports.getSignedUpToBDD = async (req, res) => {
     try{
         const saltRounds = 5
@@ -124,6 +137,8 @@ exports.getSignedUpToBDD = async (req, res) => {
         const keyFriend = await bcrypt.hash( name + pseudo, saltRounds)
         const description = ``
 
+        await conn.beginTransaction()
+
         if(file){
 
             const fileName = Date.now() + path.extname(file.originalname)
@@ -131,20 +146,67 @@ exports.getSignedUpToBDD = async (req, res) => {
             const filePath = path.join(fileUploadPath, fileName)
 
 
-            user = await conn.query(
+            const userResponse = await conn.query(
                 "INSERT INTO Consumer(name, pseudo, email, password, image, keyFriend , description) VALUES(?,?,?,?,?,?,?)",
                 [ name, pseudo, email, hashPassword, fileName, keyFriend, description ]
             )
-            fs.writeFileSync(filePath, file.buffer)
 
-            return res.status(200).json( { message: "" } )
+            if (userResponse.affectedRows > 0 ) {
+                const settingsResponse = await conn.query(
+                    "INSERT INTO Settings(consumerId) VALUES (?)",
+                    [userResponse.insertId]
+                )
+
+                if(settingsResponse.affectedRows > 0){
+                    await conn.commit()
+                    fs.writeFileSync(filePath, file.buffer)
+                    return res.status(200).json( { message: "" } )
+                }
+                else{
+                    await conn.rollback()
+                    console.log("Something wrong happend while inserting the settings [with file]")
+                    return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
+                }
+
+            }
+            else{
+                await conn.rollback()
+                console.log("Something wrong happend while inserting the user [with file]")
+                return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
+            }
+
         }
         else{
-            user = await conn.query(
+            const userResponse = await conn.query(
                 "INSERT INTO Consumer(name, pseudo, email, password, keyFriend , description) VALUES(?,?,?,?,?,?)",
                 [ name, pseudo, email, hashPassword, keyFriend, description  ]
             )
-            return res.status(200).json( { message: "" } )
+
+
+            if (userResponse.affectedRows > 0) {
+
+                const settingsResponse = await conn.query(
+                    "INSERT INTO Settings(consumerId) VALUES (?)",
+                    [userResponse.insertId]
+                )
+
+                if (settingsResponse.affectedRows > 0) {
+                    await conn.commit()
+                    return res.status(200).json( { message: "" } )
+                }
+                else{
+                    await conn.rollback()
+                    console.log("Something wrong happend while inserting the settings [without file]")
+                    return res.status(500).json( { message: "Something wrong happend while inserting the user [without file]" } )
+                }
+
+            }
+            else{
+                await conn.rollback()
+                console.log("Something wrong happend while inserting the user [without file]")
+                return res.status(500).json( { message: "Something wrong happend while inserting the user [without file]" } )
+            }
+
         }
 
     }
@@ -153,6 +215,13 @@ exports.getSignedUpToBDD = async (req, res) => {
         return res.status(404).json( { message: "Something went wrong" } )
     }
 }
+
+
+
+
+
+
+
 
 exports.changeKeyValueInBDD = async (req, res) => {
     try{

@@ -20,11 +20,23 @@ const ChatBoard = () => {
                         currentChatId={currentChatId}
                         usersTemporaryChat = {usersTemporaryChat}
                         setUsersTemporaryChat= {setUsersTemporaryChat}
-                        userChatDefaultSettings= {userChatDefaultSettings}
                     />
                     <MessageSender
                         talkSphereId={talkSphereId}
                         currentChatId={currentChatId}
+                    />
+                    <div
+                        className={styles.themesContainer}
+                        style={userChatDefaultSettings && 
+                            {
+                                opacity: userChatDefaultSettings.opacity,
+                                backgroundImage: `url(http://localhost:3000/uploads/themes/${userChatDefaultSettings.themes})`,
+                            }
+                        }
+                    />
+                    <div 
+                        style={{ }}
+                        className={styles.colorOVerlay}
                     />
                 </div>
             ) : (

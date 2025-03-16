@@ -10,12 +10,13 @@ import { ChatBoxApiContext } from "../../../../context/context";
 const MessageSender = ({ talkSphereId,  currentChatId}) => {
 
     const [value, setValue] = useState("")
-    const { socket, userId, usersTemporaryChat, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
 
     const sendMessage = async () => {
         try{
             if(socket){
                 const createdAt = new Date();
+                console.log(talkSphereId)
                 socket.current.emit("privateMessage",{ senderId: userId, receiverId: currentChatId , talkSphereId, content: value, createdAt })
                 const dataSent = { senderId:13, talkSphereId, content: value, createdAt}
 
@@ -24,17 +25,17 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
                 setUsersTemporaryChat((previous)=>(
                         {
                             id: talkSphereId,
-                            messages: [...previous.messages, dataSent]
+                            messages: [...previous.messages ?? [], dataSent]
                         }
                 ))
-                console.log(usersTemporaryChat)
-
+                setValue("")
             }
         }
         catch(error){
             console.log(error)
         }
     }
+
 
 
     return ( 

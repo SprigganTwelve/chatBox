@@ -9,7 +9,7 @@ import Confidentiality from "/src/components/profile/confidentiality/confidentia
 import styles from "./profil.module.css"
 
 const Profil = () => {
-    const { userId, setUserId, userData } = useContext(ChatBoxApiContext)
+    const { userId, setUserId, userData, userChatDefaultSettings, modal, setModal, ContainerX  } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
     const [isButtonActive, setIsButtonActive] = useState("Edit")
 
@@ -91,7 +91,12 @@ const Profil = () => {
                     }
                     {
                         userData && isButtonActive =="Discussion" && (
-                            <InterfaceSettings />
+                            <InterfaceSettings 
+                                modal={modal}
+                                setModal={setModal}
+                                ContainerX={ContainerX}
+                                defaultSettings={userChatDefaultSettings}
+                            />
                         )
                     }
                     {

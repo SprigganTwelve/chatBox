@@ -51,11 +51,13 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 const requestForUserData = await axios.get(`http://localhost:3000/users/${userId}`)
                 const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
                 socket.current.emit("register", {userId: userId})
+                
                 const { defaultSettings }  = requestForUserData.data;
-                console.log(requestForFriendship.data)
-                setUserChatDefaultSettings(defaultSettings)
+                console.log(defaultSettings)
+                setUserChatDefaultSettings(...defaultSettings)
                 setUserData(requestForUserData.data)
-                setFriends(requestForFriendship.data); 
+                setFriends(requestForFriendship.data);
+
             } catch (err) {
                 setPopUp({ message: "Something went wrong while retreiving user data", type: "error" }
                 );
@@ -64,7 +66,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 setLoading(false);
             }
         }
-    }, [userId]);
+    }, [userId, socket]);
 
     useEffect(() => {
         if (friends.length === 0) { 
@@ -72,6 +74,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
         }
         return () => {
             if (socket.current) {
+                socket.current.off("register")
                 socket.current.disconnect();
                 socket.current = null;
             }

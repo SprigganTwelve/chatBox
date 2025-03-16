@@ -3,6 +3,9 @@ import PropTyes from 'prop-types'
 import { ChatBoxApiContext } from "/src/context/context";
 import styles from "./modal.module.css"
 
+/* For make this work you must provide the following object type to the set modal state function created in the context :
+        { open: boolean, showCancelAndConfirmButtons?: boolean, onContinueHandler?: function , stylesContainer: objectStyles, styleContent?: styleObject  }
+*/
 const Modal = () => {
     const modalRef = useRef(null)
     const { modal, setModal, ContainerX } = useContext(ChatBoxApiContext)
@@ -25,6 +28,7 @@ const Modal = () => {
             {modal && modal.open && (
                     <div
                         className={styles.container}
+                        style={modal.stylesContainer}
                     >
                         <div
                             ref={modalRef}

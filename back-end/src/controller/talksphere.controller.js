@@ -7,7 +7,6 @@ exports.getTalkSphere = async (req, res) => {
     try {
         const { senderId, receiverId } = req.params; 
         const conn = await db.connexion;
-
         // Requête pour trouver une TalkSphere commune
         const data = await conn.query(`
             SELECT t.* 
@@ -39,7 +38,7 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
         if (data.length > 0) {
             return res.status(200).json(data);
         }
-        return res.status(400).json({ message: "Something went wrong while retreiving the data" });
+        return res.status(200).json([]);
     }
     catch(err){
         console.log(`Something wrong hapenned : ${err}`)

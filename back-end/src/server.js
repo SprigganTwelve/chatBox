@@ -24,10 +24,12 @@ app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')
 const usersRouter = require("./routes/users.routes");
 const talkSphereRouter = require('./routes/talksphere.routes');
 const userInvitationRouter = require('./routes/invitation.routes')
+const userSettingsRouters = require('./routes/settings.routes')
 
 app.use("/users", usersRouter);
 app.use("/talkSphere", talkSphereRouter);
 app.use("/invitation", userInvitationRouter)
+app.use('/settings', userSettingsRouters)
 
 const socketController = require("./controller/socket.controller");
 const users = {};
@@ -37,14 +39,14 @@ io.on("connection", (socket) => {
 
     socket.on("register", ({ userId }) => {
         users[userId] = socket.id;
-        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}`);
+        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users[userId]}`);
     });
 
     socket.on("privateMessage", ({ senderId, receiverId, talkSphereId, content, createdAt }) => {
         const receiverSocketId = users[receiverId];
         console.log({ senderId, receiverId, talkSphereId, content })
         if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", { talkSphereId, content, createdAt });
+            io.to(receiverSocketId).emit("newMessage", { talkSphereId, content, createdAt, senderId });
         }
         socketController.insertIntoMessage({ senderId, talkSphereId, content, createdAt });
     });

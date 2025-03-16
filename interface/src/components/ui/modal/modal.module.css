@@ -1,11 +1,11 @@
 .container {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 22;
     height: 100%;
     display: flex;
+    position: fixed;
     align-items: center; 
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -18,6 +18,8 @@
     text-wrap: wrap;
     border-radius: 8px;
     position: relative;
+    width: fit-content;
+    height: fit-content;
     flex-direction: column;
     background-color: black;
 }
@@ -35,6 +37,7 @@
     right: 15px;
     display: flex;
     position: absolute;
+    z-index: 40;
 }
 
 .buttonContainer > button {

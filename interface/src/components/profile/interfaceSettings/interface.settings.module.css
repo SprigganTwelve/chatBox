@@ -13,3 +13,27 @@
     background-color: #2a2a2b !important;
 }
 
+.fontSizeLetterSection{
+    gap: 10px;
+    display: flex;
+}
+
+.fontSizeLetterSection div{
+    padding: 7px;
+    display: flex;
+    height: 20px;
+    border-radius: 3px;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: rgba(8, 8, 8, 0.405);
+    transition: background-color 2s ease;
+}
+
+.fontSizeLetterSection div:hover{
+    background-color: #2a2a2b;
+}
+
+.fontSizeLetterSection .isActive{
+    color: #2a2a2b;
+    background-color: white;
+}

@@ -9,7 +9,7 @@ import axios from "axios";
 
 const UserBoard = () => {
 
-    const { userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
+    const {userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
     const [isUserActive, setIsUserActive] = useState({})
 
     const toggleInvite = (id) => {
@@ -21,19 +21,20 @@ const UserBoard = () => {
     const handleOnClick = async (friend, index) => { 
        
         setCurrentChatId(friend.id)
-        setTalkSphereId(friend.talkSphereId)
-        
-        localStorage.setItem("currentChatId", JSON.stringify(friend.id));
-        const response = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
 
-        if (response.status === 200) {
-            localStorage.setItem("talkSphereId", JSON.stringify(response.data.id));
+        localStorage.setItem("currentChatId", JSON.stringify(friend.id));
+        const userTalkSphereResponse = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
+
+        if (userTalkSphereResponse.status === 200) {
             setUsersTemporaryChat(()=> ({
-                id: friend.talkSphereId,
+                id: userTalkSphereResponse.data.id,
                 messages: []
             }))
+            localStorage.setItem("talkSphereId", JSON.stringify(userTalkSphereResponse.data.id));
+            setTalkSphereId(() => userTalkSphereResponse.data.id )
+
         }else{
-            console.log(response)
+            console.log(userTalkSphereResponse)
         }
 
         toggleInvite(index)

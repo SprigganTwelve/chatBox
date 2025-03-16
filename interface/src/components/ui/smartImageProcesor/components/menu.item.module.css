@@ -1,0 +1,27 @@
+
+
+.iconContainer{
+    width: 70px;
+    height: 70px;
+    padding: 5px;
+    display: flex;
+    cursor: pointer;
+    overflow: visible;
+    border-radius: 5px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(8, 8, 8, 0.884);
+}
+
+
+
+.icon{
+    width: 40px;
+    height: 40px;
+    border: none;
+    outline: none;
+    overflow: visible;
+    object-fit: cover;
+    object-position: center;
+}

@@ -1,8 +1,10 @@
 
 import {  useRef, useState } from "react";
+import axios from "axios";
 import PropTypes from "prop-types"
 
 import ViewOption from "/src/components/ui/viewOption/view.option";
+import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 import VibeBox from "./components/vibeBox/vibe.box";
 import Switch from "/src/components/ui/switch/switch"
 import styles from "./interface.settings.module.css"
@@ -10,9 +12,8 @@ import styles from "./interface.settings.module.css"
 import SVGadd from '/src/assets/svg/add-circle-svgrepo-com.svg'
 import SVGfontsize from '/src/assets/svg/font-size-svgrepo-com (1).svg'
 import SVGlanguage from '/src/assets/svg/language-svgrepo-com.svg'
+import SGVnativedefaultbackground from '/src/assets/svg/image-1-svgrepo-com.svg'
 import SVGthemes from '/src/assets/svg/vivo-themes-svgrepo-com.svg'
-import axios from "axios";
-import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 
 const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
 
@@ -86,13 +87,16 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
                         }}
                     />
                 ))}
+                <div className={styles.iconImageContainer}>
+                    <img src={SGVnativedefaultbackground} className={styles.icon} alt="image" />
+                </div>
             </div>
             <input
                 hidden
                 ref={inputFileRef}
                 onChange={() => {
                     if(inputFileRef.current.files[0]){
-                        ContainerX.current = () => <SmartImageProcessor file={URL.createObjectURL(inputFileRef.current.files[0])}  callback = {handleChangeGlobalImageSettings()} />
+                        ContainerX.current = () => <SmartImageProcessor showGrid={true} file={URL.createObjectURL(inputFileRef.current.files[0])} inputRef={inputFileRef}  callback = {handleChangeGlobalImageSettings()} />
                         setModal({open: true, styleContent: { backgroundColor: 'transparent' }, showCancelAndConfirmButtons: true})
                     }
                 }}

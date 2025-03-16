@@ -1,13 +1,46 @@
 
-.container{
 
+.container{
+    gap: 15px;
+    width: 230px;
+    height: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    justify-content: center;
+    background-color: rgb(67, 65, 65) !important;
 }
+
 
 .icon{
     height: 20px;
     width: 20px;
 }
 
-.gauge{
+.gaugeContainer{
+    width: 200px;
+    border-radius: 50px;
+    background-color: rgba(8, 8, 8, 0.405);
+}
 
+
+.gauge{
+    height: 5px;
+    width: 50px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 50px;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+.round{
+    right: 0;
+    width: 15px;
+    height: 15px;
+    bottom: -70%;
+    cursor: pointer;
+    position: absolute;
+    border-radius: 100%;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
 }

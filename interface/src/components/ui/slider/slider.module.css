@@ -1,10 +1,10 @@
 
 
 .container{
-    gap: 15px;
-    width: 230px;
+    gap: 10px;
+    width: 240px;
     height: 20px;
-    padding: 10px;
+    padding: 10px 25px;
     display: flex;
     align-items: center;
     border-radius: 50px;
@@ -20,6 +20,7 @@
 
 .gaugeContainer{
     width: 200px;
+    cursor: pointer;
     border-radius: 50px;
     background-color: rgba(8, 8, 8, 0.405);
 }
@@ -27,7 +28,6 @@
 
 .gauge{
     height: 5px;
-    width: 50px;
     cursor: pointer;
     position: relative;
     border-radius: 50px;

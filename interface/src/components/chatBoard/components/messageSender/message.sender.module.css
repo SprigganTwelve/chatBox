@@ -55,3 +55,9 @@
     transition: all 1s ease;
     background-color: rgb(55, 56, 57);
 }
+
+.recorders{
+    gap: 20px;
+    display: flex;
+    align-items: center;
+}

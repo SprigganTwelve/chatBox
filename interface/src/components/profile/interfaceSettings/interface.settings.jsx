@@ -96,7 +96,14 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
                 ref={inputFileRef}
                 onChange={() => {
                     if(inputFileRef.current.files[0]){
-                        ContainerX.current = () => <SmartImageProcessor showGrid={true} file={URL.createObjectURL(inputFileRef.current.files[0])} inputRef={inputFileRef}  callback = {handleChangeGlobalImageSettings()} />
+                        ContainerX.current = () => 
+                        (<SmartImageProcessor
+                            showGrid={true}
+                            setModal={setModal}
+                            inputRef={inputFileRef} 
+                            fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
+                            callback = {handleChangeGlobalImageSettings()}
+                        />)
                         setModal({open: true, styleContent: { backgroundColor: 'transparent' }, showCancelAndConfirmButtons: true})
                     }
                 }}
@@ -112,9 +119,6 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
             <ViewOption
                 title="Font size"
                 leading={SVGfontsize}
-                onClick={()=>{
-                     //TODO: IMPLEMENT
-                }}
             >
                 <div className={styles.fontSizeLetterSection}>
                     <div 

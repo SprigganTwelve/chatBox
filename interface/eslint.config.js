@@ -10,7 +10,11 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser, 
+        webkitSpeechRecognition: 'readonly',
+        SpeechRecognition: 'readonly', 
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },

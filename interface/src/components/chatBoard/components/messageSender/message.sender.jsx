@@ -1,10 +1,11 @@
 
 import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
-import SVGsend from "/src/assets/svg/send-email-svgrepo-com.svg"
 import styles from './message.sender.module.css'
 import { insertFormattedDate } from "/src/utils/function"
 import { ChatBoxApiContext } from "../../../../context/context";
+import AudioRecognition from './components/audioRecognition/audio.recognition';
+import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
 const MessageSender = ({ talkSphereId,  currentChatId}) => {
@@ -53,9 +54,10 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
                     }
                 }}
             />
-            <img src={SVGsend} alt="search" onClick={()=>{
-                sendMessage()
-            }} />
+            <div className={styles.recorders}>
+                <AudioRecognition />
+                <AudioRecorder />
+            </div>
         </div>
      );
 }

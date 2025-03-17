@@ -6,7 +6,6 @@
     padding: 5px;
     display: flex;
     cursor: pointer;
-    overflow: visible;
     border-radius: 5px;
     align-items: center;
     flex-direction: column;
@@ -21,7 +20,6 @@
     height: 40px;
     border: none;
     outline: none;
-    overflow: visible;
     object-fit: cover;
     object-position: center;
 }

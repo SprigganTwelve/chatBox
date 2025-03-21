@@ -1,13 +1,13 @@
 
-import {  useRef, useState } from "react";
 import axios from "axios";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
+import {  useRef, useEffect, useState } from "react";
 
-import ViewOption from "/src/components/ui/viewOption/view.option";
-import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 import VibeBox from "./components/vibeBox/vibe.box";
 import Switch from "/src/components/ui/switch/switch"
 import styles from "./interface.settings.module.css"
+import ViewOption from "/src/components/ui/viewOption/view.option";
+import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 
 import SVGadd from '/src/assets/svg/add-circle-svgrepo-com.svg'
 import SVGfontsize from '/src/assets/svg/font-size-svgrepo-com (1).svg'
@@ -15,11 +15,13 @@ import SVGlanguage from '/src/assets/svg/language-svgrepo-com.svg'
 import SGVnativedefaultbackground from '/src/assets/svg/image-1-svgrepo-com.svg'
 import SVGthemes from '/src/assets/svg/vivo-themes-svgrepo-com.svg'
 
-const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
+const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     const inputFileRef = useRef(null)
     const [isFocus, setFocus] = useState(0)
     const [isActive, setIsActive] = useState(defaultSettings.fontSize)
+    const [imageUploaded, setImageUploaded]= useState("")
+
 
     const fontSize = {
         fontSize1: 15,
@@ -70,44 +72,82 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
         "message_letters.jpg",
         "galaxy_purple.jpg",
         "orange_galaxy.jpg",
-        "message_bubble.jpg"
+        // "message_bubble.jpg",
     ]
+
+    
+    useEffect(()=>{
+        if (defaultSettings) {
+            const imageLoader = new Image()
+
+            imageLoader.src = `http://localhost:3000/uploads/themes/customizes/${defaultSettings.themes}`
+           
+            imageLoader.onload = ()=>{ 
+                setImageUploaded(imageLoader.src)
+                setFocus(themes.length)
+            }
+
+            imageLoader.onerror = ()=>{
+                    console.log("something went wrong")
+            }
+        }
+    },[])
 
 
     return ( 
         <div className={styles.container}>
             <div className={styles.themes}>
-                {themes.map((item, key)=>(
-                    <VibeBox
-                        key={key}
-                        imagePath={`http://localhost:3000/uploads/themes/${item}`}
-                        isFocus={isFocus === key}
-                        onClick={()=> {
-                            setFocus(key)
-                        }}
+                {themes.map((item, key)=> {
+
+                   return (
+                        <VibeBox
+                            key={key}
+                            imagePath={ item.includes("http") ? imageUploaded : "http://localhost:3000/uploads/themes/" + item }
+                            isFocus={isFocus === key}
+                            onClick={()=> {
+                                setFocus(key)
+                            }}
+                        />
+                    )
+                })}
+                {
+                    imageUploaded && 
+                    <VibeBox 
+                        imagePath={imageUploaded}
+                        isFocus= {isFocus ===themes.length}
+                        onClick={()=> setFocus(themes.length)}
                     />
-                ))}
+                }
                 <div className={styles.iconImageContainer}>
                     <img src={SGVnativedefaultbackground} className={styles.icon} alt="image" />
                 </div>
             </div>
             <input
                 hidden
+                type="file"
                 ref={inputFileRef}
                 onChange={() => {
                     if(inputFileRef.current.files[0]){
-                        ContainerX.current = () => 
-                        (<SmartImageProcessor
-                            showGrid={true}
-                            setModal={setModal}
-                            inputRef={inputFileRef} 
-                            fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
-                            callback = {handleChangeGlobalImageSettings()}
-                        />)
-                        setModal({open: true, styleContent: { backgroundColor: 'transparent' }, showCancelAndConfirmButtons: true})
+                        
+                        setModal({
+                            open: true,
+                            styleContent: { backgroundColor: 'transparent' },
+                            showCancelAndConfirmButtons: true,
+                            ModalComponent: ()=>                             ( <div 
+                                className={styles.imageManagerSection}
+                            >
+                                <SmartImageProcessor
+                                    showGrid={true}
+                                    setModal={setModal}
+                                    inputRef={inputFileRef}
+                                    idInBdd={defaultSettings.settings_id}
+                                    fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
+                                    callback = {() => handleChangeGlobalImageSettings()}
+                                />
+                            </div> )
+                        })
                     }
                 }}
-                type="file"
             />
             <ViewOption
                 title="Add a global chat background"
@@ -126,7 +166,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
                         className={ isActive ===15 ? styles.isActive : ""}
                         onClick={()=> {
                             setIsActive(fontSize.fontSize1)
-                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize1, id: defaultSettings.id })
+                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize1, id: defaultSettings.settings_id })
                         }}
                     >
                         A
@@ -136,7 +176,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
                         className={ isActive ===18 ? styles.isActive : ""}
                         onClick={()=> {
                             setIsActive(fontSize.fontSize2)
-                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize2, id: defaultSettings.id })
+                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize2, id:  defaultSettings.settings_id })
                         }}
                     >
                         A
@@ -146,7 +186,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
                         className={isActive == 24 ? styles.isActive : ""}
                         onClick={()=>{
                             setIsActive(fontSize.fontSize3)
-                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize3, id: defaultSettings.id })
+                            handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize3, id:  defaultSettings.settings_id })
                         }}
                     >
                         A
@@ -177,12 +217,12 @@ const InterfaceSettings = ({ defaultSettings, setModal, ContainerX }) => {
 
 InterfaceSettings.propTypes = {
     defaultSettings: PropTypes.shape({
-        id: PropTypes.number,
-        fontSize: PropTypes.number
+        themes: PropTypes.string,
+        fontSize: PropTypes.number,
+        settings_id: PropTypes.number,
     }),
     modal: PropTypes.bool,
     setModal: PropTypes.func,
-    ContainerX: PropTypes.object
 }
  
 export default InterfaceSettings;

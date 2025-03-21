@@ -6,7 +6,6 @@ const ChatBoxApiContext = createContext();
 
 const ChatBoxApiContextProvider = ({ children }) => {
 
-    const ContainerX = useRef(null)
 
     const [userId, setUserId] = useState(()=>{
         const saved = JSON.parse(localStorage.getItem("userId"))
@@ -52,11 +51,36 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
                 socket.current.emit("register", {userId: userId})
                 
-                const { defaultSettings }  = requestForUserData.data;
-                console.log(defaultSettings)
-                setUserChatDefaultSettings(...defaultSettings)
+                const {
+                    settings_id,
+                    opacity,
+                    typingIndicateur,
+                    autoDeleteMessages,
+                    soundNotification,
+                    readReceipts,
+                    desktopNotification,
+                    mentionNotification,
+                    themes,
+                    dialect,
+                    fontSize }  = requestForUserData.data;
+
                 setUserData(requestForUserData.data)
                 setFriends(requestForFriendship.data);
+                setUserChatDefaultSettings(
+                    {
+                        settings_id,
+                        opacity,
+                        typingIndicateur,
+                        autoDeleteMessages,
+                        soundNotification,
+                        readReceipts,
+                        desktopNotification,
+                        mentionNotification,
+                        themes,
+                        dialect,
+                        fontSize 
+                    }
+                )
 
             } catch (err) {
                 setPopUp({ message: "Something went wrong while retreiving user data", type: "error" }
@@ -67,6 +91,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
             }
         }
     }, [userId, socket]);
+
+
 
     useEffect(() => {
         if (friends.length === 0) { 
@@ -81,10 +107,12 @@ const ChatBoxApiContextProvider = ({ children }) => {
         };
     }, []);
 
+
+
     return ( 
         <ChatBoxApiContext.Provider value={{ 
             fetchUserFriend, setTalkSphereId, setPopUp, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId,
-            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, ContainerX, userChatDefaultSettings,
+            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, userChatDefaultSettings,
         }}
         >
                 {children}
@@ -92,8 +120,12 @@ const ChatBoxApiContextProvider = ({ children }) => {
     );
 };
 
+
+
 ChatBoxApiContextProvider.propTypes = {
     children: React.Children
 }
+
+
 
 export { ChatBoxApiContext, ChatBoxApiContextProvider };

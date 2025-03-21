@@ -43,10 +43,14 @@ const getCroppedImage = (fileUrl, croppedAreaPixels, rotation = 0) => {
     image.src = fileUrl
     return new Promise(( resolve, reject )=>{
         image.onload = ()=>{
-            const canvas = new document.createElement('canvas')
+            console.log(image, croppedAreaPixels)
+            const canvas =  document.createElement('canvas')
+
             const ctx = canvas.getContext('2d')
     
             const { x, y, width, height } = croppedAreaPixels;
+            canvas.width = width;
+            canvas.height = height;
             
             ctx.rotate((rotation * Math.PI) / 180);
     
@@ -54,7 +58,7 @@ const getCroppedImage = (fileUrl, croppedAreaPixels, rotation = 0) => {
     
             canvas.toBlob((blob)=>{
                 const file = new File([blob], Date.now() + '.jpeg' , {lastModified: Date.now(), type: 'image/jpeg'}  )
-                resolve({file})
+                resolve(file)
             }, 'image/jpeg')
         }
         image.onerror = reject

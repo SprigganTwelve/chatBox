@@ -19,7 +19,6 @@
     border-radius: 8px;
     position: relative;
     width: fit-content;
-    height: fit-content;
     flex-direction: column;
     position: relative;
     background-color: black;
@@ -27,32 +26,37 @@
 
 .children {
     z-index: 100;
-    padding: 20px;
+    padding: 5px;
     color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+
 .buttonContainer {
+    right: 0;
     gap: 10px;
-    bottom: 7px;
-    right: 15px;
-    z-index: 10;
+    z-index: 24;
     display: flex;
+    bottom: -5px;
     position: absolute;
 }
 
-.buttonContainer > * {
-    padding: 5px;
-    border: none;
+.buttonContainer * {
+    z-index: 24;
     outline: none;
+    border: none;
+    padding: 10px;
+    display: flex;
+    cursor: pointer;
     font-size: 17px;
+    font-weight: bold;
     border-radius: 5px;
     pointer-events: all;
-    cursor: pointer !important;
-    transition: all 0.3s ease-in-out;
+    transition: all 1s ease;
 }
 
+
 .buttonContainer > *:hover{
+    color: white;
     background-image: linear-gradient(to right, #e100ff, #008cff);
 }
 

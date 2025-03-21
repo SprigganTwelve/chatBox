@@ -21,21 +21,44 @@ exports.getAllUsers = async (req, res) => {
 exports.getSpecialUser = async (req, res) => {
     try {
         let user;
+        console.log("jdjdj")
         const conn = await db.connexion;
-        const response = await conn.query("SELECT * FROM Consumer WHERE id = ?", [req.params.id]);
+        const response = await conn.query(
+            `
+                SELECT 
+                    C.id,
+                    C.name,
+                    C.image,
+                    C.pseudo,
+                    C.online,
+                    C.description,
+                    C.keyFriend,
+                    C.password,
+                    C.email,
+                    C.visibility,
+                    C.availability,
+                    C.number,
+                    C.doubleAuthentification,
+
+                    S.id  AS settings_id,
+                    S.opacity,
+                    S.typingIndicateur,
+                    S.autoDeleteMessages,
+                    S.soundNotification,
+                    S.readReceipts,
+                    S.desktopNotification,
+                    S.mentionNotification,
+                    S.themes,
+                    S.dialect,
+                    S.fontSize
+
+                FROM Consumer C INNER JOIN Settings S ON  C.id = S.id WHERE C.id = ?;
+            `,
+            [req.params.id]
+        );
         if (response.length > 0) {
-            const defaultSettingResponse = await conn.query(
-                "SELECT * FROM Settings WHERE consumerId =?",
-                [req.params.id]
-            )
-            if(defaultSettingResponse.length > 0){
                 user = response[0]
-                return res.status(200).json({
-                    ...user,
-                    defaultSettings: defaultSettingResponse
-                });
-            }
-            return res.status(400).json({ message: "Something went wron while retreiving the default settings" });
+                return res.status(200).json(...response);
         }
         return res.status(400).json({ message: "User doen't exist" });
     } 
@@ -222,11 +245,11 @@ exports.getSignedUpToBDD = async (req, res) => {
 
 
 
-exports.changeKeyValueInBDD = async (req, res) => {
+exports.changeValueInClientInBDDWithKeyAndValue = async (req, res) => {
     try{
         const conn = await db.connexion;
         const { id, key, value } = req.body;
-        if(!id || !key || !value ){
+        if(!id || !key || value == undefined ){
             return res.status(400).json( { message: "Props missing" } )
         }
         if (key !== "image" && key!=="password" && key !==  "keyFriend" ) {

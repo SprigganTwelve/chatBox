@@ -9,27 +9,34 @@ import Confidentiality from "/src/components/profile/confidentiality/confidentia
 import styles from "./profil.module.css"
 
 const Profil = () => {
-    const { userId, setUserId, userData, userChatDefaultSettings, modal, setModal, ContainerX  } = useContext(ChatBoxApiContext)
+    const { userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
     const [isButtonActive, setIsButtonActive] = useState("Edit")
+
+    const changeProfilImage = ()=>{
+        setModal(()=>({open: true}))
+    }
 
     useEffect(()=>{
         if(!userId){
             navigate("/")
         }
     },
-    [userId])
+    [userId, navigate])
 
     return (
         <div className={styles.container}>
             { userData && (
               <>
                 <div className={styles.leftBoard}>
-                    <div className={styles.imageContainer}>
+                    <div 
+                        className={styles.imageContainer}
+                        onClick={()=> changeProfilImage()}
+                    >
                         <img
+                            alt=""
                             src={userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/randomUser.png" }
                             className={styles.imageProfil}
-                            alt=""
                         />
                     </div>
                     <div className={styles.textSection}>
@@ -94,7 +101,6 @@ const Profil = () => {
                             <InterfaceSettings 
                                 modal={modal}
                                 setModal={setModal}
-                                ContainerX={ContainerX}
                                 defaultSettings={userChatDefaultSettings}
                             />
                         )

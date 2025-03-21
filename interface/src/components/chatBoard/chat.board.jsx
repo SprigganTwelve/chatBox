@@ -1,13 +1,39 @@
-import { useContext } from "react";
+import {  useContext, useEffect } from "react";
 import { ChatBoxApiContext } from "../../context/context";
 import ChatHeader from "./components/chatHeader/chat.header";
 import MessageContent from "./components/messageContent/message.content";
 import MessageSender from "./components/messageSender/message.sender";
 import MessageSVG from "/src/assets/svg/chat-round-line-svgrepo-com.svg";
 import styles from './chat.board.module.css';
+import { useState } from "react";
 
 const ChatBoard = () => {
+
     const { talkSphereId, currentChatId, userChatDefaultSettings,  usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const [imageUploaded, setImageUploaded] = useState("")
+
+    useEffect(()=>{
+        if (userChatDefaultSettings) {
+            const imageLoader = new Image()
+
+            imageLoader.src = `http://localhost:3000/uploads/themes/${userChatDefaultSettings.themes}`
+           
+            imageLoader.onload = ()=>{ setImageUploaded(() => imageLoader.src) }
+
+            imageLoader.onerror = ()=>{
+                imageLoader.src= `http://localhost:3000/uploads/themes/customizes/${userChatDefaultSettings.themes}`
+               
+                imageLoader.onload = ()=>{setImageUploaded(() => imageLoader.src)}
+
+                imageLoader.onerror = ()=>{console.log("something went wrong")}
+            }
+
+        }
+    },[userChatDefaultSettings])
+
+    useEffect(()=>{
+        console.log(imageUploaded)
+    },[imageUploaded])
 
     return (
         <div className={styles.container}>
@@ -30,12 +56,11 @@ const ChatBoard = () => {
                         style={userChatDefaultSettings && 
                             {
                                 opacity: userChatDefaultSettings.opacity,
-                                backgroundImage: `url(http://localhost:3000/uploads/themes/${userChatDefaultSettings.themes})`,
+                                backgroundImage: imageUploaded && `url(${imageUploaded})`,
                             }
                         }
                     />
                     <div 
-                        style={{ }}
                         className={styles.colorOVerlay}
                     />
                 </div>

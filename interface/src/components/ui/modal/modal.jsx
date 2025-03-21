@@ -8,7 +8,7 @@ import styles from "./modal.module.css"
 */
 const Modal = () => {
     const modalRef = useRef(null)
-    const { modal, setModal, ContainerX } = useContext(ChatBoxApiContext)
+    const { modal, setModal } = useContext(ChatBoxApiContext)
     
     useEffect(()=>{
         const handleOnMouseDown = (event) =>{
@@ -25,7 +25,7 @@ const Modal = () => {
 
     return ( 
         <>
-            {modal && modal.open && (
+            { modal && modal.open && (
                     <div
                         className={styles.container}
                         style={modal.stylesContainer}
@@ -34,11 +34,12 @@ const Modal = () => {
                             ref={modalRef}
                             className={styles.content}
                             style={modal.styleContent}
+                            onMouseDown={(e) => e.stopPropagation()}
                         >
                             <div
                                 className={styles.children}
                             >
-                                <ContainerX.current />
+                                { modal.ModalComponent ? < modal.ModalComponent /> : <p>No component set</p> }
                             </div>
 
                                {
@@ -53,7 +54,9 @@ const Modal = () => {
                                         </button>
                                         <button
                                             onClick={()=>{
-                                                modal.onContinueHandler && modal.onContinueHandler()
+                                               if ( modal.onContinueHandler) {
+                                                    modal.onContinueHandler()
+                                                }   
                                                 setModal(false)
                                             }}
                                         >

@@ -1,11 +1,12 @@
-import {  useEffect, useState } from "react";
+import axios from "axios";
+import {   useCallback, useEffect, useState } from "react";
 import PropTypes from 'prop-types'
 import Cropper from 'react-easy-crop'
 
 import styles from "./smart.image.processor.module.css"
 
-import Slider from "/src/components/ui/slider/silider";
 import MenuItem from "./components/menu.item";
+import Slider from "/src/components/ui/slider/silider";
 
 import { getCroppedImage } from '/src/utils/function'
 
@@ -16,31 +17,61 @@ import SVGannotation from '/src/assets/svg/pencil-svgrepo-com.svg'
 import SVGimport from '/src/assets/svg/import-svgrepo-com.svg'
 import SVGluminosity from '/src/assets/svg/luminosity-svgrepo-com.svg'
 import SVGratio from '/src/assets/svg/aspect-ratio-svgrepo-com (1).svg'
-import axios from "axios";
 
-const SmartImageProcessor = ({ fileUrl, inputRef, showGrid= false, defaultOpacityValue, setModal }) => {
+const SmartImageProcessor = ({ 
+    fileUrl, 
+    inputRef, showGrid= false,
+    defaultOpacityValue, setModal = ()=>{},
+    shape = "rect",
+    ratio = 11/5,
+    onApectRatioChange = ()=>{},
+    idInBdd=0 
+}) => {
 
     // const { setModal } = useContext(ChatBoxApiContext)
 
     const [ zoom, setZoom ] = useState(1)
     const [rotation, setRotation] = useState(0)
     const [crop, setCrop] = useState({ x:0, y:0 })
-    const [coppedAreaPixels, setCroppedPixels] = useState(0)
+    const [aspectRatio, setAspectratio] = useState({ratio: ratio, iteration: 1})
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState({ratio: ratio, iteration: 1})
     const [opacity, setOpacity] = useState(defaultOpacityValue ?? 1)
+
+    const rationRange = [16/9, 4/3, 1, 21/9, 11/5]
     
 
     const onCropComplete = (cropArea, cropAreaPixels) => {
-            setCroppedPixels(cropAreaPixels)
+        setCroppedAreaPixels(cropAreaPixels)
     }
 
-    const handleSaveImage = async () =>{
-        const croppedImage = await getCroppedImage(fileUrl, coppedAreaPixels)
-        await axios.post('',{croppedImage})
-    }
+    const handleSaveImage = useCallback(async () =>{
+        const formData = new FormData() 
+        const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
+        formData.append('id', idInBdd)
+        formData.append("opacity", opacity)
+        formData.append('file', croppedImage)
+        await axios.post('http://localhost:3000/settings/general/image', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[idInBdd, opacity, fileUrl])
+
+
 
     useEffect(()=>{
-        setModal((prev) => ({...prev, onContinueHandler: () => handleSaveImage() }))
-    },[setModal])
+        onApectRatioChange(aspectRatio.ratio)
+    },[aspectRatio, onApectRatioChange])
+
+    useEffect(() => {
+        setModal((prev) => ({
+            ...prev,
+            onContinueHandler: () => handleSaveImage(croppedAreaPixels)
+        }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [croppedAreaPixels, setModal]);
+    
 
     return ( 
         <div className={styles.container}>
@@ -60,7 +91,10 @@ const SmartImageProcessor = ({ fileUrl, inputRef, showGrid= false, defaultOpacit
                         title="Ratio"
                         leading={SVGratio}
                         onClick={()=>{
-                        
+                            setAspectratio((prev) => {
+                                const newIteration = (prev.iteration + 1) % rationRange.length;
+                                return { ...prev, iteration: newIteration, ratio: rationRange[newIteration] };
+                            })
                         }}
                 />
             </div>
@@ -71,9 +105,9 @@ const SmartImageProcessor = ({ fileUrl, inputRef, showGrid= false, defaultOpacit
                 <Cropper
                     image={fileUrl}
                     crop={crop}
-                    aspect={1}
+                    aspect={aspectRatio.ratio}
                     zoom={zoom}
-                    cropShape="round"
+                    cropShape={shape}
                     showGrid={showGrid}
                     rotation={rotation}
                     style={{containerStyle: {width: '100%', height: '100%'}}}
@@ -96,11 +130,15 @@ const SmartImageProcessor = ({ fileUrl, inputRef, showGrid= false, defaultOpacit
 }
 
 SmartImageProcessor.propTypes = {
-    fileUrl: PropTypes.string,
+    ratio: PropTypes.number,
+    shape: PropTypes.string,
     setModal: PropTypes.func,
     showGrid: PropTypes.bool,
+    fileUrl: PropTypes.string,
+    idInBdd: PropTypes.number,
     inputRef: PropTypes.object,
-    defaultOpacityValue: PropTypes.number
+    onApectRatioChange: PropTypes.func,
+    defaultOpacityValue: PropTypes.number,
 }
  
 export default SmartImageProcessor;

@@ -29,13 +29,83 @@ exports.changeGeneralSettingPropertyInBdd = async (req, res) => {
 
 //Here we change the global image setting in the database 
 
-exports.changeGeneralImageSettingPropertyInBdd = async (req, res) => {
+exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
+
+    const conn = await db.connexion;
+    await conn.beginTransaction()
 
     try{
-        
-    }
-    catch{
+        const file = req.file;
+        const { id, opacity } = req.body;
+        console.log()
+        if(file && id && opacity){
 
+            const filename = Date.now() +"_customize_themes_"+ file.originalname
+
+            //Check if there is an existing custoized theme and delete it from storage 
+            
+
+            const imageResponse = await conn.query(
+                "SELECT * FROM Settings WHERE id=?",
+                [ id ]
+            )
+            if (!imageResponse.length) {
+                await conn.rollback()
+                return res.status(500).json({ message: "No existing theme is set in the db" })
+            }
+
+            const theme = imageResponse[0].themes
+
+            if ( theme && theme.includes('_customize_themes_')) {
+                const lastImagePath = path.join(__dirname, "../uploads/themes/customizes", theme )
+                fs.unlinkSync(lastImagePath)
+            }
+
+            //------------end
+
+            //load the new image into the db
+
+            const filePath = path.join(__dirname, '../uploads/themes/customizes')
+            const completeFilePath = path.join(filePath, filename)
+            fs.writeFile(completeFilePath, file.buffer, async (err) => {
+                if (err) {
+                    console.log(
+                        "[POST, function: changeGeneralImageSettingPropertyInBdd] Something wront while inserting asynchronously file"
+                    )
+                    await conn.rollback()
+                    return res.status(500).json({ message: "Failed to insert image"})
+                }
+                const response = await  conn.query(
+                    "UPDATE Settings SET themes = ? , opacity = ? WHERE id=? ",
+                    [ filename, opacity, id ]
+                )
+                console.log(response)
+                if(response.affectedRows === 0) {
+                    await conn.rollback()
+                    return res.status(500).json({ message: "Failed to insert image"})
+                }
+                await conn.commit()
+                return res.status(200).json({ message: "Image sucessfully added"})
+            })
+            //------------end
+        }
+    }
+    catch(error){
+        await conn.rollback()
+        console.log("[POST, function: changeGeneralImageSettingPropertyInBdd] Something went wrong")
+        return res.status(400).json({message: "Failed to insert image"})
     }
 
+}
+
+//Here we change a speciific chat image
+
+exports.changeSpecificImageSettingsPropertyInBdd = async (req, res) => {
+    try{
+        const { id } = req.body
+    }
+    catch(err){
+        console.log("[POST, function: changeSpecificImageSettingsPropertyInBdd] something went wrong")
+        return res.status(400).json({message: "Failed to insert image"})
+    }
 }

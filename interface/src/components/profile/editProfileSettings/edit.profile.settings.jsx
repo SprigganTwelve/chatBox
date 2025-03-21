@@ -21,7 +21,7 @@ import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
 
 
 const EditProfileSettings = ({ userData }) => {
-    const { setUserData, setPopUp, setModal, ContainerX } = useContext( ChatBoxApiContext )
+    const { setUserData, setPopUp, setModal } = useContext( ChatBoxApiContext )
 
     const flexEditErrorController = (value, item) => {
             if (item.key == "email") {
@@ -39,10 +39,12 @@ const EditProfileSettings = ({ userData }) => {
     const handleChangeSingleFieldInBDD = async (data) => {
         try{
             await axios.patch('http://localhost:3000/users/', data)
-            setUserData(( previous )=> ({
-                ...previous,
-                [data.key ]: data.value
-            }))
+            if(setUserData){
+                setUserData(( previous )=> ({
+                    ...previous,
+                    [data.key]: data.value
+                }))
+            }
         }catch(err){
             console.log("Something went wrong : ", err)
         }
@@ -98,32 +100,27 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGabout}
                         description="What do you usually do ?"
                         onClick={()=> {
-                            ContainerX.current = () => {
-                                return (
-                                    <FlexEdit
-                                        title="Description"
-                                        resize="none"
-                                        placeholder = {userData.description == "" ? "Void description" : undefined}
-                                        defaultValue= {userData?.description}
-                                        containerStyle={{
-                                            backgroundColor: "black",
-                                            height: "100%", 
-                                            width: "500px"
-                                        }}
-                                        textareaStyle= {{
-                                            resize: ""
-                                        }}
-                                        callback={(value)=>{
-                                            handleChangeSingleFieldInBDD({
-                                                id: userData?.id,
-                                                key: "description",
-                                                value: value,
-                                             })
-                                        }}
-                                    />
-                                )
-                            }
-                            setModal({open: true})
+                            setModal({open: true, ModalComponent: ()=> <FlexEdit
+                                                    title="Description"
+                                                    resize="none"
+                                                    placeholder = {userData.description == "" ? "Void description" : undefined}
+                                                    defaultValue= {userData?.description}
+                                                    containerStyle={{
+                                                        backgroundColor: "black",
+                                                        height: "100%", 
+                                                        width: "500px"
+                                                    }}
+                                                    textareaStyle= {{
+                                                        resize: ""
+                                                    }}
+                                                    callback={(value)=>{
+                                                        handleChangeSingleFieldInBDD({
+                                                            id: userData?.id,
+                                                            key: "description",
+                                                            value: value,
+                                                        })
+                                                    }}
+                            /> })
                         }}
                 />
                 <ViewOption 
@@ -134,6 +131,11 @@ const EditProfileSettings = ({ userData }) => {
                     <Switch 
                         defaultValue={userData?.availability}
                         callback={(state)=>{
+                            console.log({
+                                id: userData?.id,
+                                key: "availability",
+                                value: +state,
+                            })
                             handleChangeSingleFieldInBDD({
                                 id: userData?.id,
                                 key: "availability",
@@ -163,8 +165,8 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdchange}
                         description="Here change your password if needed"
                         onClick={()=>{
-                            ContainerX.current = () => {
-                                return (
+                            setModal({open: true, ModalComponent: ()=> 
+                                (
                                     <FlexEdit 
                                         title="Change password"
                                         resize="none"
@@ -185,9 +187,8 @@ const EditProfileSettings = ({ userData }) => {
                                             })
                                         }}
                                     />
-                                )
-                            }
-                            setModal({open: true})
+                                )}
+                            )
                         }}
                 />
                 <ViewOption
@@ -195,31 +196,27 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdchange}
                         description="A key friend is a tool that allow user to directly acces to ..."
                         onClick={()=>{
-                            ContainerX.current = () => {
-                                return (
-                                    <FlexEdit 
-                                        title="Change Key Friend"
-                                        resize="none"
-                                        placeholder = "New Key Friend"
-                                        containerStyle={{
-                                            backgroundColor: "black",
-                                            height: "100%", 
-                                            width: "500px"
-                                        }}
-                                        textareaStyle= {{
-                                            resize: ""
-                                        }}
-                                        callback={(value)=>{
-                                            handleChangeSingleFieldInBDD({
-                                                id: userData?.id,
-                                                key: "keyFriend",
-                                                value: value,
-                                            })
-                                        }}
-                                    />
-                                )
-                            }
-                            setModal({open: true})
+                            setModal({open: true, ModalComponent: () => <FlexEdit 
+                                                        title="Change Key Friend"
+                                                        resize="none"
+                                                        placeholder = "New Key Friend"
+                                                        containerStyle={{
+                                                            backgroundColor: "black",
+                                                            height: "100%", 
+                                                            width: "500px"
+                                                        }}
+                                                        textareaStyle= {{
+                                                            resize: ""
+                                                        }}
+                                                        callback={(value)=>{
+                                                            handleChangeSingleFieldInBDD({
+                                                                id: userData?.id,
+                                                                key: "keyFriend",
+                                                                value: value,
+                                                            })
+                                                        }}
+                                                    />
+                        })
                         }}
                 />
                 <ViewOption
@@ -243,30 +240,28 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGaccount}
                         description=""
                         onClick={()=>{
-                            ContainerX.current = () => {
-                                return (
-                                   <ChatBoxForm
-                                        url="http://localhost:3000/users/login"
-                                        btnContent = "Add new account"
-                                        formStyle={{
-                                            width: "fit-content",
-                                            minHeight: "0px"
-                                        }}
-                                   >
-                                        <Input
-                                            name="email"
-                                            title="email"
-                                            placeholder=" 👤 Type your email"
-                                        />
-                                        <Input
-                                            title="password"
-                                            type = "password"
-                                            placeholder=" 🔒 Type your password"
-                                        />
-                                   </ChatBoxForm>
-                                )
-                            }
-                            setModal({open: true, styleContent: {backgroundColor: "transparent"}})
+                            setModal({open: true, styleContent: {backgroundColor: "transparent"}, ModalComponent: () => 
+                            (
+                                <ChatBoxForm
+                                     url="http://localhost:3000/users/login"
+                                     btnContent = "Add new account"
+                                     formStyle={{
+                                         width: "fit-content",
+                                         minHeight: "0px"
+                                     }}
+                                >
+                                     <Input
+                                         name="email"
+                                         title="email"
+                                         placeholder=" 👤 Type your email"
+                                     />
+                                     <Input
+                                         title="password"
+                                         type = "password"
+                                         placeholder=" 🔒 Type your password"
+                                     />
+                                </ChatBoxForm>
+                             )})
                         }}
                 />
                 <ViewOption
@@ -274,17 +269,15 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdelete}
                         description="This action can't be undone..."
                         onClick={()=>{
-                            ContainerX.current = () => {
-                                return (
-                                    <p style={{color: "red", fontSize: 17}}>
-                                            This action can&apos;t be undone 
-                                    </p>
-                                )
-                            }
                             setModal({
                                 open: true,
                                 showCancelAndConfirmButtons: true,
-                                onContinueHandler: () => {}
+                                onContinueHandler: () => {},
+                                ModalComponent: ()=>( 
+                                    <p style={{color: "red", fontSize: 17}}>
+                                     This action can&apos;t be undone 
+                                    </p>
+                                )
                             })
                         }}
                 />

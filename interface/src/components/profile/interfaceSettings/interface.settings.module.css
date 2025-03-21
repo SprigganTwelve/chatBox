@@ -6,6 +6,7 @@
     flex-direction: column;
 }
 
+
 .themes{
     gap: 20px;
     padding: 20px;
@@ -13,6 +14,7 @@
     position: relative;
     background-color: #2a2a2b !important;
 }
+
 
 .themes .iconImageContainer{
     right: 10px;
@@ -27,20 +29,45 @@
     transition: background-color 2s ease;
 }
 
+
 .icon{
     width: 30px;
     height: 30px;
     cursor: pointer;
 }
 
+
+.imageManagerSection{
+    display: flex;
+    position: relative;
+    justify-content: center;
+}
+
+
+.imageManagerSection .bubbleMessageSection{
+    top: 20%;
+    gap: 25px;
+    display: flex;
+    position: absolute;
+    pointer-events: none;
+    flex-direction: column;
+}
+
+.imageManagerSection .bubbleMessageSection *{
+    margin: 0 10px;
+}
+
 .themes .iconImageContainer:hover{
     background-color: rgb(82, 77, 77);
 }
+
+
 
 .fontSizeLetterSection{
     gap: 10px;
     display: flex;
 }
+
 
 .fontSizeLetterSection div{
     padding: 7px;
@@ -53,9 +80,11 @@
     transition: background-color 2s ease;
 }
 
+
 .fontSizeLetterSection div:hover{
     background-color: #2a2a2b;
 }
+
 
 .fontSizeLetterSection .isActive{
     color: #2a2a2b;

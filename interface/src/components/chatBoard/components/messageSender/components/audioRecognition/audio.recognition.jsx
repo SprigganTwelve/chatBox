@@ -26,22 +26,24 @@ const AudioRecognition = ({ onChange = ()=>{} }) => {
         if (!recognition)  return;
         recognition.onresult = ( event ) => {
             setText(event.results[0][0].transcript)
-            console.log(text)
+            console.log(event)
             recognition.stop()
             setIsListening(false)
         }
     },[])
     
     useEffect(()=>{
-        if (!isListening && text.trim() !== '') {
+        if (!isListening && text.trim() !== '' &&  recognition) {
             onChange(text)
         }
-    }, [isListening, text, onChange])
+    }, [isListening, onChange])
     
     const startListening = ()=>{
-        setText('')
-        setIsListening(true)
-        recognition.start()
+        if(recognition) {
+            setText('')
+            setIsListening(true)
+            recognition.start()
+        }
     }
     
 
@@ -50,11 +52,11 @@ const AudioRecognition = ({ onChange = ()=>{} }) => {
             {
                 recognition && (
                     <img
-                    alt=""
+                    alt="Reconnaissance vocale"
                     className={styles.icon}
                     src={SVGvoicerecognition}
                     onClick={()=>{
-                      if(recognition)  startListening()
+                       startListening()
                     }}
                 />
                 )

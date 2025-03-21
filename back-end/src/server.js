@@ -5,6 +5,7 @@ const express = require('express');
 const { Server } = require("socket.io");
 const path = require('path')
 
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -14,25 +15,31 @@ const io = new Server(server, {
     }
 });
 
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use("/uploads/", express.static(path.join(__dirname, 'uploads/users')))
 app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
 
+
 const usersRouter = require("./routes/users.routes");
 const talkSphereRouter = require('./routes/talksphere.routes');
-const userInvitationRouter = require('./routes/invitation.routes')
-const userSettingsRouters = require('./routes/settings.routes')
+const userSettingsRouters = require('./routes/settings.routes');
+const userInvitationRouter = require('./routes/invitation.routes');
+
 
 app.use("/users", usersRouter);
 app.use("/talkSphere", talkSphereRouter);
 app.use("/invitation", userInvitationRouter)
 app.use('/settings', userSettingsRouters)
 
+
 const socketController = require("./controller/socket.controller");
 const users = {};
+
 
 io.on("connection", (socket) => {
     console.log(`L'user ${socket.id} est connecté`);
@@ -61,6 +68,8 @@ io.on("connection", (socket) => {
     });
 });
 
+
 server.listen(PORT, () => {
     console.log("Server started on port 3000");
 });
+

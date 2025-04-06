@@ -34,7 +34,7 @@
 .buttonContainer {
     right: 0;
     gap: 10px;
-    z-index: 24;
+    z-index: 510;
     display: flex;
     bottom: -5px;
     position: absolute;

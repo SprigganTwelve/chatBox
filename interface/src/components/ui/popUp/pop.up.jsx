@@ -29,7 +29,7 @@ const PopUp = () => {
         >
             { popUp && popUp.message && popUp.message.trim() !== "" &&  <MessageBuddle 
                 content={popUp.message}
-                backgroundColor={ popUp?.type.trim() === "sucess" ? "green" : "red" }
+                backgroundColor={ popUp.type && typeof popUp.type === "string" && popUp.type.trim() === "sucess" ? "green" : "red" }
             />}
         </div>
     );

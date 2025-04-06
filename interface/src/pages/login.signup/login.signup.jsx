@@ -9,9 +9,9 @@ import Input from "/src/components/ui/input/input";
 import SVGOutlook from "/image/social/outlook.png"
 import SVGYahoot from "/image/social/yahoot.png"
 import SVGGoogle from "/image/social/google-icon.png"
-import styles from "./login.module.css"
+import styles from "./login.signup.module.css"
 
-const Login = () => {
+const LoginSingUp = () => {
 
     const navigate = useNavigate()
     const [formResponse, setFormResponse] = useState(null)
@@ -71,7 +71,7 @@ const Login = () => {
                                 />
                                 <Input
                                     title="pseudo"
-                                    placeholder=" 🔒 Type pseudo (optionel)"
+                                    placeholder=" 🔒 Type pseudo (optionnel)"
                                 />
                                 <Input
                                     title="email"
@@ -113,4 +113,4 @@ const Login = () => {
      );
 }
  
-export default Login;
+export default LoginSingUp;

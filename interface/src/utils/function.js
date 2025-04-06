@@ -43,7 +43,6 @@ const getCroppedImage = (fileUrl, croppedAreaPixels, rotation = 0) => {
     image.src = fileUrl
     return new Promise(( resolve, reject )=>{
         image.onload = ()=>{
-            console.log(image, croppedAreaPixels)
             const canvas =  document.createElement('canvas')
 
             const ctx = canvas.getContext('2d')

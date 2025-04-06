@@ -36,14 +36,14 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
 
     try{
         const file = req.file;
+        console.log("Route atteinte")
         const { id, opacity } = req.body;
         console.log()
         if(file && id && opacity){
 
-            const filename = Date.now() +"_customize_themes_"+ file.originalname
+            const filename = Date.now() +"_customize_theme_"+ file.originalname
 
             //Check if there is an existing custoized theme and delete it from storage 
-            
 
             const imageResponse = await conn.query(
                 "SELECT * FROM Settings WHERE id=?",
@@ -54,14 +54,14 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
                 return res.status(500).json({ message: "No existing theme is set in the db" })
             }
 
-            const theme = imageResponse[0].themes
+            const theme = imageResponse[0].theme
 
-            if ( theme && theme.includes('_customize_themes_')) {
+            if ( theme && theme.includes('_customize_theme_')) {
                 const lastImagePath = path.join(__dirname, "../uploads/themes/customizes", theme )
                 fs.unlinkSync(lastImagePath)
             }
 
-            //------------end
+            //------------End
 
             //load the new image into the db
 
@@ -76,7 +76,7 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
                     return res.status(500).json({ message: "Failed to insert image"})
                 }
                 const response = await  conn.query(
-                    "UPDATE Settings SET themes = ? , opacity = ? WHERE id=? ",
+                    "UPDATE Settings SET theme = ? , opacity = ? WHERE id=? ",
                     [ filename, opacity, id ]
                 )
                 console.log(response)
@@ -92,7 +92,7 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
     }
     catch(error){
         await conn.rollback()
-        console.log("[POST, function: changeGeneralImageSettingPropertyInBdd] Something went wrong")
+        console.log("[POST, function: changeGeneralImageSettingPropertyInBdd] Something went wrong : ", error)
         return res.status(400).json({message: "Failed to insert image"})
     }
 

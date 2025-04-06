@@ -33,7 +33,7 @@ const Slider = ({ leading, onChange, containerStyles, defaultValue }) => {
                 holdTimeOut.current = setTimeout(() => {
                     setIsHolding(true);
                     console.log("Click maintaining...");
-                }, 1000);
+                }, 500);
                 const gaugeContainerRect = gaugeContainerRef.current.getBoundingClientRect();
                 const newWidth = Math.max(0, Math.min(completeGaugeWidth,  event.clientX  - gaugeContainerRect.x));
                 setCurrentWidth(()=>({ x: newWidth  }));

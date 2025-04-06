@@ -10,10 +10,10 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
 router.get( '/', controller.getAllUsers)
-router.post( '/login', upload.none(),controller.getLoginConnection)
-router.post('/signUp', upload.single("file"), controller.getSignedUpToBDD)
 router.patch('/', controller.changeValueInClientInBDDWithKeyAndValue)
 router.get( '/:id', controller.getSpecialUser)
 router.get( '/:id/friends', controller.getMyFriends)
+router.post( '/login', upload.none(),controller.getLoginConnection)
+router.post('/signUp', upload.single("file"), controller.getSignedUpToBDD)
 
 module.exports = router

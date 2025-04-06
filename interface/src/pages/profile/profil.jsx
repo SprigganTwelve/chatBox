@@ -12,6 +12,7 @@ const Profil = () => {
     const { userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
     const [isButtonActive, setIsButtonActive] = useState("Edit")
+    console.log(userData)
 
     const changeProfilImage = ()=>{
         setModal(()=>({open: true}))

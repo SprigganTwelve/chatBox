@@ -52,33 +52,36 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 socket.current.emit("register", {userId: userId})
                 
                 const {
-                    settings_id,
-                    opacity,
-                    typingIndicateur,
-                    autoDeleteMessages,
-                    soundNotification,
-                    readReceipts,
-                    desktopNotification,
-                    mentionNotification,
-                    themes,
+                    full,
+                    theme,
                     dialect,
-                    fontSize }  = requestForUserData.data;
+                    opacity,
+                    fontsize,
+                    settings_id,
+                    typing_indicator,
+                    auto_delete_messages,
+                    read_receipts,
+                    sound_notification,
+                    desktop_notification,
+                    mention_notification,
+                    }  = requestForUserData.data;
 
                 setUserData(requestForUserData.data)
                 setFriends(requestForFriendship.data);
                 setUserChatDefaultSettings(
                     {
-                        settings_id,
-                        opacity,
-                        typingIndicateur,
-                        autoDeleteMessages,
-                        soundNotification,
-                        readReceipts,
-                        desktopNotification,
-                        mentionNotification,
-                        themes,
+                        full,
+                        theme,
                         dialect,
-                        fontSize 
+                        opacity,
+                        fontsize,
+                        settings_id,
+                        typing_indicator,
+                        auto_delete_messages,
+                        read_receipts,
+                        sound_notification,
+                        desktop_notification,
+                        mention_notification,
                     }
                 )
 

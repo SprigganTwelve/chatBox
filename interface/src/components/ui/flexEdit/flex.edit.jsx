@@ -15,24 +15,35 @@ const FlexEdit = ({
     errorController = ()=>{ return null }
 }) => {
     const textareaRef = useRef(null)
+    const initialTextValueRef = useRef(defaultValue ?? "");
     const [isEditing, setIsEditing] = useState(false);
     const [textareaValue, setTextareaValue] = useState(defaultValue??"")
 
     const handleEditing = ()=>{
             setIsEditing(!isEditing)
-            setTimeout(() => textareaRef.current?.focus(), 0); 
+            setTimeout(() => {
+                if (textareaRef.current && initialTextValueRef.current) {
+                    textareaRef.current.focus()
+                    const length = textareaValue.length;
+                    textareaRef.current.setSelectionRange(length, length)
+                    initialTextValueRef.current = textareaValue
+                }
+            }, 0);
     }
 
     useEffect(()=>{
-        if(!isEditing && textareaValue!= defaultValue){
+        if(!isEditing && textareaValue != defaultValue){
             const errorChecker = errorController(textareaValue);
             if(!errorChecker){
                  if (textareaValue == "") {
-                    callback("...")
+                    callback(null)
                  }
                  else{
-                    callback(textareaValue)
+                     callback(textareaValue)
                  }
+            }
+            else{
+                setTextareaValue(initialTextValueRef.current)
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

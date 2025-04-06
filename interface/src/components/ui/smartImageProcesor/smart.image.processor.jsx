@@ -21,7 +21,7 @@ import SVGratio from '/src/assets/svg/aspect-ratio-svgrepo-com (1).svg'
 const SmartImageProcessor = ({ 
     fileUrl, 
     inputRef, showGrid= false,
-    defaultOpacityValue, setModal = ()=>{},
+    defaultOpacityValue,
     shape = "rect",
     ratio = 11/5,
     onApectRatioChange = ()=>{},
@@ -34,7 +34,7 @@ const SmartImageProcessor = ({
     const [rotation, setRotation] = useState(0)
     const [crop, setCrop] = useState({ x:0, y:0 })
     const [aspectRatio, setAspectratio] = useState({ratio: ratio, iteration: 1})
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState({ratio: ratio, iteration: 1})
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState({})
     const [opacity, setOpacity] = useState(defaultOpacityValue ?? 1)
 
     const rationRange = [16/9, 4/3, 1, 21/9, 11/5]
@@ -44,7 +44,7 @@ const SmartImageProcessor = ({
         setCroppedAreaPixels(cropAreaPixels)
     }
 
-    const handleSaveImage = useCallback(async () =>{
+    SmartImageProcessor.handleSaveImage = useCallback(async () =>{
         const formData = new FormData() 
         const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
         formData.append('id', idInBdd)
@@ -55,22 +55,13 @@ const SmartImageProcessor = ({
                 "Content-Type": "multipart/form-data"
             }
         })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[idInBdd, opacity, fileUrl])
-
+    },[idInBdd, opacity, fileUrl, croppedAreaPixels])
 
 
     useEffect(()=>{
         onApectRatioChange(aspectRatio.ratio)
     },[aspectRatio, onApectRatioChange])
 
-    useEffect(() => {
-        setModal((prev) => ({
-            ...prev,
-            onContinueHandler: () => handleSaveImage(croppedAreaPixels)
-        }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [croppedAreaPixels, setModal]);
     
 
     return ( 
@@ -132,7 +123,6 @@ const SmartImageProcessor = ({
 SmartImageProcessor.propTypes = {
     ratio: PropTypes.number,
     shape: PropTypes.string,
-    setModal: PropTypes.func,
     showGrid: PropTypes.bool,
     fileUrl: PropTypes.string,
     idInBdd: PropTypes.number,

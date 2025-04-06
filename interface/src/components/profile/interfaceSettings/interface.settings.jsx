@@ -19,9 +19,8 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     const inputFileRef = useRef(null)
     const [isFocus, setFocus] = useState(0)
-    const [isActive, setIsActive] = useState(defaultSettings.fontSize)
+    const [isActive, setIsActive] = useState(defaultSettings.fontsize)
     const [imageUploaded, setImageUploaded]= useState("")
-
 
     const fontSize = {
         fontSize1: 15,
@@ -77,10 +76,10 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     
     useEffect(()=>{
-        if (defaultSettings) {
+        if (defaultSettings && !imageUploaded) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:3000/uploads/themes/customizes/${defaultSettings.themes}`
+            imageLoader.src = `http://localhost:3000/uploads/themes/customizes/${defaultSettings.theme}`
            
             imageLoader.onload = ()=>{ 
                 setImageUploaded(imageLoader.src)
@@ -88,10 +87,11 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
             }
 
             imageLoader.onerror = ()=>{
-                    console.log("something went wrong")
+                    console.log("Something went wrong while uploading an uploaded image by user")
             }
         }
-    },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[defaultSettings, imageUploaded])
 
 
     return ( 
@@ -129,22 +129,25 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                 onChange={() => {
                     if(inputFileRef.current.files[0]){
                         
-                        setModal({
-                            open: true,
-                            styleContent: { backgroundColor: 'transparent' },
-                            showCancelAndConfirmButtons: true,
-                            ModalComponent: ()=>                             ( <div 
-                                className={styles.imageManagerSection}
-                            >
-                                <SmartImageProcessor
-                                    showGrid={true}
-                                    setModal={setModal}
-                                    inputRef={inputFileRef}
-                                    idInBdd={defaultSettings.settings_id}
-                                    fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
-                                    callback = {() => handleChangeGlobalImageSettings()}
-                                />
-                            </div> )
+                        setModal(()=>{
+                            return({
+                                open: true,
+                                showCancelAndConfirmButtons: true,
+                                styleContent: { backgroundColor: 'transparent' },
+                                onContinueHandler: () => SmartImageProcessor.handleSaveImage(),
+                                ModalComponent: ()=>( <div 
+                                    className={styles.imageManagerSection}
+                                >
+                                    <SmartImageProcessor
+                                        showGrid={true}
+                                        setModal={setModal}
+                                        inputRef={inputFileRef}
+                                        idInBdd={defaultSettings.settings_id}
+                                        fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
+                                        callback = {() => handleChangeGlobalImageSettings()}
+                                    />
+                                </div> )
+                            })
                         })
                     }
                 }}
@@ -163,7 +166,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                 <div className={styles.fontSizeLetterSection}>
                     <div 
                         style={{ fontSize: fontSize.fontSize1}}
-                        className={ isActive ===15 ? styles.isActive : ""}
+                        className={ isActive === 15 ? styles.isActive : ""}
                         onClick={()=> {
                             setIsActive(fontSize.fontSize1)
                             handleChangeBasicsSettings({ key: "fontSize", value: fontSize.fontSize1, id: defaultSettings.settings_id })
@@ -217,8 +220,8 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
 InterfaceSettings.propTypes = {
     defaultSettings: PropTypes.shape({
-        themes: PropTypes.string,
-        fontSize: PropTypes.number,
+        theme: PropTypes.string,
+        fontsize: PropTypes.number,
         settings_id: PropTypes.number,
     }),
     modal: PropTypes.bool,

@@ -36,13 +36,13 @@ const EditProfileSettings = ({ userData }) => {
             return false
     }
 
-    const handleChangeSingleFieldInBDD = async (data) => {
+    const handleChangeSingleFieldInBDD = async ({ id, key, value}) => {
         try{
-            await axios.patch('http://localhost:3000/users/', data)
+            await axios.patch('http://localhost:3000/users/', { id, key, value})
             if(setUserData){
                 setUserData(( previous )=> ({
                     ...previous,
-                    [data.key]: data.value
+                    [key]: value
                 }))
             }
         }catch(err){

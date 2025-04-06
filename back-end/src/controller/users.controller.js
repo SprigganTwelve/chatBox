@@ -21,7 +21,6 @@ exports.getAllUsers = async (req, res) => {
 exports.getSpecialUser = async (req, res) => {
     try {
         let user;
-        console.log("jdjdj")
         const conn = await db.connexion;
         const response = await conn.query(
             `
@@ -31,28 +30,30 @@ exports.getSpecialUser = async (req, res) => {
                     C.image,
                     C.pseudo,
                     C.online,
-                    C.description,
-                    C.keyFriend,
-                    C.password,
-                    C.email,
-                    C.visibility,
-                    C.availability,
                     C.number,
+                    C.email,
+                    C.password,
+                    C.key_friend,
+                    C.visibility,
+                    C.description,
+                    C.availability,
                     C.doubleAuthentification,
 
                     S.id  AS settings_id,
+                    S.full,
+                    S.theme,
                     S.opacity,
-                    S.typingIndicateur,
-                    S.autoDeleteMessages,
-                    S.soundNotification,
-                    S.readReceipts,
-                    S.desktopNotification,
-                    S.mentionNotification,
-                    S.themes,
                     S.dialect,
-                    S.fontSize
+                    S.fontsize,
+                    S.typing_indicator,
+                    S.auto_delete_messages,
+                    S.sound_notification,
+                    S.read_receipts,
+                    S.desktop_notification,
+                    S.mention_notification
 
-                FROM Consumer C INNER JOIN Settings S ON  C.id = S.id WHERE C.id = ?;
+                FROM Consumer C INNER JOIN Consumer_Settings CS ON  C.id = CS.consumer_id 
+                INNER JOIN Settings S ON CS.settings_id = S.id WHERE C.id = ?;
             `,
             [req.params.id]
         );
@@ -76,10 +77,10 @@ exports.getMyFriends = async (req, res) => {
         const { id } = req.params;
         let allFriendData = [];
         const connexion = await db.connexion;
-        const friendIdArray = await connexion.query( "SELECT * from IsBeFriended where consumer1Id = ?", [id]);
+        const friendIdArray = await connexion.query( "SELECT * from Is_BeFriended where consumer_id  = ?", [id]);
         
         for(const friendId  of friendIdArray){
-            const [{ name, image, description, online }] = await connexion.query("SELECT name, image, description, online FROM Consumer where id = ?", [friendId.consumer2Id] );
+            const [{ name, image, description, online }] = await connexion.query("SELECT name, image, description, online FROM Consumer where id = ?", [friendId.friend_id] );
              allFriendData.push({ id: friendId.consumer2Id, name, image, description, online })
         }
 
@@ -140,6 +141,10 @@ exports.getLoginConnection = async (req, res) => {
 
 exports.getSignedUpToBDD = async (req, res) => {
     try{
+        let filePath;
+        let fileName;
+        let dynamicSqlRequest;
+        let dynamicSqlParams;
         const saltRounds = 5
         const file = req.file
         const { name, pseudo, email, password } = req.body
@@ -161,75 +166,50 @@ exports.getSignedUpToBDD = async (req, res) => {
 
         await conn.beginTransaction()
 
-        if(file){
+        if (file) {
 
-            const fileName = Date.now() + path.extname(file.originalname)
+            fileName = Date.now() + path.extname(file.originalname)
             const fileUploadPath = path.join(__dirname, "../uploads/users/")
-            const filePath = path.join(fileUploadPath, fileName)
-
-
-            const userResponse = await conn.query(
-                "INSERT INTO Consumer(name, pseudo, email, password, image, keyFriend , description) VALUES(?,?,?,?,?,?,?)",
-                [ name, pseudo, email, hashPassword, fileName, keyFriend, description ]
-            )
-
-            if (userResponse.affectedRows > 0 ) {
-                const settingsResponse = await conn.query(
-                    "INSERT INTO Settings(consumerId) VALUES (?)",
-                    [userResponse.insertId]
-                )
-
-                if(settingsResponse.affectedRows > 0){
-                    await conn.commit()
-                    fs.writeFileSync(filePath, file.buffer)
-                    return res.status(200).json( { message: "" } )
-                }
-                else{
-                    await conn.rollback()
-                    console.log("Something wrong happend while inserting the settings [with file]")
-                    return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
-                }
-
-            }
-            else{
-                await conn.rollback()
-                console.log("Something wrong happend while inserting the user [with file]")
-                return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
-            }
+            filePath = path.join(fileUploadPath, fileName)
+            dynamicSqlRequest  = "INSERT INTO Consumer(name, pseudo, email, password, image, key_friend , description) VALUES(?,?,?,?,?,?,?)"
+            dynamicSqlParams = [ name, pseudo, email, hashPassword, fileName, keyFriend, description ] ;
+            fs.writeFileSync(filePath, file.buffer)
 
         }
         else{
-            const userResponse = await conn.query(
-                "INSERT INTO Consumer(name, pseudo, email, password, keyFriend , description) VALUES(?,?,?,?,?,?)",
-                [ name, pseudo, email, hashPassword, keyFriend, description  ]
-            )
-
-
-            if (userResponse.affectedRows > 0) {
-
-                const settingsResponse = await conn.query(
-                    "INSERT INTO Settings(consumerId) VALUES (?)",
-                    [userResponse.insertId]
-                )
-
-                if (settingsResponse.affectedRows > 0) {
-                    await conn.commit()
-                    return res.status(200).json( { message: "" } )
-                }
-                else{
-                    await conn.rollback()
-                    console.log("Something wrong happend while inserting the settings [without file]")
-                    return res.status(500).json( { message: "Something wrong happend while inserting the user [without file]" } )
-                }
-
-            }
-            else{
-                await conn.rollback()
-                console.log("Something wrong happend while inserting the user [without file]")
-                return res.status(500).json( { message: "Something wrong happend while inserting the user [without file]" } )
-            }
-
+            dynamicSqlRequest =  "INSERT INTO Consumer(name, pseudo, email, password, key_friend , description) VALUES(?,?,?,?,?,?)"
+            dynamicSqlParams = [ name, pseudo, email, hashPassword, keyFriend, description ];
         }
+
+        const userResponse = await conn.query(dynamicSqlRequest, dynamicSqlParams)
+
+        if (userResponse.affectedRows < 1 ) {
+            await conn.rollback()
+            console.log("Something wrong happend while inserting the user [with file]")
+            return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
+        }
+
+        const settingsResponse = await conn.query("INSERT INTO Settings() VALUES ()")
+
+        if(settingsResponse.affectedRows < 1){
+            await conn.rollback()
+            console.log("Something wrong happend while inserting the consumer_settings [with file]")
+            return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
+        }
+
+        const consumerSettingsResponse = await conn.query(
+            "INSERT INTO Consumer_Settings(consumer_id, settings_id) VALUES (?,?)",
+            [userResponse.insertId, settingsResponse.insertId]
+        )
+
+        if (consumerSettingsResponse.affectedRows < 1) {
+            console.log("Something wrong happend while inserting the consumer_settings [with file]")
+            return res.status(500).json({ message: "Something wrong happend while inserting the user [with file]" })
+        }
+
+
+        await conn.commit()
+        return res.status(200).json( { message: "" } )
 
     }
     catch(err){
@@ -249,14 +229,15 @@ exports.changeValueInClientInBDDWithKeyAndValue = async (req, res) => {
     try{
         const conn = await db.connexion;
         const { id, key, value } = req.body;
-        if(!id || !key || value == undefined ){
+        console.log({ id, key, value } )
+        if(!id || !key || (value == null || value == undefined) ){
             return res.status(400).json( { message: "Props missing" } )
         }
-        if (key !== "image" && key!=="password" && key !==  "keyFriend" ) {
+        if (key !== "image" && key!=="password" && key !==  "key_friend" ) {
                 await conn.query(`UPDATE Consumer SET ${key}=? WHERE id= ?`, [ value, id ])
                 return res.status(200).json({  message: "" })
         }else{
-                return res.status(200).json({ message: "you cannot update the image through this route" })
+            return res.status(200).json({ message: "you cannot update the image through this route" })
         }
     }
     catch(err){

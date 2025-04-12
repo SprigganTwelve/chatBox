@@ -12,8 +12,8 @@ exports.changeGeneralSettingPropertyInBdd = async (req, res) => {
     try{
         const { key , value, id } = req.body
         const connexion = await db.connexion;
-        if(!key || !value || !id){
-            return res.status(500).json({ message: "Please provide all the fields needed in the body" })
+        if(!key || !id || (value == null || value == undefined) ){
+            return res.status(500).json({ message: "Props missing" })
         }
         const response = await connexion.query(`UPDATE Settings SET ${key} = ${value} WHERE id=${id}`)
         if(response.affectedRows > 0 ) return res.status(200).json({ message: "The operartion is successful" })

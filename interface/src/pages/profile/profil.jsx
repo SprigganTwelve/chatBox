@@ -1,22 +1,25 @@
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { ChatBoxApiContext } from "/src/context/context";
+
 import EditProfileSettings from '/src/components/profile/editProfileSettings/edit.profile.settings'
 import NotificationSettings from "/src/components/profile/notificationSettings/notification.settings"
 import InterfaceSettings from "/src/components/profile/interfaceSettings/interface.settings"
 import Confidentiality from "/src/components/profile/confidentiality/confidentiality"
+
+import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
+
 import styles from "./profil.module.css"
 
 const Profil = () => {
-    const { userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
     const navigate = useNavigate()
+    const inputFileRef = useRef(null)
+    const { setUserData, userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
     const [isButtonActive, setIsButtonActive] = useState("Edit")
+    const [croppedProfileImage, setCroppedProfileImge] = useState(null)
     console.log(userData)
 
-    const changeProfilImage = ()=>{
-        setModal(()=>({open: true}))
-    }
 
     useEffect(()=>{
         if(!userId){
@@ -25,6 +28,11 @@ const Profil = () => {
     },
     [userId, navigate])
 
+    useEffect(()=>{
+        console.log(croppedProfileImage)
+        if(croppedProfileImage) setUserData((prev) => ({...prev, image: croppedProfileImage }))
+    },[croppedProfileImage, setUserData])
+
     return (
         <div className={styles.container}>
             { userData && (
@@ -32,12 +40,48 @@ const Profil = () => {
                 <div className={styles.leftBoard}>
                     <div 
                         className={styles.imageContainer}
-                        onClick={()=> changeProfilImage()}
+                        onClick={()=> inputFileRef.current.click()}
                     >
                         <img
                             alt=""
-                            src={userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/randomUser.png" }
+                            src={ 
+                                    userData?.image
+                                    ? (userData.image.startsWith("blob") 
+                                        ? userData.image 
+                                        : "http://localhost:3000/uploads/" + userData.image)
+                                    : "/image/randomUser.png"
+                                }
                             className={styles.imageProfil}
+                        />
+                        <input 
+                            hidden
+                            type="file" 
+                            ref={inputFileRef}
+                            onChange={ ()=>{
+                                if (inputFileRef.current) {
+                                    setModal(()=>({
+                                        open: true,
+                                        showCancelAndConfirmButtons: true,
+                                        styleContent: { backgroundColor: 'transparent' },
+                                        onContinueHandler: () => {
+                                            SmartImageProcessor.handleSaveCroppedImage()
+                                        },
+                                        ModalComponent: ()=>( <div 
+                                            className={styles.imageManagerSection}
+                                        >
+                                            <SmartImageProcessor
+                                                shape = "round"
+                                                ratio = { 1 }
+                                                idInBdd=  {userData.id}
+                                                inputRef= {inputFileRef}
+                                                setCroppedFile = {setCroppedProfileImge}
+                                                url= "http://localhost:3000/users/profile/image"
+                                                fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
+                                            />
+                                        </div> )
+                                    }))
+                                }
+                            }}
                         />
                     </div>
                     <div className={styles.textSection}>

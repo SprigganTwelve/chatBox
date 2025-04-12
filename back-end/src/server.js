@@ -26,6 +26,7 @@ app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')
 
 
 const usersRouter = require("./routes/users.routes");
+const socketHandlers = require("./socket/socket.handlers")
 const talkSphereRouter = require('./routes/talksphere.routes');
 const userSettingsRouters = require('./routes/settings.routes');
 const userInvitationRouter = require('./routes/invitation.routes');
@@ -38,35 +39,8 @@ app.use('/settings', userSettingsRouters)
 
 
 const socketController = require("./controller/socket.controller");
-const users = {};
 
-
-io.on("connection", (socket) => {
-    console.log(`L'user ${socket.id} est connecté`);
-
-    socket.on("register", ({ userId }) => {
-        users[userId] = socket.id;
-        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users[userId]}`);
-    });
-
-    socket.on("privateMessage", ({ senderId, receiverId, talkSphereId, content, createdAt }) => {
-        const receiverSocketId = users[receiverId];
-        console.log({ senderId, receiverId, talkSphereId, content })
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", { talkSphereId, content, createdAt, senderId });
-        }
-        socketController.insertIntoMessage({ senderId, talkSphereId, content, createdAt });
-    });
-
-    socket.on('disconnect', () => {
-        console.log(`Utilisateur déconnecté : ${socket.id}`);
-        Object.keys(users).forEach(userId => {
-            if (users[userId] === socket.id) {
-                delete users[userId];
-            }
-        });
-    });
-});
+io.on("connection", socketHandlers);
 
 
 server.listen(PORT, () => {

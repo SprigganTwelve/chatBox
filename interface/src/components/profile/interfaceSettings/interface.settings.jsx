@@ -5,7 +5,6 @@ import {  useRef, useEffect, useState } from "react";
 
 import VibeBox from "./components/vibeBox/vibe.box";
 import Switch from "/src/components/ui/switch/switch"
-import styles from "./interface.settings.module.css"
 import ViewOption from "/src/components/ui/viewOption/view.option";
 import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 
@@ -14,13 +13,18 @@ import SVGfontsize from '/src/assets/svg/font-size-svgrepo-com (1).svg'
 import SVGlanguage from '/src/assets/svg/language-svgrepo-com.svg'
 import SGVnativedefaultbackground from '/src/assets/svg/image-1-svgrepo-com.svg'
 import SVGthemes from '/src/assets/svg/vivo-themes-svgrepo-com.svg'
+import SVGmode from '/src/assets/svg/quit-full-screen-svgrepo-com.svg'
+
+import styles from "./interface.settings.module.css"
+
+
 
 const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     const inputFileRef = useRef(null)
     const [isFocus, setFocus] = useState(0)
-    const [isActive, setIsActive] = useState(defaultSettings.fontsize)
     const [imageUploaded, setImageUploaded]= useState("")
+    const [isActive, setIsActive] = useState(defaultSettings.fontsize)
 
     const fontSize = {
         fontSize1: 15,
@@ -28,28 +32,6 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
         fontSize3: 24
     }
 
-
-    //Herer we handle the changement of the image global settings wich is a blob property
-
-    const handleChangeGlobalImageSettings = async() => {
-        try{
-            if (inputFileRef.current) {
-                const formData = new FormData().append("file", inputFileRef.current.files[0])
-                const response = await axios.post("http://localhost:3000/settings/general/image", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                if (response.status !== 200){
-                    console.log("Something went wrong when changing the image setting property, response : ", response)
-                    return ;
-                }
-            }
-        }
-        catch(error){
-            console.log("Something went wrong when changing the image setting property, error : ", error)
-        }
-    }
 
     //Here we change the basics global settings such as one wich is not a binary or blob object
 
@@ -113,7 +95,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                 {
                     imageUploaded && 
                     <VibeBox 
-                        imagePath={imageUploaded}
+                        imagePath={ imageUploaded }
                         isFocus= {isFocus ===themes.length}
                         onClick={()=> setFocus(themes.length)}
                     />
@@ -134,17 +116,17 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                                 open: true,
                                 showCancelAndConfirmButtons: true,
                                 styleContent: { backgroundColor: 'transparent' },
-                                onContinueHandler: () => SmartImageProcessor.handleSaveImage(),
+                                onContinueHandler: () => SmartImageProcessor.handleSaveCroppedImage(),
                                 ModalComponent: ()=>( <div 
                                     className={styles.imageManagerSection}
                                 >
                                     <SmartImageProcessor
                                         showGrid={true}
-                                        setModal={setModal}
                                         inputRef={inputFileRef}
+                                        setCroppedFile = {setImageUploaded}
                                         idInBdd={defaultSettings.settings_id}
+                                        url= 'http://localhost:3000/settings/general/image'
                                         fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
-                                        callback = {() => handleChangeGlobalImageSettings()}
                                     />
                                 </div> )
                             })
@@ -159,6 +141,27 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                     inputFileRef.current.click()
                 }}
             />
+            <ViewOption
+                title="Background View mode"
+                leading={SVGmode}
+            >
+                <Switch
+                    defaultValue={defaultSettings.full}
+                    callback={async (state)=> {
+                        try{
+                            await  axios.patch("http://localhost:3000/settings/general/basics", 
+                                { 
+                                    id: defaultSettings.settings_id, 
+                                    key: "full" ,
+                                    value: +state
+                                })
+                        }
+                        catch(error){
+                            console.log("Something went wrong while changing the background mode : ", error)
+                        }
+                    }}
+                />
+            </ViewOption>
             <ViewOption
                 title="Font size"
                 leading={SVGfontsize}
@@ -220,6 +223,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
 InterfaceSettings.propTypes = {
     defaultSettings: PropTypes.shape({
+        full: PropTypes.number,
         theme: PropTypes.string,
         fontsize: PropTypes.number,
         settings_id: PropTypes.number,

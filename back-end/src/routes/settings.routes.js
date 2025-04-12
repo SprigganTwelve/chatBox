@@ -7,7 +7,7 @@ const settingsController = require("../controller/settings.controller")
 const storage = multer.memoryStorage()
 const uploads = multer({ storage })
 
-router.post('/general/basics', settingsController.changeGeneralSettingPropertyInBdd)
+router.patch('/general/basics', settingsController.changeGeneralSettingPropertyInBdd)
 router.post('/general/image', uploads.single('file') , settingsController.changeGeneralImageSettingsPropertyInBdd)
 router.post('/talksphere/image', uploads.single('file') , settingsController.changeSpecificImageSettingsPropertyInBdd)
 

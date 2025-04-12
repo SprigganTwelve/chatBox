@@ -245,3 +245,52 @@ exports.changeValueInClientInBDDWithKeyAndValue = async (req, res) => {
         return res.status(500).json( { message: "something went wrong" } )
     }
 }
+
+
+
+
+exports.changeImageProfil = async (req, res) => {
+    try{
+        const file = req.file
+        const conn = await db.connexion
+
+        const { id, opacity } = req.body
+        if(!id | !opacity | !file){
+            return res.status(500).json({ message: "Missing props"})
+        }
+
+        const existingUser = await conn.query("SELECT image from Consumer WHERE id = ? ", [id])
+        if (existingUser.length < 1 ) {
+            console.log(" The referenced user doesn't exist in the database ")
+            return res.status(500).json({ message: "Something went wrong"})
+        }
+
+        const userResult = existingUser[0];
+        const filePath = path.join(__dirname, '../uploads/users', userResult.image)
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath)
+        }
+        
+        await conn.beginTransaction()
+        
+        const fileName = Date.now() + file.originalname
+        const completeFilePath = path.join(__dirname, '../uploads/users', fileName )
+
+        fs.writeFile(completeFilePath, file.buffer, async (err) => {
+            if (err) {
+                console.log("[POST, function: changeImageProfil] Something went wrong while inserting asynchronously file", err);
+                await conn.rollback();
+                return res.status(500).json({ message: "Failed to insert image" });
+            }
+        
+            await conn.query("UPDATE Consumer SET image = ? WHERE id = ?", [fileName, id]); // tu mettais pas à jour la DB je pense ?
+            await conn.commit();
+            return res.status(200).json({ message: "Image successfully added" });
+        });
+
+    }
+    catch(error){
+        console.log("Something went wrong : " + error)
+        return res.status(500).json( { message: "something went wrong" } )
+    }
+}

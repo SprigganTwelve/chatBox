@@ -131,11 +131,6 @@ const EditProfileSettings = ({ userData }) => {
                     <Switch 
                         defaultValue={userData?.availability}
                         callback={(state)=>{
-                            console.log({
-                                id: userData?.id,
-                                key: "availability",
-                                value: +state,
-                            })
                             handleChangeSingleFieldInBDD({
                                 id: userData?.id,
                                 key: "availability",

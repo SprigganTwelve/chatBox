@@ -20,12 +20,15 @@ import SVGratio from '/src/assets/svg/aspect-ratio-svgrepo-com (1).svg'
 
 const SmartImageProcessor = ({ 
     fileUrl, 
-    inputRef, showGrid= false,
-    defaultOpacityValue,
-    shape = "rect",
+    url = "",
+    inputRef,
+    idInBdd=0, 
     ratio = 11/5,
+    shape = "rect",
+    showGrid= false,
+    defaultOpacityValue,
+    setCroppedFile = () => {},
     onApectRatioChange = ()=>{},
-    idInBdd=0 
 }) => {
 
     // const { setModal } = useContext(ChatBoxApiContext)
@@ -33,36 +36,45 @@ const SmartImageProcessor = ({
     const [ zoom, setZoom ] = useState(1)
     const [rotation, setRotation] = useState(0)
     const [crop, setCrop] = useState({ x:0, y:0 })
-    const [aspectRatio, setAspectratio] = useState({ratio: ratio, iteration: 1})
     const [croppedAreaPixels, setCroppedAreaPixels] = useState({})
     const [opacity, setOpacity] = useState(defaultOpacityValue ?? 1)
+    const [aspectRatio, setAspectratio] = useState({ratio: ratio, iteration: 1})
 
-    const rationRange = [16/9, 4/3, 1, 21/9, 11/5]
+    const rationRange = [16/9, 4/3, 21/9, 1, 11/5]
     
 
     const onCropComplete = (cropArea, cropAreaPixels) => {
         setCroppedAreaPixels(cropAreaPixels)
     }
 
-    SmartImageProcessor.handleSaveImage = useCallback(async () =>{
-        const formData = new FormData() 
-        const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
-        formData.append('id', idInBdd)
-        formData.append("opacity", opacity)
-        formData.append('file', croppedImage)
-        await axios.post('http://localhost:3000/settings/general/image', formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
+    SmartImageProcessor.handleSaveCroppedImage =  useCallback(async () =>{
+        try{
+            if(!url){
+                console.log("You must pass an url prop to SmartImageProcessor to properly executed the handleSaveCroppedImage function")
+                return;
             }
-        })
-    },[idInBdd, opacity, fileUrl, croppedAreaPixels])
+            const formData = new FormData() 
+            const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
+            formData.append('id', idInBdd)
+            formData.append("opacity", opacity)
+            formData.append('file', croppedImage)
+            await axios.post(url, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            setCroppedFile(()=> URL.createObjectURL(croppedImage))
+        }catch(error){
+            console.log("Something went wrong while sending the cropped image: ", error)
+        }
+    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile])
 
 
     useEffect(()=>{
         onApectRatioChange(aspectRatio.ratio)
     },[aspectRatio, onApectRatioChange])
 
-    
+
 
     return ( 
         <div className={styles.container}>
@@ -101,11 +113,11 @@ const SmartImageProcessor = ({
                     cropShape={shape}
                     showGrid={showGrid}
                     rotation={rotation}
-                    style={{containerStyle: {width: '100%', height: '100%'}}}
                     onCropChange={setCrop}
                     onZoomChange={setZoom}
                     onRotationChange={setRotation}
                     onCropComplete={onCropComplete}
+                    style={{containerStyle: {width: '100%', height: '100%'}}}
                 />
             </div>
             <Slider 
@@ -121,12 +133,14 @@ const SmartImageProcessor = ({
 }
 
 SmartImageProcessor.propTypes = {
+    url: PropTypes.string,
     ratio: PropTypes.number,
     shape: PropTypes.string,
     showGrid: PropTypes.bool,
     fileUrl: PropTypes.string,
     idInBdd: PropTypes.number,
     inputRef: PropTypes.object,
+    setCroppedFile: PropTypes.func,
     onApectRatioChange: PropTypes.func,
     defaultOpacityValue: PropTypes.number,
 }

@@ -1,0 +1,320 @@
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-11.7.2-MariaDB, for Win64 (AMD64)
+--
+-- Host: localhost    Database: chatManagement
+-- ------------------------------------------------------
+-- Server version	11.7.2-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
+
+--
+-- Table structure for table `assoc_request`
+--
+
+DROP TABLE IF EXISTS `assoc_request`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assoc_request` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `receiver_id` (`receiver_id`),
+  CONSTRAINT `assoc_request_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `consumer` (`id`),
+  CONSTRAINT `assoc_request_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `consumer` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `assoc_request`
+--
+
+LOCK TABLES `assoc_request` WRITE;
+/*!40000 ALTER TABLE `assoc_request` DISABLE KEYS */;
+/*!40000 ALTER TABLE `assoc_request` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consumer`
+--
+
+DROP TABLE IF EXISTS `consumer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consumer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `pseudo` varchar(50) DEFAULT NULL,
+  `image` varchar(200) DEFAULT NULL,
+  `online` tinyint(1) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  `key_friend` varchar(120) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(120) NOT NULL,
+  `doubleAuthentification` tinyint(1) DEFAULT 0,
+  `number` varchar(50) DEFAULT NULL,
+  `availability` tinyint(1) DEFAULT 0,
+  `visibility` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consumer`
+--
+
+LOCK TABLES `consumer` WRITE;
+/*!40000 ALTER TABLE `consumer` DISABLE KEYS */;
+INSERT INTO `consumer` VALUES
+(2,'Gojo Satoru','','17439681248641743968124858.jpeg',1,'I am the strongest ','$2b$05$hSW3H164sgZYUMu4aPqn8O94LNEm9JH2QGilGiLtFcxXs.NFDqPWi','satoru@jjk.com','$2b$05$pOnatmCYI1vYdffrLy6nbOQSG6Nb2nJqi6fqAyL.9gZi9Vz6U4grS',1,NULL,0,1),
+(3,'Kwon Chaewoo','Berserker','1744496383867.webp',1,'','$2b$05$YzKKwHVYSXSzQrDQrbjIeOEV0G8Hcq70jb8zzWwewuhyAWuWMviNO','chaewoo@anime.com','$2b$05$B23qUEDX0C.wMJtHX9PLv.ncg8HRluczFeppMHefdb78EXwKTqsu2',0,NULL,0,1);
+/*!40000 ALTER TABLE `consumer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consumer_settings`
+--
+
+DROP TABLE IF EXISTS `consumer_settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consumer_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `consumer_id` int(11) NOT NULL,
+  `settings_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `consumer_id` (`consumer_id`),
+  UNIQUE KEY `settings_id` (`settings_id`),
+  CONSTRAINT `consumer_settings_ibfk_1` FOREIGN KEY (`consumer_id`) REFERENCES `consumer` (`id`),
+  CONSTRAINT `consumer_settings_ibfk_2` FOREIGN KEY (`settings_id`) REFERENCES `settings` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consumer_settings`
+--
+
+LOCK TABLES `consumer_settings` WRITE;
+/*!40000 ALTER TABLE `consumer_settings` DISABLE KEYS */;
+INSERT INTO `consumer_settings` VALUES
+(2,2,2),
+(3,3,3);
+/*!40000 ALTER TABLE `consumer_settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consumer_talksphere`
+--
+
+DROP TABLE IF EXISTS `consumer_talksphere`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consumer_talksphere` (
+  `consumer_id` int(11) NOT NULL,
+  `talksphere_id` int(11) NOT NULL,
+  PRIMARY KEY (`consumer_id`,`talksphere_id`),
+  KEY `talksphere_id` (`talksphere_id`),
+  CONSTRAINT `consumer_talksphere_ibfk_1` FOREIGN KEY (`consumer_id`) REFERENCES `consumer` (`id`),
+  CONSTRAINT `consumer_talksphere_ibfk_2` FOREIGN KEY (`talksphere_id`) REFERENCES `talksphere` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consumer_talksphere`
+--
+
+LOCK TABLES `consumer_talksphere` WRITE;
+/*!40000 ALTER TABLE `consumer_talksphere` DISABLE KEYS */;
+INSERT INTO `consumer_talksphere` VALUES
+(2,1),
+(3,1);
+/*!40000 ALTER TABLE `consumer_talksphere` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `is_befriended`
+--
+
+DROP TABLE IF EXISTS `is_befriended`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `is_befriended` (
+  `consumer_id` int(11) NOT NULL,
+  `friend_id` int(11) NOT NULL,
+  PRIMARY KEY (`consumer_id`,`friend_id`),
+  KEY `friend_id` (`friend_id`),
+  CONSTRAINT `is_befriended_ibfk_1` FOREIGN KEY (`consumer_id`) REFERENCES `consumer` (`id`),
+  CONSTRAINT `is_befriended_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `consumer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `is_befriended`
+--
+
+LOCK TABLES `is_befriended` WRITE;
+/*!40000 ALTER TABLE `is_befriended` DISABLE KEYS */;
+INSERT INTO `is_befriended` VALUES
+(3,2),
+(2,3);
+/*!40000 ALTER TABLE `is_befriended` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `media`
+--
+
+DROP TABLE IF EXISTS `media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `media`
+--
+
+LOCK TABLES `media` WRITE;
+/*!40000 ALTER TABLE `media` DISABLE KEYS */;
+/*!40000 ALTER TABLE `media` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `content` varchar(500) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `sender_id` int(11) NOT NULL,
+  `talksphere_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `talksphere_id` (`talksphere_id`),
+  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `consumer` (`id`),
+  CONSTRAINT `message_ibfk_2` FOREIGN KEY (`talksphere_id`) REFERENCES `talksphere` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `message`
+--
+
+LOCK TABLES `message` WRITE;
+/*!40000 ALTER TABLE `message` DISABLE KEYS */;
+/*!40000 ALTER TABLE `message` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `settings`
+--
+
+DROP TABLE IF EXISTS `settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `opacity` decimal(3,2) DEFAULT 1.00,
+  `fontsize` int(11) DEFAULT 15,
+  `typing_indicator` tinyint(1) DEFAULT 0,
+  `auto_delete_messages` tinyint(1) DEFAULT 0,
+  `sound_notification` tinyint(1) DEFAULT 0,
+  `read_receipts` tinyint(1) DEFAULT 0,
+  `desktop_notification` tinyint(1) DEFAULT 0,
+  `mention_notification` tinyint(1) DEFAULT 0,
+  `theme` varchar(120) DEFAULT 'cat.jpg',
+  `dialect` varchar(50) DEFAULT NULL,
+  `full` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `settings`
+--
+
+LOCK TABLES `settings` WRITE;
+/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+INSERT INTO `settings` VALUES
+(2,1.00,18,0,0,0,0,0,0,'1743966901121_customize_theme_1743966901115.jpeg',NULL,0),
+(3,1.00,15,0,0,0,0,0,1,'cat.jpg',NULL,0);
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `talksphere`
+--
+
+DROP TABLE IF EXISTS `talksphere`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `talksphere` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `talksphere`
+--
+
+LOCK TABLES `talksphere` WRITE;
+/*!40000 ALTER TABLE `talksphere` DISABLE KEYS */;
+INSERT INTO `talksphere` VALUES
+(1);
+/*!40000 ALTER TABLE `talksphere` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `talksphere_media`
+--
+
+DROP TABLE IF EXISTS `talksphere_media`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `talksphere_media` (
+  `talksphere_id` int(11) NOT NULL,
+  `media_id` int(11) NOT NULL,
+  PRIMARY KEY (`talksphere_id`,`media_id`),
+  KEY `media_id` (`media_id`),
+  CONSTRAINT `talksphere_media_ibfk_1` FOREIGN KEY (`talksphere_id`) REFERENCES `talksphere` (`id`),
+  CONSTRAINT `talksphere_media_ibfk_2` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `talksphere_media`
+--
+
+LOCK TABLES `talksphere_media` WRITE;
+/*!40000 ALTER TABLE `talksphere_media` DISABLE KEYS */;
+/*!40000 ALTER TABLE `talksphere_media` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
+
+-- Dump completed on 2025-04-13  2:21:50

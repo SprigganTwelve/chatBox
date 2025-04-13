@@ -24,7 +24,6 @@ const UserBoard = () => {
 
         localStorage.setItem("currentChatId", JSON.stringify(friend.id));
         const userTalkSphereResponse = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
-
         if (userTalkSphereResponse.status === 200) {
             setUsersTemporaryChat(()=> ({
                 id: userTalkSphereResponse.data.id,

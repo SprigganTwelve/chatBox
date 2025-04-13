@@ -47,7 +47,7 @@ const SmartImageProcessor = ({
         setCroppedAreaPixels(cropAreaPixels)
     }
 
-    SmartImageProcessor.handleSaveCroppedImage =  useCallback(async () =>{
+    SmartImageProcessor.handleSaveCroppedImage =  useCallback(async () =>{  //GB, This function is  provided by the component and should be used to save the cropped image
         try{
             if(!url){
                 console.log("You must pass an url prop to SmartImageProcessor to properly executed the handleSaveCroppedImage function")

@@ -37,7 +37,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     const handleChangeBasicsSettings = async ({key, value, id}) => {
         try{
-            const response = await axios.post('http://localhost:3000/settings/general/basics', {key, value, id})
+            const response = await axios.patch('http://localhost:3000/settings/general/basics', {key, value, id})
             if(response.status !== 200) {
                 console.log("Something went wrong when changing the setting, response : ", response)
                 return ;
@@ -142,24 +142,16 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                 }}
             />
             <ViewOption
-                title="Background View mode"
+                title="Background Full View mode"
                 leading={SVGmode}
             >
                 <Switch
                     defaultValue={defaultSettings.full}
-                    callback={async (state)=> {
-                        try{
-                            await  axios.patch("http://localhost:3000/settings/general/basics", 
-                                { 
-                                    id: defaultSettings.settings_id, 
-                                    key: "full" ,
-                                    value: +state
-                                })
-                        }
-                        catch(error){
-                            console.log("Something went wrong while changing the background mode : ", error)
-                        }
-                    }}
+                    callback={(state)=> handleChangeBasicsSettings({ 
+                        id: defaultSettings.settings_id, 
+                        key: "full" ,
+                        value: +state
+                    })}
                 />
             </ViewOption>
             <ViewOption
@@ -209,7 +201,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
             />
 
             <ViewOption
-                title="Themes"
+                title="Global Colors"
                 leading={SVGthemes}
                 onClick={()=>{
                     // handleChangeBasicsSettings({ key:, value: , id: defaultSettings.id })

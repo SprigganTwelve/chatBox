@@ -10,16 +10,18 @@ exports.getUserVisible = async (req,res) => {
            `SELECT id, name, image, availability
             FROM Consumer
             WHERE visibility = 1
-            AND id NOT IN (SELECT receiverId FROM AssocRequest WHERE senderId = ${userId})
-            AND id NOT IN (SELECT senderId FROM AssocRequest WHERE receiverId = ${userId})
+            AND id NOT IN (SELECT receiver_id FROM Assoc_request WHERE sender_id = ${userId})
+            AND id NOT IN (SELECT sender_id FROM Assoc_request WHERE receiver_id = ${userId})
             AND id NOT IN (
-                SELECT consumer1Id FROM IsBeFriended WHERE consumer2Id = ${userId}
+                SELECT consumer_id FROM Is_befriended WHERE friend_id = ${userId}
                 UNION
-                SELECT consumer2Id FROM IsBeFriended WHERE consumer1Id = ${userId}
+                SELECT friend_id FROM Is_befriended WHERE consumer_id = ${userId}
             );
             `,
         )
-        res.status(200).json( response )
+        if(response.length > 0) return res.status(200).json( response )
+        console.log("[GET, function: getUserVisible] Something went wrong while retreiving data")
+        return res.status(500).json({ message: "Something went wrong" })
     }
     catch(err){
         console.log("Something went wrong, error : "+ err)
@@ -33,17 +35,19 @@ exports.getUserInvitation = async (req, res) => {
     try{
         const data = []
         const { receiverId } = req.params
+        console.log(receiverId)
         const conn = await db.connexion
         const assocRequestReponse =  await conn.query(
-            "SELECT * FROM AssocRequest WHERE receiverId = ?",
+            "SELECT * FROM Assoc_request WHERE receiver_id = ?",
             [receiverId]
         )
         if (assocRequestReponse.length > 0) {
             for(const request of assocRequestReponse){
                 const userResponse = await conn.query(
                     "SELECT id, name, image, availability FROM Consumer WHERE id=?",
-                    [request.senderId]
-            )
+                    [request.sender_id]
+                )
+                console.log(userResponse)
                 data.push(...userResponse)
             }
             return res.status(200).json(data)
@@ -65,7 +69,7 @@ exports.MakeAnAssocRequest = async (req, res) => {
         const { senderId, receiverId } = req.body
         const conn = await db.connexion
         const assocRequestReponse =  await conn.query(
-            "INSERT INTO AssocRequest(senderId, receiverId) VALUES(?,?)",
+            "INSERT INTO assoc_request(sender_id, receiver_id) VALUES(?,?)",
             [senderId, receiverId]
         )
         if (assocRequestReponse.affectedRows) {
@@ -80,6 +84,7 @@ exports.MakeAnAssocRequest = async (req, res) => {
     }
 }
 
+
 exports.ConfirmAnInvitation = async (req, res) => {
     const conn = await db.connexion;
     const { senderId, receiverId } = req.body;
@@ -89,7 +94,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
 
         // Insert friendship in both directions in a single query
         const friendshipInsert = await conn.query(
-            "INSERT INTO IsBeFriended(consumer1Id, consumer2Id) VALUES (?, ?), (?, ?)",
+            "INSERT INTO Is_befriended(consumer_id, friend_id) VALUES (?, ?), (?, ?)",
             [senderId, receiverId, receiverId, senderId]
         );
 
@@ -99,7 +104,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
 
         // Delete the invitation
         const deleteInvitation = await conn.query(
-            "DELETE FROM AssocRequest WHERE senderId = ? AND receiverId = ?",
+            "DELETE FROM assoc_request WHERE sender_id = ? AND receiver_id = ?",
             [senderId, receiverId]
         );
 
@@ -108,7 +113,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
         }
 
         // Create a new TalkSphere
-        const talkSphereResponse = await conn.query("INSERT INTO TalkSphere () VALUES ()");
+        const talkSphereResponse = await conn.query("INSERT INTO Talksphere () VALUES ()");
 
         if (talkSphereResponse.affectedRows === 0) {
             throw new Error("Failed to create TalkSphere");
@@ -118,7 +123,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
 
         // Insert both users into ConsumerTalkSphere
         const consumerTalkSphereInsert = await conn.query(
-            "INSERT INTO ConsumerTalkSphere (consumerId, talkSphereId) VALUES (?, ?), (?, ?)",
+            "INSERT INTO consumer_talksphere (consumer_id, talksphere_id) VALUES (?, ?), (?, ?)",
             [senderId, talkSphereId, receiverId, talkSphereId]
         );
 

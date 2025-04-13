@@ -5,17 +5,24 @@ const db = require("../database/connexion")
 
 exports.getTalkSphere = async (req, res) => {
     try {
-        const { senderId, receiverId } = req.params; 
+        const { senderId, receiverId } = req.params;
+        
+        if(!senderId || !receiverId ) {
+            console.log("[GET, function: getTalkSphere], Props missing")
+            return res.status(500).json({ message: "Props missing" })
+        }
+
         const conn = await db.connexion;
+
         // Requête pour trouver une TalkSphere commune
         const data = await conn.query(`
             SELECT t.* 
-            FROM TalkSphere t
-            JOIN ConsumerTalkSphere c1 ON t.id = c1.talkSphereId
-            JOIN ConsumerTalkSphere c2 ON t.id = c2.talkSphereId
-            WHERE c1.consumerId = ? AND c2.consumerId = ?;
+            FROM Talksphere t
+            JOIN Consumer_talksphere c1 ON t.id = c1.talksphere_id
+            JOIN Consumer_talksphere c2 ON t.id = c2.talksphere_id
+            WHERE c1.consumer_id = ? AND c2.consumer_id = ?;
         `, [senderId, receiverId]);
-
+        console.log("Talksphere")
         // Vérifier si une TalkSphere existe
         if (data.length > 0) {
             return res.status(200).json(data[0]); // Renvoie la première TalkSphere trouvée

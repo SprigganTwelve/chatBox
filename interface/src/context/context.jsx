@@ -17,7 +17,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const [currentChatId, setCurrentChatId] = useState(
         ()=>{
             const saved = JSON.parse(localStorage.getItem("currentChatId"))
-            return saved != null ? saved : null;
+            return saved != null && saved!= undefined ? saved : null;
         }
     )
     const [talkSphereId, setTalkSphereId] = useState(
@@ -84,7 +84,6 @@ const ChatBoxApiContextProvider = ({ children }) => {
                         mention_notification,
                     }
                 )
-
             } catch (err) {
                 setPopUp({ message: "Something went wrong while retreiving user data", type: "error" }
                 );

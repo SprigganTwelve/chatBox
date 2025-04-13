@@ -81,7 +81,7 @@ exports.getMyFriends = async (req, res) => {
         
         for(const friendId  of friendIdArray){
             const [{ name, image, description, online }] = await connexion.query("SELECT name, image, description, online FROM Consumer where id = ?", [friendId.friend_id] );
-             allFriendData.push({ id: friendId.consumer2Id, name, image, description, online })
+             allFriendData.push({ id: friendId.friend_id, name, image, description, online })
         }
 
        return res.status(200).json( allFriendData )
@@ -288,6 +288,49 @@ exports.changeImageProfil = async (req, res) => {
             return res.status(200).json({ message: "Image successfully added" });
         });
 
+    }
+    catch(error){
+        console.log("Something went wrong : " + error)
+        return res.status(500).json( { message: "something went wrong" } )
+    }
+}
+
+
+
+exports.deleteOneUserAccount = async (req, res) => {
+    try{
+        const userId = req.params.id
+        if(!userId){
+            console.log("[DELETE, function: deleteOneUserAccount ] Missing props")
+            return res.status(500).json({ message: "Id is not passed" })
+        }
+        const conn = await db.connexion
+        const [ selectedUserInBdd ] = await  conn.query("SELECT image FROM Consumer WHERE id = ?", [userId])
+
+        if(!selectedUserInBdd){
+            console.log("[DELETE, function: deleteOneUserAccount ] Id not found in bdd")
+            return res.status(500).json({ message: "Id is not a correct or existing one" })
+        }
+
+        await conn.beginTransaction()
+
+        if(fs.existsSync(selectedUserInBdd.image)) {
+            const deleteUserResponse = await conn.query("DELETE FROM Consumer WHERE id=?", [userId])
+            if(deleteUserResponse.affectedRows < 1){
+                await conn.rollback()
+                console.log("Something went wrong while executing the delete request the user")
+                return res.status(500).json({ message: "Something went wrong while deleting the user" })
+            }
+            const filePath = path.join(__dirname, '../uploads/users', selectedUserInBdd.image)
+            fs.unlink(filePath, async (err)=>{
+                if(err){
+                    await conn.rollback()
+                    console.log("[DELETE, function: deleteOneUserAccount ] Error while deleting the file from storage with fs, error: ", err)
+                    return;
+                }
+                await conn.commit()
+            })
+        }
     }
     catch(error){
         console.log("Something went wrong : " + error)

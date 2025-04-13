@@ -1,7 +1,7 @@
 
 import axios from "axios"
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
+import { useContext, useCallback } from 'react';
 import { ChatBoxApiContext } from '/src/context/context';
 
 import ChatBoxForm from "/src/components/ui/form/form";
@@ -23,59 +23,72 @@ import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
 const EditProfileSettings = ({ userData }) => {
     const { setUserData, setPopUp, setModal } = useContext( ChatBoxApiContext )
 
-    const flexEditErrorController = (value, item) => {
-            if (item.key == "email") {
-                const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
-                if (regex.test(value)) {
-                    return false // return false if the value is fine
-                }else{
-                    setPopUp({ message: "Your email must be a convenient one"} )
-                    return true //return true you want to stop the action
-                }
-            }
-            return false
-    }
-
-    const handleChangeSingleFieldInBDD = async ({ id, key, value}) => {
-        try{
-            await axios.patch('http://localhost:3000/users/', { id, key, value})
-            if(setUserData){
-                setUserData(( previous )=> ({
-                    ...previous,
-                    [key]: value
-                }))
-            }
-        }catch(err){
-            console.log("Something went wrong : ", err)
+    const handleChangeSingleFieldInBDD = useCallback(async ({ id, key, value }) => {
+        if (!id || !key) return;
+        
+        try {
+          await axios.patch('http://localhost:3000/users/', { id, key, value });
+    
+          setUserData?.((previous) => {
+            if (previous[key] === value) return previous;
+            return {
+              ...previous,
+              [key]: value,
+            };
+          });
+        } catch (err) {
+          console.error("Something went wrong : ", err);
         }
-    }
+      }, [setUserData]);
+      
+
+    
+      const flexEditErrorController = useCallback((value, item) => {
+        if (item.key === "email") {
+          const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+          if (!regex.test(value)) {
+            setPopUp?.({ message: "Your email must be a convenient one" });
+            return true;
+          }
+        } else if (item.key === "pseudo" || item.key === "name") {
+          if (value.trim() === "") {
+            setPopUp?.({ message: "You must correctly fill the field for updating your data" });
+            return true;
+          }
+        }
+        return false;
+      }, [setPopUp]);
+
+
+
+    const fieldToArrayEdit = [
+        {
+           key: "name",
+           title: "Name",
+           value: userData.name,
+        }, 
+        {
+           key:"pseudo",
+           title: "Pseudo",
+           value: userData?.pseudo ?? "..."
+        },
+        {
+           key:"email",
+           title: "Email",
+           value: userData.email
+        },
+        {
+           key: "number",
+           title: "Phone number",
+           value: userData.number ?? "..."
+        }
+       ]
 
     return ( 
         <div className={styles.container}>
             <div className={styles.header}>
                     {
-                        [
-                         {
-                            key: "name",
-                            title: "Name",
-                            value: userData.name,
-                         }, 
-                         {
-                            key:"pseudo",
-                            title: "Pseudo",
-                            value: userData?.pseudo ?? "..."
-                         },
-                         {
-                            key:"email",
-                            title: "Email",
-                            value: userData.email
-                         },
-                         {
-                            key: "number",
-                            title: "Phone number",
-                            value: userData.number ?? "..."
-                         }
-                        ].map(
+                        fieldToArrayEdit.map(
                             (item, key) => (
                             <FlexEdit 
                                 key={key} title={item.title} 
@@ -267,7 +280,16 @@ const EditProfileSettings = ({ userData }) => {
                             setModal({
                                 open: true,
                                 showCancelAndConfirmButtons: true,
-                                onContinueHandler: () => {},
+                                onContinueHandler:async  () => {
+                                    try{
+                                        await axios.delete(`http://localhost:3000/users/delete/${userData.id}`)
+                                        localStorage.clear()
+                                        window.location.reload()
+                                    }
+                                    catch(err){
+                                        console.log("Something went wrong while deleting user, err: ", err)
+                                    }
+                                },
                                 ModalComponent: ()=>( 
                                     <p style={{color: "red", fontSize: 17}}>
                                      This action can&apos;t be undone 

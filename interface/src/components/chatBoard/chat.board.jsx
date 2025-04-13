@@ -9,19 +9,21 @@ import { useState } from "react";
 
 const ChatBoard = () => {
 
-    const { talkSphereId, currentChatId, userChatDefaultSettings,  usersTemporaryChat, socket, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const { talkSphereId, currentChatId, userChatDefaultSettings,  usersTemporaryChat, socket, setUsersTemporaryChat, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
     const [imageUploaded, setImageUploaded] = useState("")
+
 
     useEffect(()=>{
         if (userChatDefaultSettings) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:3000/uploads/themes/${userChatDefaultSettings.themes}`
+            console.log(userChatDefaultSettings)
+            imageLoader.src = `http://localhost:3000/uploads/themes/${userChatDefaultSettings.theme}`
            
             imageLoader.onload = ()=>{ setImageUploaded(() => imageLoader.src) }
 
             imageLoader.onerror = ()=>{
-                imageLoader.src= `http://localhost:3000/uploads/themes/customizes/${userChatDefaultSettings.themes}`
+                imageLoader.src= `http://localhost:3000/uploads/themes/customizes/${userChatDefaultSettings.theme}`
                
                 imageLoader.onload = ()=>{setImageUploaded(() => imageLoader.src)}
 
@@ -31,15 +33,17 @@ const ChatBoard = () => {
         }
     },[userChatDefaultSettings])
 
-    useEffect(()=>{
-        console.log(imageUploaded)
-    },[imageUploaded])
 
     return (
-        <div className={styles.container}>
+        <div
+            className={styles.container}
+        >
             {talkSphereId !== null ? (
                 <div>
-                    <ChatHeader currentChatId={currentChatId} />
+                    <ChatHeader
+                        currentChatId={currentChatId}
+                        fullBackgroundOpacity= { fullBackgroundOpacity }
+                    />
                     <MessageContent
                         socket={socket}
                         talkSphereId={talkSphereId}
@@ -50,19 +54,19 @@ const ChatBoard = () => {
                     <MessageSender
                         talkSphereId={talkSphereId}
                         currentChatId={currentChatId}
+                        fullBackgroundOpacity= { fullBackgroundOpacity }
                     />
-                    <div
-                        className={styles.themesContainer}
-                        style={userChatDefaultSettings && 
-                            {
-                                opacity: userChatDefaultSettings.opacity,
-                                backgroundImage: imageUploaded && `url(${imageUploaded})`,
-                            }
-                        }
-                    />
-                    <div 
-                        className={styles.colorOVerlay}
-                    />
+                    {
+                        userChatDefaultSettings && imageUploaded &&  !userChatDefaultSettings.full && (
+                            <div
+                                className={styles.themesContainer}
+                                style={userChatDefaultSettings && { opacity: userChatDefaultSettings.opacity,}
+                                }
+                            >
+                                <img className={styles.imgBackground} src={imageUploaded}/>
+                            </div>
+                        )
+                    }
                 </div>
             ) : (
                 <div className={styles.welcomeSection}>

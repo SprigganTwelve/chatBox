@@ -16,7 +16,7 @@ exports.insertIntoMessage = async ({ senderId, talkSphereId, content, createdAt 
         console.log(formattedDate);
 
         await connexion.query(
-            "INSERT INTO Message(content, senderId, createdAt, talkSphereId) values (?,?,?,?)",
+            "INSERT INTO Message(content, sender_id, created_at, talksphere_id) values (?,?,?,?)",
             [content, senderId, formattedDate, talkSphereId]
         );
     } catch (err) {

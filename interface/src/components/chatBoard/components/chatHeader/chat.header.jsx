@@ -7,7 +7,7 @@ import styles from "./chat.header.module.css"
 
 
     
-const ChatHeader = ({ currentChatId }) => {
+const ChatHeader = ({ currentChatId, fullBackgroundOpacity }) => {
 
     const [receiver, setReceiver] = useState(null);
     const { friends } = useContext(ChatBoxApiContext);
@@ -30,10 +30,14 @@ const ChatHeader = ({ currentChatId }) => {
     return (
         <>
             { receiver ? (
-                <div className={styles.header}>
+                <div 
+                    className={styles.header}
+                    style={{
+                        "--opacityBackground" : fullBackgroundOpacity
+                    }}
+                >
                     <img src={receiver.image != "" ? "http://localhost:3000/uploads/" + receiver.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"} alt="profil" />
                     <span className={styles.name}>{receiver.name}</span>
-                    {/* TODO: Menu for parameter */}
                 </div>
             ) : (
                 <div style={{color: "white"}} /> 
@@ -44,6 +48,7 @@ const ChatHeader = ({ currentChatId }) => {
 
 ChatHeader.propTypes = {
     currentChatId: PropTypes.number,
+    fullBackgroundOpacity: PropTypes.number,
 }
 
 export default ChatHeader;

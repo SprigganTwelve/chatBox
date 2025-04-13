@@ -8,7 +8,7 @@ import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
-const MessageSender = ({ talkSphereId,  currentChatId}) => {
+const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity}) => {
 
     const [value, setValue] = useState("")
     const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
@@ -40,7 +40,12 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
 
 
     return ( 
-        <div className={styles.container}>
+        <div
+            className={styles.container}
+            style={{
+                "--opacityBackground" : fullBackgroundOpacity
+            }}
+        >
             <div className={styles.inputbefore} />
             <input
                 type="text"
@@ -64,7 +69,8 @@ const MessageSender = ({ talkSphereId,  currentChatId}) => {
 
 MessageSender.propTypes = {
     talkSphereId: PropTypes.number,
-    currentChatId: PropTypes.number
+    currentChatId: PropTypes.number,
+    fullBackgroundOpacity: PropTypes.number
 }
  
 export default MessageSender;

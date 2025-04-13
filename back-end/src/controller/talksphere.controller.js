@@ -41,7 +41,7 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
     try{
         const { id } = req.params
         const connexion = await db.connexion;
-        const data = await connexion.query("SELECT id, content, createdAt, senderId FROM Message where talkSphereId = ?",[id])
+        const data = await connexion.query("SELECT id, content, created_at, sender_id FROM Message where talksphere_id = ?",[id])
         if (data.length > 0) {
             return res.status(200).json(data);
         }

@@ -6,11 +6,12 @@ import styles from "./user.card.module.css"
 const UserCard = ({
     url,
     name,
+    style,
     onClick,
     isActive,
 }) => {
     return ( 
-        <div className={clsx(styles.main, isActive && styles.isActive)} onClick={onClick}>
+        <div className={clsx(styles.main, isActive && styles.isActive)} onClick={onClick} style={style} >
             <div>
                 <div id="imageContainer" className={styles.imageContainer}>
                     <img id="image"
@@ -32,7 +33,8 @@ UserCard.propTypes = {
     url: PropTypes.string,
     name: PropTypes.string,
     onClick: PropTypes.func,
-    isActive: PropTypes.bool
+    style: PropTypes.object,
+    isActive: PropTypes.bool,
 }
  
 export default UserCard;

@@ -9,12 +9,12 @@
 
 .main:hover{
     cursor: pointer;
-    background-color: rgb(55, 56, 57);
+    background-color: rgb(55, 56, 57, var(--backGroundOpacity));
 }
 
 .isActive{
     cursor: pointer;
-    background-color: rgb(55, 56, 57);
+    background-color: rgb(55, 56, 57, var(--backGroundOpacity));
 }
 
 .imageContainer {

@@ -9,8 +9,9 @@ import axios from "axios";
 
 const UserBoard = () => {
 
-    const {userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat  } = useContext(ChatBoxApiContext)
+    const { userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat , fullBackgroundOpacity } = useContext(ChatBoxApiContext)
     const [isUserActive, setIsUserActive] = useState({})
+
 
     const toggleInvite = (id) => {
         setIsUserActive((prev) => ({
@@ -24,6 +25,7 @@ const UserBoard = () => {
 
         localStorage.setItem("currentChatId", JSON.stringify(friend.id));
         const userTalkSphereResponse = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
+        console.log("userTalkSphereResponse", userTalkSphereResponse)
         if (userTalkSphereResponse.status === 200) {
             setUsersTemporaryChat(()=> ({
                 id: userTalkSphereResponse.data.id,
@@ -39,13 +41,21 @@ const UserBoard = () => {
         toggleInvite(index)
     }
 
+
     return (
-        <div  className={styles.container}>
+        <div  
+            className={styles.container}
+            style={{
+                 "--opacityBackground": fullBackgroundOpacity
+            }}
+        >
             <div className={styles.title}>
                 <img src={SVGbox} width={30} alt="" />
                 ChatBox
             </div>
-            <SearchBar />
+            <SearchBar
+                backgroundColor = {`rgb(67, 65, 65, ${fullBackgroundOpacity})`}
+            />
             { friends.map((friend, index)=>(
                         <UserCard  
                             key={index}
@@ -53,8 +63,11 @@ const UserBoard = () => {
                             name={friend.name}
                             online={false}
                             isActive={isUserActive[index]}
-                            onClick={ ()=> handleOnClick(friend, index) } 
-                            />
+                            onClick={ ()=> handleOnClick(friend, index) }
+                            style={{
+                                "--backGroundOpacity": fullBackgroundOpacity
+                            }}
+                        />
                         ))
                     }        
         </div>

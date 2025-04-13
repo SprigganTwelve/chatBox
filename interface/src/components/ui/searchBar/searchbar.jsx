@@ -1,4 +1,4 @@
-
+import PropTypes from 'prop-types'
 import styles from "./searchbar.module.css"
 
 const SearchBar = ({backgroundColor, width , height}) => {
@@ -18,3 +18,9 @@ const SearchBar = ({backgroundColor, width , height}) => {
 }
  
 export default SearchBar;
+
+SearchBar.propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+    backgroundColor: PropTypes.string,
+}

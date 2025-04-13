@@ -40,7 +40,7 @@ app.use('/settings', userSettingsRouters)
 
 const socketController = require("./controller/socket.controller");
 
-io.on("connection", socketHandlers);
+io.on("connection", (socket) => socketHandlers(socket, io));
 
 
 server.listen(PORT, () => {

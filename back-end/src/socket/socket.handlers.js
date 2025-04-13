@@ -1,23 +1,26 @@
 
 const users = require("../global/constants") 
-const messagesHandler = require("../socket/handlers/messages.handler")
+const messagesHandler = require("./handlers/messages.handler")
 
-module.exports = (socket) => {
+module.exports = (socket, io) => {
     console.log(`L'user ${socket.id} est connecté`);
 
     socket.on("register", ({ userId }) => {
-        users[userId] = socket.id;
-        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users[userId]}`);
+        users.set(userId.toString(), socket.id) ;
+        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users.get(userId)}`);
+        console.log(users)
     });
 
-    messagesHandler(socket)
+    messagesHandler(socket, io)
 
     socket.on('disconnect', () => {
         console.log(`Utilisateur déconnecté : ${socket.id}`);
-        Object.keys(users).forEach(userId => {
-            if (users[userId] === socket.id) {
-                delete users[userId];
+        
+        for (const [userId, socketId] of users.entries()) {
+            if (socketId === socket.id) {
+                users.delete(userId);
+                break;
             }
-        });
+        }
     });
 }

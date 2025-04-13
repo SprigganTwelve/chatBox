@@ -17,6 +17,7 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
         try {
             if (talkSphereId) {
                 let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
+                console.log(response)
                 setUsersPreviousChat(response.data);
             }
         } catch (error) {
@@ -25,11 +26,13 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
         }
     },[talkSphereId]);
     
+
     useEffect(()=>{
         if (container) {
             container.current.scrollTo({ top : container.current.scrollHeight, behaviour: "smooth"});
         }
     })
+
 
     useEffect(()=>{
         getUserChat();
@@ -61,7 +64,8 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
             // eslint-disable-next-line react-hooks/exhaustive-deps
             socket.current.off("newMessage", handleNewMessage);
         };
-    }, [setUsersTemporaryChat, socket, talkSphereId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     
 
     useEffect(()=>{
@@ -81,7 +85,7 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
                                 key={index}
                                 content={message.content}
                                 time={message.formattedHours}
-                                isSent={message.senderId !== currentChatId}
+                                isSent={message.sender_id !== currentChatId}
                             />
                         );
                     }) 
@@ -90,10 +94,10 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
                 {
                         usersTemporaryChat.messages.length > 0 && (
                         usersTemporaryChat.messages.map((message,index)=>(
-                                <MessageBuddle
+                            <MessageBuddle
                                     key={index}
                                     content={message.content}
-                                    time={message.formattedHours}
+                                    time={ message.formattedHours }
                                     isSent={message.senderId !== currentChatId}
                             />
                             ))

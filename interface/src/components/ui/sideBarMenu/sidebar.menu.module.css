@@ -9,7 +9,7 @@
     align-items: center;
     transition: all 1s ease;
     justify-content: space-between;
-    z-index: 10;
+    z-index: 30;
 }
 
 .menu{
@@ -36,7 +36,7 @@
 .isActive{
     padding: 10px;
     border-radius: 10px;
-    background-color: rgb(55, 56, 57);
+    background-color: rgb(55, 56, 57, var(--backGroundOpacity));
 }
 
 .profil{

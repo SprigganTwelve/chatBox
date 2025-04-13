@@ -27,6 +27,9 @@ const ChatBoxApiContextProvider = ({ children }) => {
     }
     );
 
+    const [fullBackgroundOpacity, setFullBackgroundOpacity] = useState(1)
+
+
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true); 
     const [popUp, setPopUp] = useState(null); 
@@ -49,7 +52,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 socket.current = io("http://localhost:3000")
                 const requestForUserData = await axios.get(`http://localhost:3000/users/${userId}`)
                 const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
-                socket.current.emit("register", {userId: userId})
+                socket.current.emit("register", {userId: userId.toString()})
                 
                 const {
                     full,
@@ -84,6 +87,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                         mention_notification,
                     }
                 )
+                if(full) setFullBackgroundOpacity(0.5)
             } catch (err) {
                 setPopUp({ message: "Something went wrong while retreiving user data", type: "error" }
                 );
@@ -114,7 +118,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     return ( 
         <ChatBoxApiContext.Provider value={{ 
             fetchUserFriend, setTalkSphereId, setPopUp, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId, setUserData,
-            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, userChatDefaultSettings,
+            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, userChatDefaultSettings, fullBackgroundOpacity
         }}
         >
                 {children}

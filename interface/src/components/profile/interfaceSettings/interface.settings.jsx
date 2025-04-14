@@ -96,8 +96,9 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                     imageUploaded && 
                     <VibeBox 
                         imagePath={ imageUploaded }
-                        isFocus= {isFocus ===themes.length}
+                        isFocus= {isFocus === themes.length}
                         onClick={()=> setFocus(themes.length)}
+                        opacity= { defaultSettings && defaultSettings.opacity }
                     />
                 }
                 <div className={styles.iconImageContainer}>
@@ -217,6 +218,7 @@ InterfaceSettings.propTypes = {
     defaultSettings: PropTypes.shape({
         full: PropTypes.number,
         theme: PropTypes.string,
+        opacity: PropTypes.number,
         fontsize: PropTypes.number,
         settings_id: PropTypes.number,
     }),

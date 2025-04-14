@@ -1,14 +1,15 @@
 import axios from "axios";
 import PropTypes from "prop-types"
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
+import { ChatBoxApiContext } from "/src/context/context";
 import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
 import { insertFormattedDate } from "/src/utils/function";
 
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
-const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socket, setUsersTemporaryChat }) => {
-
+const MessageContent = ({ talkSphereId, currentChatId  }) => {
+    const { socket, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
     const container = useRef(null)
     const [ usersPreviousChat, setUsersPreviousChat ] = useState([])
 
@@ -26,6 +27,7 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
         }
     },[talkSphereId]);
     
+    
 
     useEffect(()=>{
         if (container) {
@@ -34,39 +36,40 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
     })
 
 
+
     useEffect(()=>{
         getUserChat();
     },[getUserChat])
 
-    useEffect(() => {
 
-        if (!socket.current) return;
+    const handleReceivingSocketMessage = useCallback((message)=>{
+        console.log("receivedMessage :", message);
+        if (message.talkSphereId === talkSphereId) {
+            message.createdAt = new Date(message.createdAt);
+
+            insertFormattedDate(message);
     
-        const handleNewMessage = (receivedMessage) => {
-            console.log(receivedMessage);
-            if (receivedMessage.talkSphereId === talkSphereId) {
-                receivedMessage.createdAt = new Date(receivedMessage.createdAt);
-    
-                insertFormattedDate(receivedMessage);
+            setUsersTemporaryChat((previous) => ({
+                id: message.talkSphereId,
+                messages: [...(previous.messages || []), message],
+            }));
+        } }, [setUsersTemporaryChat, talkSphereId])
+
+
+        useEffect(() => {
+            if (!socket?.current) return;
         
-                setUsersTemporaryChat((previous) => ({
-                    id: receivedMessage.talkSphereId,
-                    messages: [...(previous.messages || []), receivedMessage],
-                }));
-            }
-        };
+            const socketInstance = socket.current;
+            socketInstance.off("newMessage");
+            socketInstance.on("newMessage", handleReceivingSocketMessage);
+        
+            return () => {
+                socketInstance.off("newMessage", handleReceivingSocketMessage); // cleanup
+            };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [socket?.current, handleReceivingSocketMessage]);
+    
 
-
-    
-        socket.current.on("newMessage", handleNewMessage);
-    
-        return () => {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            socket.current.off("newMessage", handleNewMessage);
-        };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    
 
     useEffect(()=>{
         if (container) {
@@ -74,6 +77,7 @@ const MessageContent = ({ talkSphereId, currentChatId, usersTemporaryChat, socke
             console.log(usersTemporaryChat)
         }
     }, [usersTemporaryChat])
+
 
     return (
         <>
@@ -120,13 +124,6 @@ MessageContent.propTypes = {
     socket: PropTypes.object,
     talkSphereId: PropTypes.number,
     currentChatId: PropTypes.number,
-    usersTemporaryChat: PropTypes.shape({
-        id: PropTypes.number,
-        messages: PropTypes.array
-    }),
-    usersPreviousChat: PropTypes.array,
-    setUsersPreviousChat: PropTypes.func,
-    setUsersTemporaryChat: PropTypes.func,
     userChatDefaultSettings: PropTypes.object,
 }
 

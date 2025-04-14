@@ -16,7 +16,7 @@ const AudioRecorder = ({ onSend }) => {
     
         
         const startRecording = async () => {
-            const stream = await navigator.mediaDevices.getUserMedia()
+            const stream = await navigator.mediaDevices.getUserMedia( { audio: true } )
             mediaRecorder.current = new MediaRecorder(stream)
             let chunks = []
     
@@ -66,11 +66,14 @@ const AudioRecorder = ({ onSend }) => {
                 )
             }
             { !audioBlob && !isRecording && (
-                <img 
-                    src={ SVGvoicerecorder }
-                    className={styles.icon}
-                    onClick={startRecording}
-                />)
+                    <div>
+                        <img 
+                            src={ SVGvoicerecorder }
+                            className={styles.icon}
+                            onClick={startRecording}
+                        />
+                    </div>
+                )
             }
         </div>
      );

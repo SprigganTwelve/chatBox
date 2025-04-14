@@ -96,6 +96,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 setLoading(false);
             }
         }
+        return () => socket.current.disconnect();
     }, [userId, socket]);
 
 

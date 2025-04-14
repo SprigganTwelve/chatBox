@@ -27,6 +27,7 @@ const SmartImageProcessor = ({
     shape = "rect",
     showGrid= false,
     defaultOpacityValue,
+    enableChangeOpacity= false,
     setCroppedFile = () => {},
     onApectRatioChange = ()=>{},
 }) => {
@@ -64,10 +65,11 @@ const SmartImageProcessor = ({
                 }
             })
             setCroppedFile(()=> URL.createObjectURL(croppedImage))
+            inputRef.current = null;
         }catch(error){
             console.log("Something went wrong while sending the cropped image: ", error)
         }
-    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile])
+    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile, inputRef])
 
 
     useEffect(()=>{
@@ -120,14 +122,19 @@ const SmartImageProcessor = ({
                     style={{containerStyle: {width: '100%', height: '100%'}}}
                 />
             </div>
-            <Slider 
-                leading={SVGluminosity}
-                containerStyles = {{ paddingTop: 10 }}
-                onChange={(opacity)=>{
-                    console.log(opacity)
-                    setOpacity(opacity)
-                }}
-            />
+            {
+                enableChangeOpacity && (
+                    <Slider 
+                        leading={SVGluminosity}
+                        containerStyles = {{ paddingTop: 10 }}
+                        onChange={(opacity)=>{
+                            console.log(opacity)
+                            setOpacity(opacity)
+                        }}
+                    />
+                )
+            } 
+            
         </div>
      );
 }
@@ -142,6 +149,7 @@ SmartImageProcessor.propTypes = {
     inputRef: PropTypes.object,
     setCroppedFile: PropTypes.func,
     onApectRatioChange: PropTypes.func,
+    enableChangeOpacity : PropTypes.bool,
     defaultOpacityValue: PropTypes.number,
 }
  

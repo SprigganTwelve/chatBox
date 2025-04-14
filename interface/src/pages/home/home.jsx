@@ -50,7 +50,7 @@ const Home = () => {
                 {
                     userChatDefaultSettings && imageUploaded && userChatDefaultSettings.full && (
                         <div className={styles.fullBackground}>
-                            <img src={imageUploaded} className={styles.img}/>
+                            <img src={imageUploaded} className={styles.img} style={{ opacity: userChatDefaultSettings.opacity  }}/>
                         </div>
                     )
                 }

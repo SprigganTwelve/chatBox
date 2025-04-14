@@ -8,7 +8,7 @@ import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
-const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity}) => {
+const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity }) => {
 
     const [value, setValue] = useState("")
     const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
@@ -19,7 +19,7 @@ const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity}) =
                 const createdAt = new Date();
                 console.log(talkSphereId)
                 socket.current.emit("privateMessage",{ senderId: userId, receiverId: currentChatId , talkSphereId, content: value, createdAt })
-                const dataSent = { senderId:13, talkSphereId, content: value, createdAt}
+                const dataSent = { senderId: 13, talkSphereId, content: value, createdAt}
 
                 insertFormattedDate(dataSent)
                 console.log(dataSent)

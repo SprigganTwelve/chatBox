@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const ChatBoard = () => {
 
-    const { talkSphereId, currentChatId, userChatDefaultSettings,  usersTemporaryChat, socket, setUsersTemporaryChat, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
+    const { talkSphereId, currentChatId, userChatDefaultSettings, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
     const [imageUploaded, setImageUploaded] = useState("")
 
 
@@ -45,11 +45,8 @@ const ChatBoard = () => {
                         fullBackgroundOpacity= { fullBackgroundOpacity }
                     />
                     <MessageContent
-                        socket={socket}
                         talkSphereId={talkSphereId}
                         currentChatId={currentChatId}
-                        usersTemporaryChat = {usersTemporaryChat}
-                        setUsersTemporaryChat= {setUsersTemporaryChat}
                     />
                     <MessageSender
                         talkSphereId={talkSphereId}

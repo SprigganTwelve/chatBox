@@ -1,6 +1,9 @@
-import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
-import axios from "axios";
 import { io } from "socket.io-client";
+import axios from "axios";
+import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
+
+import messagesSocketHandlers from '/src/socket/messagesHandlers/message.socket.client.handlers.js'
+
 
 const ChatBoxApiContext = createContext();
 
@@ -50,9 +53,11 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 setLoading(true);
 
                 socket.current = io("http://localhost:3000")
+                socket.current.emit("register", {userId: userId.toString()})
+                socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current)
+
                 const requestForUserData = await axios.get(`http://localhost:3000/users/${userId}`)
                 const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
-                socket.current.emit("register", {userId: userId.toString()})
                 
                 const {
                     full,

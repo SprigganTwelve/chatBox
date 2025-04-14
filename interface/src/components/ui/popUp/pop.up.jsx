@@ -20,17 +20,19 @@ const PopUp = () => {
                 setPopUp(null)
             };
         }
-    }, [popUp]);
+    }, [popUp, setPopUp]);
 
     return ( 
         <div 
             className={styles.container}
             style={{ bottom: verticalPosition }}
         >
-            { popUp && popUp.message && popUp.message.trim() !== "" &&  <MessageBuddle 
-                content={popUp.message}
-                backgroundColor={ popUp.type && typeof popUp.type === "string" && popUp.type.trim() === "sucess" ? "green" : "red" }
-            />}
+            { popUp && popUp.message && popUp.message.trim() !== "" && 
+                <MessageBuddle 
+                    content={popUp.message}
+                    backgroundColor={ popUp.type && typeof popUp.type === "string" && popUp.type.trim() === "sucess" ? "green" : "red" }
+                />
+            }
         </div>
     );
 };

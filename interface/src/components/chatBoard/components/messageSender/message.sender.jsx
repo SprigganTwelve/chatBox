@@ -61,7 +61,11 @@ const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity }) 
             />
             <div className={styles.recorders}>
                 <AudioRecognition />
-                <AudioRecorder />
+                <AudioRecorder
+                    onSend={()=>{
+
+                    }}
+                />
             </div>
         </div>
      );

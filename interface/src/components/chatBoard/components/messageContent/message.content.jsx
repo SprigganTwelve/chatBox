@@ -9,19 +9,20 @@ import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
 const MessageContent = ({ talkSphereId, currentChatId  }) => {
-    const { socket, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
     const container = useRef(null)
     const [ usersPreviousChat, setUsersPreviousChat ] = useState([])
+    const { socket, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
+
 
     const getUserChat = useCallback(async () => {
         if (!talkSphereId) return; 
         try {
             if (talkSphereId) {
                 let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
-                console.log(response)
                 setUsersPreviousChat(response.data);
             }
-        } catch (error) {
+        }
+        catch (error) {
             setUsersPreviousChat([]);
             console.error("Erreur lors de la récupération des messages:", error);
         }
@@ -74,7 +75,6 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
     useEffect(()=>{
         if (container) {
             container.current.scrollTo({top: container.current.scrollHeight, behaviour:'smooth'});
-            console.log(usersTemporaryChat)
         }
     }, [usersTemporaryChat])
 
@@ -106,6 +106,9 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
                             />
                             ))
                         )
+                }
+                {
+
                 }
                 {
                     usersPreviousChat.length == 0 && usersTemporaryChat.messages.length == 0 && (

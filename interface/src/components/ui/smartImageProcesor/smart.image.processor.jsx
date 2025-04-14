@@ -65,11 +65,10 @@ const SmartImageProcessor = ({
                 }
             })
             setCroppedFile(()=> URL.createObjectURL(croppedImage))
-            inputRef.current = null;
         }catch(error){
             console.log("Something went wrong while sending the cropped image: ", error)
         }
-    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile, inputRef])
+    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile])
 
 
     useEffect(()=>{

@@ -1,4 +1,13 @@
 
+.recordContainer{
+    gap: 15px;
+    display: flex;
+    margin-right: 30px;
+    align-items: center;
+    justify-content: center;
+    transition: all 1s ease;
+}
+
 .icon {
     width: 25px;
     height: 25px;
@@ -10,4 +19,45 @@
 .icon:hover{
     border-radius: 10px;
     background-color: rgb(55, 56, 57);
+}
+
+.slideSection{
+    gap: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.redRecorderButton {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgb(150, 44, 44);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+.P{
+    white-space: nowrap;
+}
+
+.gauge{
+    width: 120px;
+    height: 2px;
+    border-radius: 50%;
+    background-color: rgb(151, 156, 161);
 }

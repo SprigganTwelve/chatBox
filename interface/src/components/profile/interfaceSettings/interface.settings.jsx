@@ -124,6 +124,7 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                                     <SmartImageProcessor
                                         showGrid={true}
                                         inputRef={inputFileRef}
+                                        enableChangeOpacity = {true}
                                         setCroppedFile = {setImageUploaded}
                                         idInBdd={defaultSettings.settings_id}
                                         url= 'http://localhost:3000/settings/general/image'

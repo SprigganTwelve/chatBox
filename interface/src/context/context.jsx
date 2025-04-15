@@ -17,12 +17,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     const [userData, setUserData] = useState(null)
 
-    const [currentChatId, setCurrentChatId] = useState(
-        ()=>{
-            const saved = JSON.parse(localStorage.getItem("currentChatId"))
-            return saved != null && saved!= undefined ? saved : null;
-        }
-    )
+
     const [talkSphereId, setTalkSphereId] = useState(
         ()=>{
             const saved = JSON.parse(localStorage.getItem("talkSphereId"))
@@ -33,11 +28,11 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const [fullBackgroundOpacity, setFullBackgroundOpacity] = useState(1)
 
 
-    const [friends, setFriends] = useState([]);
-    const [loading, setLoading] = useState(true); 
-    const [popUp, setPopUp] = useState(null); 
-    const [modal, setModal] = useState(null);
-    const [userChatDefaultSettings, setUserChatDefaultSettings] = useState(null);
+    const [ popUp, setPopUp ] = useState(null); 
+    const [ modal, setModal ] = useState(null);
+    const [ allChats, setAllChats ] = useState([]);
+    const [ loading, setLoading ] = useState(true); 
+    const [ userChatDefaultSettings, setUserChatDefaultSettings ] = useState(null);
     
     const [usersTemporaryChat, setUsersTemporaryChat] = useState({
         id: talkSphereId,
@@ -47,7 +42,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
 
-    const fetchUserFriend = useCallback(async () => {
+    const fetchChatsFromBdd = useCallback(async () => {
         if(userId){
             try {
                 setLoading(true);
@@ -57,8 +52,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current)
 
                 const requestForUserData = await axios.get(`http://localhost:3000/users/${userId}`)
-                const requestForFriendship = await axios.get(`http://localhost:3000/users/${userId}/friends`);
-                
+                const requestForChats = await axios.get(`http://localhost:3000/talkSphere/${userId}`);
                 const {
                     full,
                     theme,
@@ -75,7 +69,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                     }  = requestForUserData.data;
 
                 setUserData(requestForUserData.data)
-                setFriends(requestForFriendship.data);
+                setAllChats(requestForChats.data);
                 setUserChatDefaultSettings(
                     {
                         full,
@@ -107,8 +101,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
     useEffect(() => {
-        if (friends.length === 0) { 
-            fetchUserFriend();
+        if (allChats.length === 0) { 
+            fetchChatsFromBdd();
         }
         return () => {
             if (socket.current) {
@@ -123,8 +117,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
     return ( 
         <ChatBoxApiContext.Provider value={{ 
-            fetchUserFriend, setTalkSphereId, setPopUp, setModal, setCurrentChatId,setUsersTemporaryChat, setUserId, setUserData,
-            friends, loading, popUp, modal, talkSphereId, currentChatId , usersTemporaryChat, socket, userId, userData, userChatDefaultSettings, fullBackgroundOpacity
+            fetchChatsFromBdd, setTalkSphereId, setPopUp, setModal, setUsersTemporaryChat, setUserId, setUserData,
+            allChats, loading, popUp, modal, talkSphereId , usersTemporaryChat, socket, userId, userData, userChatDefaultSettings, fullBackgroundOpacity
         }}
         >
                 {children}

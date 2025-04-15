@@ -8,10 +8,11 @@ import { insertFormattedDate } from "/src/utils/function";
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
-const MessageContent = ({ talkSphereId, currentChatId  }) => {
+const MessageContent = ({ talkSphereId  }) => {
     const container = useRef(null)
-    const [ usersPreviousChat, setUsersPreviousChat ] = useState([])
-    const { socket, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
+    const [ userChatFromBdd, setUserChatFromBdd ] = useState([])
+    const [ joinRoomResponse, setJoinRoomResponse] = useState(false)
+    const { socket, userId, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
 
 
     const getUserChat = useCallback(async () => {
@@ -19,15 +20,14 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
         try {
             if (talkSphereId) {
                 let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
-                setUsersPreviousChat(response.data);
+                setUserChatFromBdd(response.data);
             }
         }
         catch (error) {
-            setUsersPreviousChat([]);
+            setUserChatFromBdd(() => []);
             console.error("Erreur lors de la récupération des messages:", error);
         }
     },[talkSphereId]);
-    
     
 
     useEffect(()=>{
@@ -37,11 +37,17 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
     })
 
 
+    useEffect(() => {
+        if (!socket?.current) return;
 
-    useEffect(()=>{
         getUserChat();
-    },[getUserChat])
+        socket.current.messagesSocketHandlers.offJoinRoomResponse()
+        socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
+        socket.current.messagesSocketHandlers.joinRoomResponse((state)=> setJoinRoomResponse(()=> state))
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getUserChat, socket?.current]);
+    
 
     const handleReceivingSocketMessage = useCallback((message)=>{
         console.log("receivedMessage :", message);
@@ -54,22 +60,22 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
                 id: message.talkSphereId,
                 messages: [...(previous.messages || []), message],
             }));
-        } }, [setUsersTemporaryChat, talkSphereId])
+    } }, [setUsersTemporaryChat, talkSphereId])
 
 
-        useEffect(() => {
-            if (!socket?.current) return;
-        
-            const socketInstance = socket.current;
-            socketInstance.off("newMessage");
-            socketInstance.on("newMessage", handleReceivingSocketMessage);
-        
-            return () => {
-                socketInstance.off("newMessage", handleReceivingSocketMessage); // cleanup
-            };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [socket?.current, handleReceivingSocketMessage]);
-    
+
+    useEffect(()=>{
+        if (!socket?.current) return;
+        if(joinRoomResponse){
+            console.log("Join successfully")
+            socket.current.messagesSocketHandlers.offNewMessageResponses()
+            socket.current.messagesSocketHandlers.newMessagesResponses(handleReceivingSocketMessage);
+        }
+        else{
+            socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
+        }
+    }, [handleReceivingSocketMessage, joinRoomResponse, socket, talkSphereId])
+
 
 
     useEffect(()=>{
@@ -82,14 +88,14 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
     return (
         <>
             <div ref={container} className={styles.container}>
-                {usersPreviousChat.length > 0 && (
-                    usersPreviousChat.map((message, index) => {
+                { userChatFromBdd.length > 0 && (
+                    userChatFromBdd.map((message, index) => {
                         return (
                             <MessageBuddle
                                 key={index}
                                 content={message.content}
                                 time={message.formattedHours}
-                                isSent={message.sender_id !== currentChatId}
+                                isSent={message.sender_id === userId}
                             />
                         );
                     }) 
@@ -99,10 +105,10 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
                         usersTemporaryChat.messages.length > 0 && (
                         usersTemporaryChat.messages.map((message,index)=>(
                             <MessageBuddle
-                                    key={index}
-                                    content={message.content}
+                                    key={ index }
+                                    content={ message.content }
                                     time={ message.formattedHours }
-                                    isSent={message.senderId !== currentChatId}
+                                    isSent={ message.senderId === userId }
                             />
                             ))
                         )
@@ -111,7 +117,7 @@ const MessageContent = ({ talkSphereId, currentChatId  }) => {
 
                 }
                 {
-                    usersPreviousChat.length == 0 && usersTemporaryChat.messages.length == 0 && (
+                    userChatFromBdd.length == 0 && usersTemporaryChat.messages.length == 0 && (
                         <div className={styles.emptyChatContainer}>
                             <img src={SVGsmile} alt="" />
                             <span>Soyez le premier à envoyer un message  !!</span>

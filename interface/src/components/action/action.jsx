@@ -7,11 +7,11 @@ import SVGvideo from "/src/assets/svg/video-call-svgrepo-com.svg"
 import SVGoptions from "/src/assets/svg/options-vertical-svgrepo-com.svg"
 
 const Action = () => {
-    const { currentChatId } = useContext(ChatBoxApiContext)
+    const { talkSphereId } = useContext(ChatBoxApiContext)
     return ( 
         <>
             {
-                currentChatId && (
+                talkSphereId && (
                     <div className={styles.container}>
                         <img src={SVGcall} className={styles.icon}/>
                         <img src={SVGvideo} className={styles.icon} />

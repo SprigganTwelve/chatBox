@@ -7,25 +7,25 @@ import styles from "./chat.header.module.css"
 
 
     
-const ChatHeader = ({ currentChatId, fullBackgroundOpacity }) => {
+const ChatHeader = ({  fullBackgroundOpacity }) => {
 
     const [receiver, setReceiver] = useState(null);
-    const { friends } = useContext(ChatBoxApiContext);
+    const { allChats, talkSphereId } = useContext(ChatBoxApiContext);
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = friends.find((item)=> item.id == currentChatId ) ;
+                const response = allChats.find((item)=> item.id == talkSphereId ) ;
                 setReceiver(response);
             } catch (error) {
                 console.error("Erreur lors de la récupération de l'utilisateur :", error);
             }
         };
 
-        if (currentChatId) { 
+        if (talkSphereId) { 
             fetchUser();
         }
-    }, [currentChatId, friends]); 
+    }, [allChats,  talkSphereId]); 
 
     return (
         <>

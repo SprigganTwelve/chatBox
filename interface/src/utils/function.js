@@ -12,28 +12,28 @@ function insertFormattedDate(message){
 
     const dateObj = isNotDate(message) ? new Date(message.createdAt) : message.createdAt;
  
-             if (isNaN(dateObj.getTime())) {
-                 console.warn(`Date invalide: ${message.createdAt}`);
-             }
-             const formattedDate = new Intl.DateTimeFormat("fr-FR", {
-                 year: "numeric",
-                 month: "2-digit",
-                 day: "2-digit",
-                 hour: "2-digit",
-                 minute: "2-digit",
-                 second: "2-digit",
-                 hour12: false
-             }).format(dateObj);
+    if (isNaN(dateObj.getTime())) {
+        console.warn(`Date invalide: ${message.createdAt}`);
+    }
+    const formattedDate = new Intl.DateTimeFormat("fr-FR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+    }).format(dateObj);
  
-             const formattedHours = new Intl.DateTimeFormat("fr-FR", {
-                 hour: "2-digit",
-                 minute: "2-digit",
-                 hour12: false
-             }).format(dateObj);
+    const formattedHours = new Intl.DateTimeFormat("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    }).format(dateObj);
              
-             message.date = dateObj;
-             message.formattedDate = formattedDate;
-             message.formattedHours = formattedHours;
+    message.date = dateObj;
+    message.formattedDate = formattedDate;
+    message.formattedHours = formattedHours;
 }
 
 

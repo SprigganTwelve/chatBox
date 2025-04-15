@@ -9,8 +9,8 @@ import { useState } from "react";
 
 const ChatBoard = () => {
 
-    const { talkSphereId, currentChatId, userChatDefaultSettings, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
     const [imageUploaded, setImageUploaded] = useState("")
+    const { talkSphereId, userChatDefaultSettings, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
 
 
     useEffect(()=>{
@@ -40,17 +40,10 @@ const ChatBoard = () => {
         >
             {talkSphereId !== null ? (
                 <div>
-                    <ChatHeader
-                        currentChatId={currentChatId}
-                        fullBackgroundOpacity= { fullBackgroundOpacity }
-                    />
-                    <MessageContent
-                        talkSphereId={talkSphereId}
-                        currentChatId={currentChatId}
-                    />
+                    <ChatHeader fullBackgroundOpacity = { fullBackgroundOpacity }/>
+                    <MessageContent talkSphereId={talkSphereId} />
                     <MessageSender
                         talkSphereId={talkSphereId}
-                        currentChatId={currentChatId}
                         fullBackgroundOpacity= { fullBackgroundOpacity }
                     />
                     {

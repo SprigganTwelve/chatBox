@@ -8,7 +8,7 @@ import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
-const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity }) => {
+const MessageSender = ({ talkSphereId, fullBackgroundOpacity }) => {
 
     const [value, setValue] = useState("")
     const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
@@ -17,9 +17,9 @@ const MessageSender = ({ talkSphereId,  currentChatId, fullBackgroundOpacity }) 
         try{
             if(socket){
                 const createdAt = new Date();
-                console.log(talkSphereId)
-                socket.current.emit("privateMessage",{ senderId: userId, receiverId: currentChatId , talkSphereId, content: value, createdAt })
-                const dataSent = { senderId: 13, talkSphereId, content: value, createdAt}
+                const dataSent = { senderId: userId, talkSphereId, content: value, createdAt}
+                console.log({  userId , talkSphereId, content: value, createdAt })
+                socket.current.messagesSocketHandlers.sendMessageRequest(dataSent)
 
                 insertFormattedDate(dataSent)
                 console.log(dataSent)

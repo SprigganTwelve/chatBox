@@ -1,29 +1,52 @@
 
 const messagesSocketHandlers = (socket) => {
 
-    const joinRoomRequest = () =>{
-        //TODO: IMPLEMENT
+    //Here we make a join request to the server 
+
+    const joinRoomRequest = (room) =>{
+        socket.emit("JoinRoom", room  )
     }
 
-    const joinRoomResponse = ()=>{
-        //TODO: IMPLEMENT
+    const joinRoomResponse = (callback)=>{
+        socket.on("joinRoomResponse", ({ state })=>{
+            if(callback) callback(state)
+        })
     }
 
-    const leaveRoom = ()=> {
-        //TODO: IMPLEMENT
+    const offJoinRoomResponse = () => socket.off("JoinRoom")
+
+    const leaveRoom = (room)=> {
+        socket.emit("leaveRoom", room)
     }
 
-    const sendMessageRequest = ({userId, currentChatId, talkSphereId, value, createdAt}) => {
-        socket.emit("privateMessage", { senderId: userId, receiverId: currentChatId , talkSphereId, content: value, createdAt })
+    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt }) => {
+        console.log({ senderId, talkSphereId, content, createdAt })
+        socket.emit("privateMessage", { senderId, talkSphereId, content, createdAt })
     }
 
-    const newMessagesResponses = ()=>{
-        //TODO: IMPLEMENT
+    //Here we listen all the incomming message through one specific room (talksphereId)
+
+    const newMessagesResponses = (callback)=>{
+        socket.on("newMessage", (message)=> {
+            if(message) callback(message)
+        })
     }
 
     const offNewMessageResponses = ()=>{
-        //TODO: IMPLEMENT
+        socket.off("newMessage")
     }
+
+    //GB, Here we listen all the incoming message for handle the notifications through the socketId
+
+    const captureIncommingMessageResponse = ()=> {
+
+    }
+
+    const offCaptureIncommingMessageResponse = ()=> {
+
+    }
+
+
 
     const writtingRequest = ()=>{
         //TODO: IMPLEMENT
@@ -68,10 +91,14 @@ const messagesSocketHandlers = (socket) => {
         leaveRoom,
         joinRoomRequest,
         joinRoomResponse,
+        offJoinRoomResponse,
 
         sendMessageRequest,
         newMessagesResponses,
         offNewMessageResponses,
+
+        captureIncommingMessageResponse,
+        offCaptureIncommingMessageResponse,
 
         writtingRequest,
         writtingResponse,

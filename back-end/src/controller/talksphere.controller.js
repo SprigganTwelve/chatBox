@@ -1,7 +1,74 @@
 
 const db = require("../database/connexion")
 
-//Used By router
+exports.getAllChatsStoredInBdd = async (req, res)=>{
+    try {
+        const { userId  } = req.params
+        const conn = await db.connexion
+        const response = await conn.query(`
+            SELECT
+                T.id AS id,
+
+                -- All other users in the talksphere except the sender
+                (
+                    SELECT GROUP_CONCAT(CT2.consumer_id)
+                    FROM Consumer_Talksphere CT2
+                    WHERE CT2.talksphere_id = T.id
+                    AND CT2.consumer_id != CT.consumer_id
+                ) AS receivers,
+
+                -- Last message in the talksphere
+                (
+                    SELECT M.content
+                    FROM Message M
+                    WHERE M.talksphere_id = T.id
+                    ORDER BY M.created_at DESC
+                    LIMIT 1
+                ) AS last_message,
+
+                -- Use talksphere image if available, otherwise fallback to first other user's image
+                CASE
+                    WHEN T.image IS NOT NULL THEN T.image
+                    ELSE (
+                        SELECT C.image
+                        FROM Consumer C
+                        JOIN Consumer_Talksphere CT2 ON CT2.consumer_id = C.id
+                        WHERE CT2.talksphere_id = T.id
+                        AND CT2.consumer_id != CT.consumer_id
+                        ORDER BY C.id ASC
+                        LIMIT 1
+                    )
+                END AS image,
+
+                -- Use talksphere.name if not null, otherwise get sender's name
+                CASE
+                    WHEN T.name IS NOT NULL THEN T.name
+                    ELSE (
+                        SELECT C.name
+                        FROM Consumer C
+                        WHERE C.id = CT.consumer_id
+                        LIMIT 1
+                    )
+                END AS name
+
+            FROM Consumer_Talksphere CT
+            JOIN Talksphere T ON CT.talksphere_id = T.id
+            WHERE CT.consumer_id = ?;
+        `, [userId])
+        
+        if(response.length > 0){
+            res.status(200).json(response)
+            return;
+        }
+    } 
+    catch (err) {
+        console.log(`Something went wrong: ${err}`);
+        return res.status(500).json({ message: "An error occurred" });
+    }
+}
+
+
+//Here retrive all the field of one specific talksphere stored in bdd  
 
 exports.getTalkSphere = async (req, res) => {
     try {
@@ -36,12 +103,35 @@ exports.getTalkSphere = async (req, res) => {
     }
 };
 
+//Retreive all the messages about one talsphereId
 
 exports.getMessagesFromTalkSphere = async (req, res) => {
     try{
         const { id } = req.params
         const connexion = await db.connexion;
-        const data = await connexion.query("SELECT id, content, created_at, sender_id FROM Message where talksphere_id = ?",[id])
+        const data = await connexion.query(
+            `
+                SELECT 
+                    M.id,
+                    M.content,
+                    M.sender_id,
+                    M.created_at,
+                    M.talksphere_id,
+                    (
+                        SELECT JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                                'id', Me.id
+                            )
+                        )
+                        FROM Media Me
+                        WHERE Me.message_id = M.id
+                    ) AS media
+                FROM Message M
+                WHERE M.talksphere_id = ?;
+
+            `,
+            [id]
+        )
         if (data.length > 0) {
             return res.status(200).json(data);
         }

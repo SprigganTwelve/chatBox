@@ -1,45 +1,37 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../context/context"
 import UserCard from "./components/userCard/user.card";
 import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
 import styles from "./user.board.module.css"
-import axios from "axios";
 
 const UserBoard = () => {
 
-    const { userId,  friends, setCurrentChatId, setTalkSphereId, setUsersTemporaryChat , fullBackgroundOpacity } = useContext(ChatBoxApiContext)
     const [isUserActive, setIsUserActive] = useState({})
+    const { allChats, setTalkSphereId, setUsersTemporaryChat , fullBackgroundOpacity } = useContext(ChatBoxApiContext)
 
 
-    const toggleInvite = (id) => {
+    const toggleInvite = useCallback((id) => {
         setIsUserActive((prev) => ({
             [id]: !prev[id]
         }));
-    };
+    }, [])
 
-    const handleOnClick = async (friend, index) => { 
+    const handleOnClick = useCallback(async (chat, index) => { 
        
-        setCurrentChatId(friend.id)
+        if(!chat.id) return;
+        console.log(chat)
+        setUsersTemporaryChat(()=> ({
+            id: chat.id,
+            messages: []
+        }))
+        localStorage.setItem("talkSphereId", JSON.stringify(chat.id));
 
-        localStorage.setItem("currentChatId", JSON.stringify(friend.id));
-        const userTalkSphereResponse = await axios.get(`http://localhost:3000/talkSphere/${userId}/${friend.id}`)
-        console.log("userTalkSphereResponse", userTalkSphereResponse)
-        if (userTalkSphereResponse.status === 200) {
-            setUsersTemporaryChat(()=> ({
-                id: userTalkSphereResponse.data.id,
-                messages: []
-            }))
-            localStorage.setItem("talkSphereId", JSON.stringify(userTalkSphereResponse.data.id));
-            setTalkSphereId(() => userTalkSphereResponse.data.id )
+        setTalkSphereId(() => chat.id )
+        toggleInvite(index) //Mark the card as active
 
-        }else{
-            console.log(userTalkSphereResponse)
-        }
-
-        toggleInvite(index)
-    }
+    },[setTalkSphereId, setUsersTemporaryChat, toggleInvite])
 
 
     return (
@@ -56,20 +48,20 @@ const UserBoard = () => {
             <SearchBar
                 backgroundColor = {`rgb(67, 65, 65, ${fullBackgroundOpacity})`}
             />
-            { friends.map((friend, index)=>(
+            { allChats.map((chat, index)=>(
                         <UserCard  
                             key={index}
-                            url={friend.image}
-                            name={friend.name}
+                            url={chat.image}
+                            name={chat.name}
                             online={false}
                             isActive={isUserActive[index]}
-                            onClick={ ()=> handleOnClick(friend, index) }
+                            onClick={ ()=> handleOnClick(chat, index) }
                             style={{
                                 "--backGroundOpacity": fullBackgroundOpacity
                             }}
                         />
                         ))
-                    }        
+            }        
         </div>
      );
 }

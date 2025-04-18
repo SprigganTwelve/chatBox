@@ -67,7 +67,6 @@ const MessageContent = ({ talkSphereId  }) => {
     useEffect(()=>{
         if (!socket?.current) return;
         if(joinRoomResponse){
-            console.log("Join successfully")
             socket.current.messagesSocketHandlers.offNewMessageResponses()
             socket.current.messagesSocketHandlers.newMessagesResponses(handleReceivingSocketMessage);
         }

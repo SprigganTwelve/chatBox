@@ -30,7 +30,7 @@ const Profil = () => {
 
     useEffect(()=>{
         console.log(croppedProfileImage)
-        if(croppedProfileImage) setUserData((prev) => ({...prev, image: croppedProfileImage }))
+        if(croppedProfileImage) setUserData((prev) => ({...prev, image: URL.createObjectURL(croppedProfileImage) }))
     },[croppedProfileImage, setUserData])
 
     return (
@@ -48,7 +48,7 @@ const Profil = () => {
                                     userData?.image
                                     ? (userData.image.startsWith("blob") 
                                         ? userData.image 
-                                        : "http://localhost:3000/uploads/" + userData.image)
+                                        : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/${userData.image}`)
                                     : "/image/randomUser.png"
                                 }
                             className={styles.imageProfil}
@@ -72,8 +72,9 @@ const Profil = () => {
                                             <SmartImageProcessor
                                                 shape = "round"
                                                 ratio = { 1 }
-                                                idInBdd=  {userData.id}
-                                                inputRef= {inputFileRef}
+                                                idInBdd=  { userData.id }
+                                                inputRef= { inputFileRef }
+                                                folder = { userData.folder }
                                                 setCroppedFile = {setCroppedProfileImge}
                                                 url= "http://localhost:3000/users/profile/image"
                                                 fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
@@ -148,6 +149,7 @@ const Profil = () => {
                             <InterfaceSettings 
                                 modal={modal}
                                 setModal={setModal}
+                                userFolder= { userData.folder }
                                 defaultSettings={userChatDefaultSettings}
                             />
                         )

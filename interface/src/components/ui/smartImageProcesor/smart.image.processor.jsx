@@ -24,6 +24,7 @@ const SmartImageProcessor = ({
     inputRef,
     idInBdd=0, 
     ratio = 11/5,
+    folder = null,
     shape = "rect",
     showGrid= false,
     defaultOpacityValue,
@@ -50,25 +51,27 @@ const SmartImageProcessor = ({
 
     SmartImageProcessor.handleSaveCroppedImage =  useCallback(async () =>{  //GB, This function is  provided by the component and should be used to save the cropped image
         try{
-            if(!url){
-                console.log("You must pass an url prop to SmartImageProcessor to properly executed the handleSaveCroppedImage function")
+            const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
+            setCroppedFile(()=> croppedImage)
+
+            if(!url && !folder){
                 return;
             }
+
             const formData = new FormData() 
-            const croppedImage = await getCroppedImage(fileUrl, croppedAreaPixels)
             formData.append('id', idInBdd)
             formData.append("opacity", opacity)
             formData.append('file', croppedImage)
+            formData.append('folder', folder)
             await axios.post(url, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             })
-            setCroppedFile(()=> URL.createObjectURL(croppedImage))
         }catch(error){
             console.log("Something went wrong while sending the cropped image: ", error)
         }
-    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile])
+    },[url, fileUrl, croppedAreaPixels, idInBdd, opacity, setCroppedFile, folder])
 
 
     useEffect(()=>{
@@ -142,6 +145,7 @@ SmartImageProcessor.propTypes = {
     url: PropTypes.string,
     ratio: PropTypes.number,
     shape: PropTypes.string,
+    folder: PropTypes.string,
     showGrid: PropTypes.bool,
     fileUrl: PropTypes.string,
     idInBdd: PropTypes.number,

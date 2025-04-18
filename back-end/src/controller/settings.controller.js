@@ -36,10 +36,9 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
 
     try{
         const file = req.file;
-        console.log("Route atteinte")
-        const { id, opacity } = req.body;
+        const { id, opacity, folder } = req.body;
         console.log()
-        if(file && id && opacity){
+        if(file && id && opacity && folder){
 
             const filename = Date.now() +"_customize_theme_"+ file.originalname
 
@@ -57,7 +56,7 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
             const theme = imageResponse[0].theme
 
             if ( theme && theme.includes('_customize_theme_')) {
-                const lastImagePath = path.join(__dirname, "../uploads/themes/customizes", theme )
+                const lastImagePath = path.join(__dirname, "../uploads/users/parameters/", folder, theme )
                 fs.unlinkSync(lastImagePath)
             }
 
@@ -65,7 +64,7 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
 
             //load the new image into the db
 
-            const filePath = path.join(__dirname, '../uploads/themes/customizes')
+            const filePath = path.join(__dirname,  "../uploads/users/parameters/", folder)
             const completeFilePath = path.join(filePath, filename)
             fs.writeFile(completeFilePath, file.buffer, async (err) => {
                 if (err) {

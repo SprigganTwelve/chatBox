@@ -21,7 +21,6 @@ const UserBoard = () => {
     const handleOnClick = useCallback(async (chat, index) => { 
        
         if(!chat.id) return;
-        console.log(chat)
         setUsersTemporaryChat(()=> ({
             id: chat.id,
             messages: []

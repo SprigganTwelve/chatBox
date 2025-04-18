@@ -1,6 +1,7 @@
 
+const fs = require('fs')
+const bcrypt = require("bcrypt")
 const db = require("../database/connexion")
-
 
 exports.getUserVisible = async (req,res) => {
     try{
@@ -113,7 +114,15 @@ exports.ConfirmAnInvitation = async (req, res) => {
         }
 
         // Create a new TalkSphere
-        const talkSphereResponse = await conn.query("INSERT INTO Talksphere () VALUES ()");
+
+        const folder = await bcrypt.hash(senderId + receiverId, 15)
+
+        fs.mkdirSync(`../uploads/talkspheres/${folder}`, { recursive: true })
+
+        const talkSphereResponse = await conn.query(
+            "INSERT INTO Talksphere (folder) VALUES (?)",
+            [folder]
+        );
 
         if (talkSphereResponse.affectedRows === 0) {
             throw new Error("Failed to create TalkSphere");

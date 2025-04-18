@@ -1,9 +1,8 @@
 const db = require("../database/connexion")
 
-exports.insertIntoMessage = async ({ senderId, talkSphereId, content, createdAt }) => {
+exports.insertIntoMessage = async ({ senderId, talkSphereId, content, createdAt, media }) => {
     try {
         const connexion = await db.connexion;
-
         let dateObj = createdAt instanceof Date ? createdAt : new Date(createdAt);
 
         if (isNaN(dateObj.getTime())) {
@@ -16,7 +15,7 @@ exports.insertIntoMessage = async ({ senderId, talkSphereId, content, createdAt 
         console.log(formattedDate);
 
         await connexion.query(
-            "INSERT INTO Message(content, sender_id, created_at, talksphere_id) values (?,?,?,?)",
+            `INSERT INTO Message(content, sender_id, created_at, talksphere_id) values (?,?,?,?)`,
             [content, senderId, formattedDate, talkSphereId]
         );
     } catch (err) {

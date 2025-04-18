@@ -1,6 +1,7 @@
 
 .container{
     right: 20px;
+    z-index: 60;
     bottom: -70px;
     position: absolute;
     transition: all 3s ease-in-out;

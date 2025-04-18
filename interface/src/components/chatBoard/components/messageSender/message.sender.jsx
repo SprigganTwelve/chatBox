@@ -2,33 +2,22 @@
 import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
 import styles from './message.sender.module.css'
-import { insertFormattedDate } from "/src/utils/function"
 import { ChatBoxApiContext } from "../../../../context/context";
 import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
-const MessageSender = ({ talkSphereId, fullBackgroundOpacity }) => {
+const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers }) => {
 
-    const [value, setValue] = useState("")
-    const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const [ value, setValue ] = useState("")
+    const { socket, userId } = useContext(ChatBoxApiContext)
 
-    const sendMessage = async () => {
+    const sendMessage = async ({ media }) => {
         try{
-            if(socket){
+            if(socket && receivers){
                 const createdAt = new Date();
-                const dataSent = { senderId: userId, talkSphereId, content: value, createdAt}
-                console.log({  userId , talkSphereId, content: value, createdAt })
-                socket.current.messagesSocketHandlers.sendMessageRequest(dataSent)
-
-                insertFormattedDate(dataSent)
-                console.log(dataSent)
-                setUsersTemporaryChat((previous)=>(
-                        {
-                            id: talkSphereId,
-                            messages: [...previous.messages ?? [], dataSent]
-                        }
-                ))
+                const messageSent = { senderId: userId, talkSphereId, content: value, createdAt, media }
+                socket.current.messagesSocketHandlers.sendMessageRequest({...messageSent, receivers: receivers.split(',')})
                 setValue("")
             }
         }
@@ -55,15 +44,15 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity }) => {
                 onChange={(event)=> setValue(event.target.value)}
                 onKeyDown={(event)=>{
                     if(event.key == "Enter"){
-                        sendMessage()
+                        sendMessage({ media: null})
                     }
                 }}
             />
             <div className={styles.recorders}>
                 <AudioRecognition />
                 <AudioRecorder
-                    onSend={()=>{
-
+                    onSend={ async (blob)=>{
+                        sendMessage( { media: { audio: {blob ,  type: "webm"} }} )
                     }}
                 />
             </div>
@@ -72,9 +61,10 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity }) => {
 }
 
 MessageSender.propTypes = {
+    receivers: PropTypes.array,
     talkSphereId: PropTypes.number,
     currentChatId: PropTypes.number,
-    fullBackgroundOpacity: PropTypes.number
+    fullBackgroundOpacity: PropTypes.number,
 }
  
 export default MessageSender;

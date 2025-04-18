@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcrypt')
 const db = require("../database/connexion")
-
+const { v4: uuidv4 } = require('uuid');
 
 exports.getAllUsers = async (req, res) => {
     try{
@@ -28,10 +28,11 @@ exports.getSpecialUser = async (req, res) => {
                     C.id,
                     C.name,
                     C.image,
+                    C.email,
                     C.pseudo,
+                    C.folder,
                     C.online,
                     C.number,
-                    C.email,
                     C.password,
                     C.key_friend,
                     C.visibility,
@@ -86,7 +87,8 @@ exports.getMyFriends = async (req, res) => {
 
        return res.status(200).json( allFriendData )
 
-    }catch(err){
+    }
+    catch(err){
         console.log(err)
     }
 };
@@ -146,9 +148,9 @@ exports.getSignedUpToBDD = async (req, res) => {
         let dynamicSqlRequest;
         let dynamicSqlParams;
         const saltRounds = 5
-        const file = req.file
+        const [ file ] = req.files
         const { name, pseudo, email, password } = req.body
-        
+
         if(!name || !email || !password){
             return res.json( {message: "Name, email and password must not be empty"} )
         }
@@ -160,25 +162,35 @@ exports.getSignedUpToBDD = async (req, res) => {
             return res.json( { message: "Email already exist" } )
         }
 
+        const folder = uuidv4(); 
+
         const hashPassword = await bcrypt.hash(password, saltRounds)
         const keyFriend = await bcrypt.hash( name + pseudo, saltRounds)
         const description = ``
 
         await conn.beginTransaction()
+        
+        const directoryPath = path.join(__dirname, `../uploads/users/${folder}/parameters`)
+        fs.mkdirSync(directoryPath, { recursive: true })
+
+        if (!fs.existsSync(directoryPath)) {
+            console.log("[POST, function : getSignedUpToBDD] Something went wrong while create the user repertories")
+            return res.status(500).json( { message: "Fail to create user's repertories" } )
+        }
 
         if (file) {
 
             fileName = Date.now() + path.extname(file.originalname)
-            const fileUploadPath = path.join(__dirname, "../uploads/users/")
+            const fileUploadPath = path.join(__dirname, `../uploads/users/${folder}/parameters`)
             filePath = path.join(fileUploadPath, fileName)
-            dynamicSqlRequest  = "INSERT INTO Consumer(name, pseudo, email, password, image, key_friend , description) VALUES(?,?,?,?,?,?,?)"
-            dynamicSqlParams = [ name, pseudo, email, hashPassword, fileName, keyFriend, description ] ;
+            dynamicSqlRequest  = "INSERT INTO Consumer(name, pseudo, email, password, image, key_friend , description, folder) VALUES(?,?,?,?,?,?,?,?)"
+            dynamicSqlParams = [ name, pseudo, email, hashPassword, fileName, keyFriend, description, folder ] ;
             fs.writeFileSync(filePath, file.buffer)
-
         }
         else{
-            dynamicSqlRequest =  "INSERT INTO Consumer(name, pseudo, email, password, key_friend , description) VALUES(?,?,?,?,?,?)"
-            dynamicSqlParams = [ name, pseudo, email, hashPassword, keyFriend, description ];
+
+            dynamicSqlRequest =  "INSERT INTO Consumer(name, pseudo, email, password, key_friend , description, folder) VALUES(?,?,?,?,?,?, ?)"
+            dynamicSqlParams = [ name, pseudo, email, hashPassword, keyFriend, description, folder ];
         }
 
         const userResponse = await conn.query(dynamicSqlRequest, dynamicSqlParams)
@@ -188,6 +200,7 @@ exports.getSignedUpToBDD = async (req, res) => {
             console.log("Something wrong happend while inserting the user [with file]")
             return res.status(500).json( { message: "Something wrong happend while inserting the user [with file]" } )
         }
+
 
         const settingsResponse = await conn.query("INSERT INTO Settings() VALUES ()")
 
@@ -254,8 +267,8 @@ exports.changeImageProfil = async (req, res) => {
         const file = req.file
         const conn = await db.connexion
 
-        const { id, opacity } = req.body
-        if(!id | !opacity | !file){
+        const { id, opacity, folder } = req.body
+        if(!id | !opacity | !file |!folder){
             return res.status(500).json({ message: "Missing props"})
         }
 
@@ -266,7 +279,7 @@ exports.changeImageProfil = async (req, res) => {
         }
 
         const userResult = existingUser[0];
-        const filePath = path.join(__dirname, '../uploads/users', userResult.image)
+        const filePath = path.join(__dirname, `../uploads/users/${folder}/parameters/`, userResult.image)
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath)
         }
@@ -274,7 +287,7 @@ exports.changeImageProfil = async (req, res) => {
         await conn.beginTransaction()
         
         const fileName = Date.now() + file.originalname
-        const completeFilePath = path.join(__dirname, '../uploads/users', fileName )
+        const completeFilePath = path.join(__dirname, `../uploads/users/${folder}/parameters/`, fileName )
 
         fs.writeFile(completeFilePath, file.buffer, async (err) => {
             if (err) {
@@ -313,15 +326,15 @@ exports.deleteOneUserAccount = async (req, res) => {
         }
 
         await conn.beginTransaction()
+        const filePath = path.join(__dirname, `../uploads/users/${folder}/parameters/`, selectedUserInBdd.image)
 
-        if(fs.existsSync(selectedUserInBdd.image)) {
+        if(fs.existsSync(filePath)) {
             const deleteUserResponse = await conn.query("DELETE FROM Consumer WHERE id=?", [userId])
             if(deleteUserResponse.affectedRows < 1){
                 await conn.rollback()
                 console.log("Something went wrong while executing the delete request the user")
                 return res.status(500).json({ message: "Something went wrong while deleting the user" })
             }
-            const filePath = path.join(__dirname, '../uploads/users', selectedUserInBdd.image)
             fs.unlink(filePath, async (err)=>{
                 if(err){
                     await conn.rollback()

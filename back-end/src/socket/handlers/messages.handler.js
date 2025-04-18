@@ -48,16 +48,11 @@ module.exports = (socket, io) => {
             }
             socketController.insertIntoMessage(message);
             
-            io.to(message.talkSphereId).emit(message)
+            io.to(message.talkSphereId).emit("newMessage", message)
             for(const id of message.receivers){
                 const receiverSocketId = users.get(id.toString());
                 if (receiverSocketId) 
-                    io.to(receiverSocketId).emit("incommingMessage", { 
-                        content: message.content,
-                        senderId: message.senderId,
-                        createdAt: data.createdAt,
-                        talkSphereId: message.talkSphereId,
-                    });
+                    io.to(receiverSocketId).emit("incommingMessage", message);
             }
         }
         catch(err){

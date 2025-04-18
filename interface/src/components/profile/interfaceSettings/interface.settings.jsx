@@ -19,7 +19,7 @@ import styles from "./interface.settings.module.css"
 
 
 
-const InterfaceSettings = ({ defaultSettings, setModal }) => {
+const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
 
     const inputFileRef = useRef(null)
     const [isFocus, setFocus] = useState(0)
@@ -58,14 +58,14 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
 
     
     useEffect(()=>{
-        if (defaultSettings && !imageUploaded) {
+        if (defaultSettings && userFolder && !imageUploaded) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:3000/uploads/themes/customizes/${defaultSettings.theme}`
+            imageLoader.src = `http://localhost:3000/uploads/users/${userFolder}/parameters/${defaultSettings.theme}`
            
             imageLoader.onload = ()=>{ 
                 setImageUploaded(imageLoader.src)
-                setFocus(themes.length)
+                setFocus(themes.length - 1 )
             }
 
             imageLoader.onerror = ()=>{
@@ -126,7 +126,8 @@ const InterfaceSettings = ({ defaultSettings, setModal }) => {
                                         inputRef={inputFileRef}
                                         enableChangeOpacity = {true}
                                         setCroppedFile = {setImageUploaded}
-                                        idInBdd={defaultSettings.settings_id}
+                                        idInBdd={ defaultSettings.settings_id }
+                                        folder = { userFolder }
                                         url= 'http://localhost:3000/settings/general/image'
                                         fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
                                     />
@@ -225,6 +226,7 @@ InterfaceSettings.propTypes = {
     }),
     modal: PropTypes.bool,
     setModal: PropTypes.func,
+    userFolder: PropTypes.string
 }
  
 export default InterfaceSettings;

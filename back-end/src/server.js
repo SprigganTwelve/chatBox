@@ -21,8 +21,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use("/uploads/", express.static(path.join(__dirname, 'uploads/users')))
+app.use("/uploads/users/:folder/:folder2", (req, res, next) => {
+    const { folder, folder2 } = res.parmas
+    const pathFile = path.join(__dirname, 'uploads/users', folder, folder2)
+    express.static(path.join(__dirname, pathFile ))(req, res, next)
+})
+
+
 app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
+
+
+app.use("/uploads/talsphere/:folder/:folder2", (req, res, next) => {
+    const { folder, folder2 } = res.parmas
+    const pathFile = path.join(__dirname, 'uploads/talkspheres', folder, folder2 )
+    express.static(path.join(__dirname, pathFile ))(req, res, next)
+})
 
 
 const usersRouter = require("./routes/users.routes");
@@ -34,11 +47,9 @@ const userInvitationRouter = require('./routes/invitation.routes');
 
 app.use("/users", usersRouter);
 app.use("/talkSphere", talkSphereRouter);
-app.use("/invitation", userInvitationRouter)
 app.use('/settings', userSettingsRouters)
+app.use("/invitation", userInvitationRouter)
 
-
-const socketController = require("./controller/socket.controller");
 
 io.on("connection", (socket) => socketHandlers(socket, io));
 

@@ -1,7 +1,14 @@
+import PropTypes from 'prop-types'
 import {  useEffect, useRef, useState } from 'react';
 import styles from './input.module.css';
 
-const Input = ({ name, title, placeholder, type, controller = ()=> {} }) => {
+const Input = ({ 
+    name,
+    type,
+    title,
+    placeholder,
+    controller = ()=> {}
+}) => {
     const inputRef = useRef(null);
     const [inputError, setInputError] = useState("")
     const [fileName, setFileName] = useState("");
@@ -17,12 +24,11 @@ const Input = ({ name, title, placeholder, type, controller = ()=> {} }) => {
         }
     };
 
-    const manageControllerParameter = controller(inputRef, setInputError)
 
 
     useEffect(()=>{
-        Input.executeController = manageControllerParameter;
-    }, [])
+        Input.executeController = controller(inputRef, setInputError);
+    }, [controller])
 
     return ( 
         <div className={styles.inputContainer}>
@@ -47,3 +53,11 @@ const Input = ({ name, title, placeholder, type, controller = ()=> {} }) => {
 };
 
 export default Input;
+
+Input.propTypes = {
+    name: PropTypes.string,
+    type: PropTypes.string,
+    title: PropTypes.string,
+    controller: PropTypes.func,
+    placeholder: PropTypes.string,
+}

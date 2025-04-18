@@ -54,3 +54,16 @@
     padding: 5px;
     background-color: rgba(21, 21, 21, 0.5);
 }
+
+.btn {
+    border: none;
+    margin-top: 9px;
+    color: white;
+    cursor: pointer;
+    padding: 1em 2em;
+    text-align: center;
+    position: relative;
+    border-radius: 1000px;
+    background-color: #161a20;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}

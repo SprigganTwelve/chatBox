@@ -11,7 +11,7 @@ import styles from "./home.module.css"
 const Home = () => {
     const navigate = useNavigate()
     const [imageUploaded, setImageUploaded] = useState("")
-    const { userId, userChatDefaultSettings } = useContext(ChatBoxApiContext)
+    const { userId, userData, userChatDefaultSettings } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(!userId){
@@ -23,13 +23,12 @@ const Home = () => {
         if (userChatDefaultSettings) {
             const imageLoader = new Image()
 
-            console.log(userChatDefaultSettings)
             imageLoader.src = `http://localhost:3000/uploads/themes/${userChatDefaultSettings.theme}`
            
             imageLoader.onload = ()=>{ setImageUploaded(() => imageLoader.src) }
 
             imageLoader.onerror = ()=>{
-                imageLoader.src= `http://localhost:3000/uploads/themes/customizes/${userChatDefaultSettings.theme}`
+                imageLoader.src= `http://localhost:3000/uploads/users/${ userData.folder }/parameters/${userChatDefaultSettings.theme}`
                
                 imageLoader.onload = ()=>{setImageUploaded(() => imageLoader.src)}
 
@@ -37,18 +36,18 @@ const Home = () => {
             }
 
         }
-    },[userChatDefaultSettings])
+    },[userChatDefaultSettings, userData])
 
     return ( 
         <>
             <div className={styles.container}>
                 <div className={styles.jsxComponentsContainer}>
                     <UserBoard />
-                    <ChatBoard />
+                    <ChatBoard uploadedBackground = {userChatDefaultSettings && !userChatDefaultSettings?.full  ? imageUploaded : null}/>
                     <Action />
                 </div>
                 {
-                    userChatDefaultSettings && imageUploaded && userChatDefaultSettings.full && (
+                    userChatDefaultSettings && userChatDefaultSettings.full && (
                         <div className={styles.fullBackground}>
                             <img src={imageUploaded} className={styles.img} style={{ opacity: userChatDefaultSettings.opacity  }}/>
                         </div>

@@ -18,7 +18,6 @@ const Profil = () => {
     const { setUserData, userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
     const [isButtonActive, setIsButtonActive] = useState("Edit")
     const [croppedProfileImage, setCroppedProfileImge] = useState(null)
-    console.log(userData)
 
 
     useEffect(()=>{
@@ -26,10 +25,9 @@ const Profil = () => {
             navigate("/")
         }
     },
-    [userId, navigate])
+    [userId, navigate, userData])
 
     useEffect(()=>{
-        console.log(croppedProfileImage)
         if(croppedProfileImage) setUserData((prev) => ({...prev, image: URL.createObjectURL(croppedProfileImage) }))
     },[croppedProfileImage, setUserData])
 
@@ -48,7 +46,7 @@ const Profil = () => {
                                     userData?.image
                                     ? (userData.image.startsWith("blob") 
                                         ? userData.image 
-                                        : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/${userData.image}`)
+                                        : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
                                     : "/image/randomUser.png"
                                 }
                             className={styles.imageProfil}
@@ -75,7 +73,7 @@ const Profil = () => {
                                                 idInBdd=  { userData.id }
                                                 inputRef= { inputFileRef }
                                                 folder = { userData.folder }
-                                                setCroppedFile = {setCroppedProfileImge}
+                                                setCroppedFile = { setCroppedProfileImge }
                                                 url= "http://localhost:3000/users/profile/image"
                                                 fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
                                             />

@@ -84,7 +84,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                    return (
                         <VibeBox
                             key={key}
-                            imagePath={ item.includes("http") ? imageUploaded : "http://localhost:3000/uploads/themes/" + item }
+                            imageUrl={"http://localhost:3000/uploads/themes/" + item }
                             isFocus={isFocus === key}
                             onClick={()=> {
                                 setFocus(key)
@@ -95,7 +95,10 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                 {
                     imageUploaded && 
                     <VibeBox 
-                        imagePath={ imageUploaded }
+                    imageUrl={ 
+                            imageUploaded instanceof File ? URL.createObjectURL(imageUploaded)
+                            : imageUploaded
+                        }
                         isFocus= {isFocus === themes.length}
                         onClick={()=> setFocus(themes.length)}
                         opacity= { defaultSettings && defaultSettings.opacity }

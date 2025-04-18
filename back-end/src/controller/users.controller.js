@@ -148,7 +148,7 @@ exports.getSignedUpToBDD = async (req, res) => {
         let dynamicSqlRequest;
         let dynamicSqlParams;
         const saltRounds = 5
-        const [ file ] = req.files
+        const file = req.file
         const { name, pseudo, email, password } = req.body
 
         if(!name || !email || !password){

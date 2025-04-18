@@ -1,6 +1,8 @@
 
 const fs = require('fs')
+const path = require('path')
 const bcrypt = require("bcrypt")
+const { v4: uuidv4 } =require('uuid')
 const db = require("../database/connexion")
 
 exports.getUserVisible = async (req,res) => {
@@ -8,7 +10,7 @@ exports.getUserVisible = async (req,res) => {
         const { userId } = req.params
         const conn = await db.connexion
         const response = await conn.query(
-           `SELECT id, name, image, availability
+           `SELECT id, name, image, availability, folder
             FROM Consumer
             WHERE visibility = 1
             AND id NOT IN (SELECT receiver_id FROM Assoc_request WHERE sender_id = ${userId})
@@ -20,9 +22,7 @@ exports.getUserVisible = async (req,res) => {
             );
             `,
         )
-        if(response.length > 0) return res.status(200).json( response )
-        console.log("[GET, function: getUserVisible] Something went wrong while retreiving data")
-        return res.status(500).json({ message: "Something went wrong" })
+        return res.status(200).json( response )
     }
     catch(err){
         console.log("Something went wrong, error : "+ err)
@@ -45,7 +45,7 @@ exports.getUserInvitation = async (req, res) => {
         if (assocRequestReponse.length > 0) {
             for(const request of assocRequestReponse){
                 const userResponse = await conn.query(
-                    "SELECT id, name, image, availability FROM Consumer WHERE id=?",
+                    "SELECT id, name, image, folder, availability FROM Consumer WHERE id=?",
                     [request.sender_id]
                 )
                 console.log(userResponse)
@@ -75,7 +75,8 @@ exports.MakeAnAssocRequest = async (req, res) => {
         )
         if (assocRequestReponse.affectedRows) {
             return res.status(200).json({ message: "Request completed successfully." })
-        } else {
+        }
+        else {
             return res.status(400).json({ message: "Something went wrong while retreiving the data" })
         }
     }
@@ -100,6 +101,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
         );
 
         if (friendshipInsert.affectedRows < 2) {
+            await conn.rollback()
             throw new Error("Failed to insert friendship records");
         }
 
@@ -110,14 +112,23 @@ exports.ConfirmAnInvitation = async (req, res) => {
         );
 
         if (deleteInvitation.affectedRows === 0) {
+            await conn.rollback()
             throw new Error("Failed to delete the invitation");
         }
 
         // Create a new TalkSphere
 
-        const folder = await bcrypt.hash(senderId + receiverId, 15)
+        const folder =  uuidv4()
+        const pathRepertory = path.join(__dirname, `../uploads/talkspheres/${folder}` )
+        fs.mkdirSync( pathRepertory + "/audios", { recursive: true } )
+        fs.mkdirSync( pathRepertory + '/videos', { recursive: true } )
+        fs.mkdirSync( pathRepertory + '/photos', { recursive: true } )
 
-        fs.mkdirSync(`../uploads/talkspheres/${folder}`, { recursive: true })
+        const areCreeatedFiles = !fs.existsSync(pathRepertory + "/audios") && !fs.existsSync( pathRepertory + '/videos' ) && !fs.existsSync(pathRepertory + '/photos');
+        if(areCreeatedFiles){
+            await conn.rollback()
+            throw new Error("Failed to create the talksphere folder in local storage");
+        }
 
         const talkSphereResponse = await conn.query(
             "INSERT INTO Talksphere (folder) VALUES (?)",

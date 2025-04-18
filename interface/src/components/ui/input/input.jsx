@@ -20,7 +20,8 @@ const Input = ({
     const onFileChange = () => {
         const file = inputRef.current.files[0];
         if (file) {
-            setFileName(file.name);
+            const name = file.name.split(0,12) + '(...).' + file.name.split('.').pop();
+            setFileName(()=> name);
         }
     };
 

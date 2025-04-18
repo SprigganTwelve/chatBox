@@ -11,7 +11,7 @@ import styles from "./home.module.css"
 const Home = () => {
     const navigate = useNavigate()
     const [imageUploaded, setImageUploaded] = useState("")
-    const { userId, userData, userChatDefaultSettings } = useContext(ChatBoxApiContext)
+    const { userId, userData, userChatDefaultSettings, talkSphereId } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(!userId){
@@ -40,7 +40,10 @@ const Home = () => {
 
     return ( 
         <>
-            <div className={styles.container}>
+            <div 
+                className={styles.container}
+                style={{ background: talkSphereId ? 'rgba(0, 0, 0)' : 'rgb(67, 65, 65)' }}
+            >
                 <div className={styles.jsxComponentsContainer}>
                     <UserBoard />
                     <ChatBoard uploadedBackground = {userChatDefaultSettings && !userChatDefaultSettings?.full  ? imageUploaded : null}/>

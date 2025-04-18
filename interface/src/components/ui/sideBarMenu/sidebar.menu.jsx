@@ -60,7 +60,13 @@ const SideBarMenu = () => {
                 <img
                     alt="profil"
                     onClick={()=> handleChangeActiveMenu("", "/profil")}
-                    src= {userData?.image ? "http://localhost:3000/uploads/" + userData.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png" }
+                    src= { 
+                        userData?.image
+                        ? (userData.image.startsWith("blob") 
+                            ? userData.image 
+                            : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
+                        : "/image/randomUser.png"
+                    }
                 />
             </div>
         </div>

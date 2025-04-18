@@ -59,7 +59,7 @@ const InvitationRequests = ({ userId }) => {
                         <div className={styles.userCardLeading}>
                             <img
                                 className={styles.userImage}
-                                src={`http://localhost:3000/uploads/${user.image}`}
+                                src={`http://localhost:3000/uploads/users/${user.folder}/parameters/${user.image}`}
                                 alt=""
                             />
                             <div>

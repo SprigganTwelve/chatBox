@@ -4,14 +4,14 @@ import PropTypes from "prop-types"
 import SVGcheck from "/src/assets/svg/check-circle-svgrepo-com.svg"
 import styles from "./vibe.box.module.css"
 
-const VibeBox = ({ isFocus, imagePath, onClick, opacity }) => {
+const VibeBox = ({ isFocus, imageUrl, onClick, opacity }) => {
     const regularOpacity = 1
     return (
         <div
             className={styles.container}
             style={{
                 border: isFocus && "5px solid white",
-                backgroundImage: imagePath && `url(${imagePath})`,
+                backgroundImage: imageUrl && `url(${imageUrl})`,
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 opacity: opacity
@@ -49,7 +49,7 @@ VibeBox.propTypes = {
     isFocus: PropTypes.bool,
     onClick: PropTypes.func,
     opacity: PropTypes.number,
-    imagePath: PropTypes.string,
+    imageUrl: PropTypes.string,
 }
  
 export default VibeBox;

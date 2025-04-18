@@ -21,21 +21,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use("/uploads/users/:folder/:folder2", (req, res, next) => {
-    const { folder, folder2 } = res.parmas
-    const pathFile = path.join(__dirname, 'uploads/users', folder, folder2)
-    express.static(path.join(__dirname, pathFile ))(req, res, next)
-})
-
 
 app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
 
+app.get('/uploads/users/:folder/parameters/:filename', (req, res) => {
+    const { folder, filename } = req.params;
+    const filePath = path.join(__dirname, 'uploads/users', folder, 'parameters', filename);
+    res.sendFile(filePath);
+});
 
-app.use("/uploads/talsphere/:folder/:folder2", (req, res, next) => {
-    const { folder, folder2 } = res.parmas
-    const pathFile = path.join(__dirname, 'uploads/talkspheres', folder, folder2 )
-    express.static(path.join(__dirname, pathFile ))(req, res, next)
-})
+
+app.get('/uploads/talksphere/:folder/:folder2/:filename', (req, res) => {
+    const { folder, folder2, filename } = req.params;
+    const filePath = path.join(__dirname, 'uploads/talksphere', folder, folder2, filename);
+    res.sendFile(filePath);
+});
+
 
 
 const usersRouter = require("./routes/users.routes");

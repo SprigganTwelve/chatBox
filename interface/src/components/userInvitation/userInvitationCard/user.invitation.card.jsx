@@ -59,7 +59,10 @@ const UserInvitationCard = ({userId}) => {
                                     className={styles.container}
                                 >
                                     <img 
-                                        src={ user.image ? `http://localhost:3000/uploads/${user.image }` : "/image/randomUser.png"}
+                                        src={ user.image ? 
+                                            `http://localhost:3000/uploads/users/${user.folder}/parameters/` + user.image 
+                                            : "/image/randomUser.png"
+                                        }
                                         className={styles.profilImage}
                                         alt="userImage"
                                     />

@@ -54,9 +54,10 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
             }
 
             const theme = imageResponse[0].theme
-
+            const relativeFilePath =  `../uploads/users/${folder}/parameters/`
+            
             if ( theme && theme.includes('_customize_theme_')) {
-                const lastImagePath = path.join(__dirname, "../uploads/users/parameters/", folder, theme )
+                const lastImagePath = path.join(__dirname, relativeFilePath, theme )
                 fs.unlinkSync(lastImagePath)
             }
 
@@ -64,7 +65,7 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
 
             //load the new image into the db
 
-            const filePath = path.join(__dirname,  "../uploads/users/parameters/", folder)
+            const filePath = path.join(__dirname, relativeFilePath )
             const completeFilePath = path.join(filePath, filename)
             fs.writeFile(completeFilePath, file.buffer, async (err) => {
                 if (err) {

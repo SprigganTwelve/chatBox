@@ -4,6 +4,7 @@ import Modal from "/src/components/ui/modal/modal"
 import SideBarMenu from '/src/components/ui/sideBarMenu/sidebar.menu';
 import styles from "./layout.module.css"
 
+
 const Layout = () => {
     const location = useLocation()
     return ( 

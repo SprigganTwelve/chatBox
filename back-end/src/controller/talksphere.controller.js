@@ -56,10 +56,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
             WHERE CT.consumer_id = ?;
         `, [userId])
         
-        if(response.length > 0){
-            res.status(200).json(response)
-            return;
-        }
+        return res.status(200).json(response);
     } 
     catch (err) {
         console.log(`Something went wrong: ${err}`);

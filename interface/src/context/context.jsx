@@ -1,5 +1,5 @@
-import { io } from "socket.io-client";
 import axios from "axios";
+import { io } from "socket.io-client";
 import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
 
 import messagesSocketHandlers from '/src/socket/messagesHandlers/message.socket.client.handlers.js'
@@ -70,7 +70,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
                 setUserData(requestForUserData.data)
                 setAllChats(requestForChats.data);
-                setUserChatDefaultSettings(
+                setUserChatDefaultSettings( () => (
                     {
                         full,
                         theme,
@@ -78,13 +78,13 @@ const ChatBoxApiContextProvider = ({ children }) => {
                         opacity,
                         fontsize,
                         settings_id,
-                        typing_indicator,
-                        auto_delete_messages,
                         read_receipts,
+                        typing_indicator,
                         sound_notification,
+                        auto_delete_messages,
                         desktop_notification,
                         mention_notification,
-                    }
+                    })
                 )
                 if(full) setFullBackgroundOpacity(0.5)
             } catch (err) {
@@ -101,9 +101,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
     useEffect(() => {
-        if (allChats.length === 0) { 
-            fetchChatsFromBdd();
-        }
+        fetchChatsFromBdd();
         return () => {
             if (socket.current) {
                 socket.current.off("register")
@@ -111,7 +109,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 socket.current = null;
             }
         };
-    }, []);
+    }, [fetchChatsFromBdd]);
 
 
 

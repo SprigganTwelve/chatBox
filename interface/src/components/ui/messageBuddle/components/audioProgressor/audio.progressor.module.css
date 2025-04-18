@@ -1,0 +1,53 @@
+
+.audioSection{
+    gap: 20px;
+    border: none;
+    margin: -5px;
+    display: flex;
+    margin-top: 5px ;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px 5px 10px;
+    background-color:  rgba(55, 56, 57, 0.365);
+  }
+
+
+.icon{
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 1s ease;
+}
+  
+
+.gaugeContainer{
+    width: 100%;
+    cursor: pointer;
+    border-radius: 50px;
+    background-color: rgba(8, 8, 8, 0.405);
+}
+
+.gauge{
+    width: 0%;
+    height: 5px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 50px;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+.round{
+    right: 0;
+    width: 15px;
+    height: 15px;
+    bottom: -70%;
+    cursor: pointer;
+    position: absolute;
+    border-radius: 100%;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+}

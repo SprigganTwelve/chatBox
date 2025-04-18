@@ -8,7 +8,7 @@ import { insertFormattedDate } from "/src/utils/function";
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
-const MessageContent = ({ talkSphereId  }) => {
+const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     const container = useRef(null)
     const [ userChatFromBdd, setUserChatFromBdd ] = useState([])
     const [ joinRoomResponse, setJoinRoomResponse] = useState(false)
@@ -96,6 +96,7 @@ const MessageContent = ({ talkSphereId  }) => {
                                 media = { message.media }
                                 time={message.formattedHours}
                                 isSent={message.sender_id === userId}
+                                talkSphereFolder = { talkSphereFolder }
                             />
                         );
                     }) 
@@ -106,10 +107,11 @@ const MessageContent = ({ talkSphereId  }) => {
                         usersTemporaryChat.messages.map((message,index)=>(
                             <MessageBuddle
                                     key={ index }
-                                    content={ message.content }
                                     media = { message.media }
+                                    content={ message.content }
                                     time={ message.formattedHours }
                                     isSent={ message.senderId === userId }
+                                    talkSphereFolder = { talkSphereFolder }
                             />
                             ))
                         )
@@ -134,6 +136,7 @@ MessageContent.propTypes = {
     socket: PropTypes.object,
     talkSphereId: PropTypes.number,
     currentChatId: PropTypes.number,
+    talkSphereFolder: PropTypes.string,
     userChatDefaultSettings: PropTypes.object,
 }
 

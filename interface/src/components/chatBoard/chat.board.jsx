@@ -20,10 +20,12 @@ const ChatBoard = ({ uploadedBackground }) => {
     useEffect(()=>{
         if(allChats && talkSphereId && allChats.length > 0){
             const index = allChats.findIndex((item)=> item.id == talkSphereId)
-            if(index != -1) currentChat.current = allChats[index]
+            if(index != -1) {
+                currentChat.current = allChats[index]
+                currentChat.current.image_data = JSON.parse(currentChat.current.image_data)
+            }
         }
     },[allChats, talkSphereId])
-
 
     return (
         <div
@@ -31,8 +33,17 @@ const ChatBoard = ({ uploadedBackground }) => {
         >
             {talkSphereId !== null ? (
                 <div>
-                    <ChatHeader fullBackgroundOpacity = { fullBackgroundOpacity }/>
-                    <MessageContent talkSphereId={talkSphereId} />
+                    <ChatHeader
+                        currentBasicData = { currentChat.current &&  { 
+                            name: currentChat.current.name, 
+                            imageData: currentChat.current.image_data
+                        }}
+                        fullBackgroundOpacity = { fullBackgroundOpacity }
+                    />
+                    <MessageContent
+                        talkSphereId={talkSphereId}
+                        talkSphereFolder = { currentChat.current && currentChat.current.talksphere_folder }
+                    />
                     <MessageSender
                         talkSphereId={ talkSphereId }
                         fullBackgroundOpacity= { fullBackgroundOpacity }

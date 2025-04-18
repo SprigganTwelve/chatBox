@@ -119,7 +119,8 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
                         SELECT JSON_ARRAYAGG(
                             JSON_OBJECT(
                                 'id', Me.id,
-                                'name', Me.name
+                                'name', Me.name,
+                                'type', Me.type
                             )
                         )
                         FROM Media Me

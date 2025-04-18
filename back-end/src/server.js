@@ -22,35 +22,22 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
-
-app.get('/uploads/users/:folder/parameters/:filename', (req, res) => {
-    const { folder, filename } = req.params;
-    const filePath = path.join(__dirname, 'uploads/users', folder, 'parameters', filename);
-    res.sendFile(filePath);
-});
-
-
-app.get('/uploads/talksphere/:folder/:folder2/:filename', (req, res) => {
-    const { folder, folder2, filename } = req.params;
-    const filePath = path.join(__dirname, 'uploads/talksphere', folder, folder2, filename);
-    res.sendFile(filePath);
-});
-
-
 
 const usersRouter = require("./routes/users.routes");
 const socketHandlers = require("./socket/socket.handlers")
 const talkSphereRouter = require('./routes/talksphere.routes');
 const userSettingsRouters = require('./routes/settings.routes');
 const userInvitationRouter = require('./routes/invitation.routes');
+const fileProvider = require('./routes/files.provider.routes')
 
 
 app.use("/users", usersRouter);
+app.use("/uploads", fileProvider)
 app.use("/talkSphere", talkSphereRouter);
 app.use('/settings', userSettingsRouters)
 app.use("/invitation", userInvitationRouter)
 
+app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')))
 
 io.on("connection", (socket) => socketHandlers(socket, io));
 

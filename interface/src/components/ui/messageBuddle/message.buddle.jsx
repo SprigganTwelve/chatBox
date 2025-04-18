@@ -1,10 +1,8 @@
 import PropTypes from "prop-types"
-import { useState } from "react"
-
-import SVGpause from "/src/assets/svg/pause-svgrepo-com.svg"
-import SVGplayaudiowhite from "/src/assets/svg/play-alt-svgrepo-com-white.svg"
+import AudioProgressor from './components/audioProgressor/audio.progressor'
 
 import styles from "./message.buddle.module.css"
+
 
 
 const MessageBuddle = (
@@ -14,11 +12,11 @@ const MessageBuddle = (
         content,
         isSent = true,
         backgroundColor,
+        talkSphereFolder,
         containerStyle = {},
     }
 ) => {
 
-    const [ isPause, setIsPause ] = useState(false)
 
     return ( 
         <div style={{ 
@@ -32,30 +30,11 @@ const MessageBuddle = (
         >
 
             {
-                media && (
-                    <div className={styles.audioSection} >
-                        {
-                            isPause ? (
-                                <img 
-                                    alt="Pause audio"
-                                    src={ SVGpause }
-                                    className={styles.audioPlay}
-                                    onClick={ () => setIsPause((previous)=> !previous)}
-                                />
-                             
-                                ) : (
-                                <img 
-                                    alt="Start audio"
-                                    src={ SVGplayaudiowhite }
-                                    className={styles.audioPlay}
-                                    onClick={ () => setIsPause((previous)=> !previous)}
-                                />
-                            )
-                        }
-                            <div className={styles.gaugeContainer}>
-                            <div className={styles.gauge} />
-                        </div>
-                    </div>
+                media && media[0].type.includes('audio') && (
+                    <AudioProgressor
+                        media={ media }
+                        talkSphereFolder= { talkSphereFolder  }
+                    />
                 )
             }
             <p className={styles.message} >{content}</p>
@@ -67,10 +46,13 @@ const MessageBuddle = (
 MessageBuddle.propTypes = {
     time: PropTypes.string,
     isSent: PropTypes.bool,
-    media: PropTypes.object,
+    media: PropTypes.arrayOf({
+        type: PropTypes.string
+    }),
     content: PropTypes.string,
     containerStyle: PropTypes.object,
-    backgroundColor: PropTypes.string
+    backgroundColor: PropTypes.string,
+    talkSphereFolder: PropTypes.string
 }
  
 export default MessageBuddle;

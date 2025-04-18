@@ -48,7 +48,10 @@ const UserBoard = () => {
                 backgroundColor = { `rgb(67, 65, 65, ${fullBackgroundOpacity})` }
             />
             { allChats.map((chat, index)=>{
-                        const imageData = JSON.parse(chat.image_data)
+                        const imageData = typeof chat.image_data === "string"
+                        ? JSON.parse(chat.image_data)
+                        : chat.image_data;
+                   
                         return(
                             <MessageCard  
                                 key={index}

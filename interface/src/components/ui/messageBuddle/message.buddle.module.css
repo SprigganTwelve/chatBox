@@ -56,4 +56,43 @@
     border-right: 10px solid transparent;
     border-bottom: 10px solid transparent;
   }
+
+
+  .audioSection{
+    gap: 10px;
+    border: none;
+    margin: -5px;
+    display: flex;
+    margin-bottom: 0px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px 5px 10px;
+    background-color:  rgba(55, 56, 57, 0.365);
+  }
+
+
+  .audioPlay{
+    width: 30px;
+    height: 30px;
+    border: none;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 1s ease;
+  }
   
+  .gaugeContainer{
+    width: 100%;
+    cursor: pointer;
+    border-radius: 50px;
+    background-color: rgba(8, 8, 8, 0.405);
+  }
+
+  .gauge{
+    width: 20%;
+    height: 5px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 50px;
+    background-image: linear-gradient(to right, #e100ff, #008cff);
+  }

@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import clsx from "clsx"
 import styles from "./user.card.module.css"
 
-const UserCard = ({
+const MessageCard = ({
     url,
     name,
     style,
@@ -15,7 +15,7 @@ const UserCard = ({
             <div>
                 <div id="imageContainer" className={styles.imageContainer}>
                     <img id="image"
-                         src={url ? "http://localhost:3000/uploads/" + url : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"}
+                         src={url ? url : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"}
                          className={styles.image}
                          alt="image"
                     />
@@ -29,7 +29,7 @@ const UserCard = ({
      );
 }
 
-UserCard.propTypes = {
+MessageCard.propTypes = {
     url: PropTypes.string,
     name: PropTypes.string,
     onClick: PropTypes.func,
@@ -37,4 +37,4 @@ UserCard.propTypes = {
     isActive: PropTypes.bool,
 }
  
-export default UserCard;
+export default MessageCard;

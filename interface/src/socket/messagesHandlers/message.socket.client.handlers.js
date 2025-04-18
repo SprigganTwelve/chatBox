@@ -19,9 +19,8 @@ const messagesSocketHandlers = (socket) => {
         socket.emit("leaveRoom", room)
     }
 
-    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt, receivers, media }) => {
-        console.log({ senderId, talkSphereId, content, createdAt })
-        socket.emit("privateMessage", { senderId, talkSphereId, content, createdAt, receivers, media })
+    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder }) => {
+        socket.emit("privateMessage", { senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder })
     }
 
     //Here we listen all the incomming message through one specific room (talksphereId)

@@ -8,6 +8,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
         const response = await conn.query(`
             SELECT
                 T.id AS id,
+                T.folder AS talksphere_folder,
 
                 -- All other users in the talksphere except the sender
                 (
@@ -30,7 +31,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
                 CASE
                     WHEN T.image IS NOT NULL THEN T.image
                     ELSE (
-                        SELECT C.image
+                        SELECT JSON_OBJECT('image', C.image, 'folder', C.folder)
                         FROM Consumer C
                         JOIN Consumer_Talksphere CT2 ON CT2.consumer_id = C.id
                         WHERE CT2.talksphere_id = T.id
@@ -38,7 +39,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
                         ORDER BY C.id ASC
                         LIMIT 1
                     )
-                END AS image,
+                END AS image_data,
 
                 -- Use talksphere.name if not null, otherwise get sender's name
                 CASE
@@ -117,7 +118,8 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
                     (
                         SELECT JSON_ARRAYAGG(
                             JSON_OBJECT(
-                                'id', Me.id
+                                'id', Me.id,
+                                'name', Me.name
                             )
                         )
                         FROM Media Me

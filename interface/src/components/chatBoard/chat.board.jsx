@@ -37,8 +37,9 @@ const ChatBoard = ({ uploadedBackground }) => {
                         talkSphereId={ talkSphereId }
                         fullBackgroundOpacity= { fullBackgroundOpacity }
                         receivers={ currentChat.current && currentChat.current['receivers'] &&
-                             currentChat.current.receivers
+                            currentChat.current.receivers
                         }
+                        talkSphereFolder = { currentChat.current && currentChat.current['talksphere_folder']}
                     />
                     {
                         userChatDefaultSettings && uploadedBackground  && (

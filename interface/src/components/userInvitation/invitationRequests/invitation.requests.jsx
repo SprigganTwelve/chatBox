@@ -1,7 +1,8 @@
 import axios from "axios"
 import PropTypes from "prop-types"
-import { useEffect, useState, useCallback, useContext } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
+import { useEffect, useState, useCallback, useContext } from "react";
+
 import styles from "./invitation.requests.module.css"
 
 import isAvailableIcon from "/src/assets/svg/userIsAvailable.svg"

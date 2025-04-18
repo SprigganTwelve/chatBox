@@ -16,7 +16,8 @@ const ChatHeader = ({  fullBackgroundOpacity }) => {
         const fetchUser = async () => {
             try {
                 const response = allChats.find((item)=> item.id == talkSphereId ) ;
-                setReceiver(response);
+                const imageData = JSON.parse(response.image_data)
+                setReceiver(()=>({ ...response, image_data: imageData }));
             } catch (error) {
                 console.error("Erreur lors de la récupération de l'utilisateur :", error);
             }
@@ -36,7 +37,13 @@ const ChatHeader = ({  fullBackgroundOpacity }) => {
                         "--opacityBackground" : fullBackgroundOpacity
                     }}
                 >
-                    <img src={receiver.image != "" ? "http://localhost:3000/uploads/" + receiver.image : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"} alt="profil" />
+                    <img 
+                        src={ receiver.image != "" ?
+                            `http://localhost:3000/uploads/users/${receiver.image_data.folder}/parameters/${receiver.image_data.image}` 
+                            : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"
+                        }
+                        alt="profil"
+                    />
                     <span className={styles.name}>{receiver.name}</span>
                 </div>
             ) : (

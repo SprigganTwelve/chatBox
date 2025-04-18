@@ -7,7 +7,7 @@ import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 
 
-const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers }) => {
+const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSphereFolder }) => {
 
     const [ value, setValue ] = useState("")
     const { socket, userId } = useContext(ChatBoxApiContext)
@@ -16,7 +16,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers }) => {
         try{
             if(socket && receivers){
                 const createdAt = new Date();
-                const messageSent = { senderId: userId, talkSphereId, content: value, createdAt, media }
+                const messageSent = { senderId: userId, talkSphereId, content: value, createdAt, media, talkSphereFolder }
                 socket.current.messagesSocketHandlers.sendMessageRequest({...messageSent, receivers: receivers.split(',')})
                 setValue("")
             }
@@ -64,6 +64,7 @@ MessageSender.propTypes = {
     receivers: PropTypes.array,
     talkSphereId: PropTypes.number,
     currentChatId: PropTypes.number,
+    talkSphereFolder: PropTypes.string,
     fullBackgroundOpacity: PropTypes.number,
 }
  

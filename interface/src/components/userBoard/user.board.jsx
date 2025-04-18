@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../context/context"
-import UserCard from "./components/userCard/user.card";
+import MessageCard from "./components/userCard/user.card";
 import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
@@ -45,21 +45,24 @@ const UserBoard = () => {
                 ChatBox
             </div>
             <SearchBar
-                backgroundColor = {`rgb(67, 65, 65, ${fullBackgroundOpacity})`}
+                backgroundColor = { `rgb(67, 65, 65, ${fullBackgroundOpacity})` }
             />
-            { allChats.map((chat, index)=>(
-                        <UserCard  
-                            key={index}
-                            url={chat.image}
-                            name={chat.name}
-                            online={false}
-                            isActive={isUserActive[index]}
-                            onClick={ ()=> handleOnClick(chat, index) }
-                            style={{
-                                "--backGroundOpacity": fullBackgroundOpacity
-                            }}
-                        />
-                        ))
+            { allChats.map((chat, index)=>{
+                        const imageData = JSON.parse(chat.image_data)
+                        return(
+                            <MessageCard  
+                                key={index}
+                                url={  `http://localhost:3000/uploads/users/${imageData.folder}/parameters/${imageData.image}`  }
+                                name={chat.name}
+                                online={false}
+                                isActive={isUserActive[index]}
+                                onClick={ ()=> handleOnClick(chat, index) }
+                                style={{
+                                    "--backGroundOpacity": fullBackgroundOpacity
+                                }}
+                            />
+                        )
+                    })
             }        
         </div>
      );

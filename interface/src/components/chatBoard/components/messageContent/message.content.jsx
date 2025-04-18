@@ -58,7 +58,7 @@ const MessageContent = ({ talkSphereId  }) => {
     
             setUsersTemporaryChat((previous) => ({
                 id: message.talkSphereId,
-                messages: [...(previous.messages || []), message],
+                messages: [...(previous.messages || []), message ],
             }));
     } }, [setUsersTemporaryChat, talkSphereId])
 
@@ -93,6 +93,7 @@ const MessageContent = ({ talkSphereId  }) => {
                             <MessageBuddle
                                 key={index}
                                 content={message.content}
+                                media = { message.media }
                                 time={message.formattedHours}
                                 isSent={message.sender_id === userId}
                             />
@@ -106,6 +107,7 @@ const MessageContent = ({ talkSphereId  }) => {
                             <MessageBuddle
                                     key={ index }
                                     content={ message.content }
+                                    media = { message.media }
                                     time={ message.formattedHours }
                                     isSent={ message.senderId === userId }
                             />

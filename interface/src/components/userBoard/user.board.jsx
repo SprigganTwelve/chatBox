@@ -27,8 +27,8 @@ const UserBoard = () => {
         }))
         localStorage.setItem("talkSphereId", JSON.stringify(chat.id));
 
-        setTalkSphereId(() => chat.id )
-        toggleInvite(index) //Mark the card as active
+        setTalkSphereId( () => chat.id )
+        toggleInvite( index ) //Mark the card as active
 
     },[setTalkSphereId, setUsersTemporaryChat, toggleInvite])
 

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {  useContext, useEffect, useRef } from "react";
+import {  useContext, useEffect, useState } from "react";
 import { ChatBoxApiContext } from "../../context/context";
 
 import ChatHeader from "./components/chatHeader/chat.header";
@@ -14,18 +14,26 @@ import styles from './chat.board.module.css';
 
 const ChatBoard = ({ uploadedBackground }) => {
 
-    const currentChat = useRef(null)
+    const [currentChat, setCurrentChat] = useState(null)
     const { allChats, talkSphereId, userChatDefaultSettings, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(allChats && talkSphereId && allChats.length > 0){
             const index = allChats.findIndex((item)=> item.id == talkSphereId)
+
             if(index != -1) {
-                currentChat.current = allChats[index]
-                currentChat.current.image_data = JSON.parse(currentChat.current.image_data)
+                console.log(allChats)
+                allChats[index].image_data = typeof allChats[index].image_data === "string"
+                    ? JSON.parse(allChats[index].image_data)
+                    : allChats[index].image_data;
+
+                console.log(allChats[index])
+                setCurrentChat(()=> allChats[index])
+
             }
         }
-    },[allChats, talkSphereId])
+    },[allChats, setCurrentChat, talkSphereId])
+
 
     return (
         <div
@@ -34,23 +42,23 @@ const ChatBoard = ({ uploadedBackground }) => {
             {talkSphereId !== null ? (
                 <div>
                     <ChatHeader
-                        currentBasicData = { currentChat.current &&  { 
-                            name: currentChat.current.name, 
-                            imageData: currentChat.current.image_data
+                        currentBasicData = { currentChat &&  { 
+                            name: currentChat.name, 
+                            imageData: currentChat.image_data
                         }}
                         fullBackgroundOpacity = { fullBackgroundOpacity }
                     />
                     <MessageContent
                         talkSphereId={talkSphereId}
-                        talkSphereFolder = { currentChat.current && currentChat.current.talksphere_folder }
+                        talkSphereFolder = { currentChat && currentChat.talksphere_folder }
                     />
                     <MessageSender
                         talkSphereId={ talkSphereId }
                         fullBackgroundOpacity= { fullBackgroundOpacity }
-                        receivers={ currentChat.current && currentChat.current['receivers'] &&
-                            currentChat.current.receivers
+                        receivers={ currentChat&& currentChat['receivers'] &&
+                            currentChat.receivers
                         }
-                        talkSphereFolder = { currentChat.current && currentChat.current['talksphere_folder']}
+                        talkSphereFolder = { currentChat && currentChat['talksphere_folder']}
                     />
                     {
                         userChatDefaultSettings && uploadedBackground  && (

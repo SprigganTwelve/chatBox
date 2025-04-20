@@ -1,8 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const db = require("../database/connexion")
+const db = require("../database/connexion");
+const { type } = require('os');
 
-exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt, media, talkSphereFolder } ) => {
+
+
+exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt, media, talkSphereFolder }, io ) => {
     
     const connexion = await db.connexion;
     await connexion.beginTransaction();
@@ -27,29 +30,39 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
             await connexion.rollback()
         }
 
-        if(media){
+        if(media && Array.isArray(media)){
             //Uploading Audio
+            if(media[0].audio){
+                const webmAudioName = Date.now() + '.' + media[0].audio.type
+                const webmAudioType =  "audio/" + media[0].audio.type
 
-            if(media.audio){
-                const webmAudioName = Date.now() + '.' + media.audio.type
                 const insertWebmAudio = connexion.query("INSERT INTO Media(message_id, name, type) VALUES(?,?,?)",
-                    [insertedMessage.insertId, webmAudioName, "audio/" + media.audio.type ]
+                    [insertedMessage.insertId, webmAudioName, webmAudioType  ]
                 )
+
                 if(insertWebmAudio.affectedRows < 1){
                     console.log("Failed to insert audio media in bdd")
                     await connexion.rollback()
                 }
+
                 const audioPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/audios`, webmAudioName)
-                const buffer = Buffer.from(media.audio.blob, 'binary');
+                const buffer = Buffer.from(media[0].audio.blob, 'binary');
                 fs.writeFileSync(audioPath, buffer)
+
+                //What is return dynamically to the user concerning the media
+                media[0] = {
+                    id: insertWebmAudio.insertId,
+                    name: webmAudioName,
+                    type: webmAudioType
+                }
             }
 
             //Uploading Video
 
-            if(media.video){
-                const videoName = Date.now() + '.' + media.video.type
+            if(media[0].video){
+                const videoName = Date.now() + '.' + media[0].video.type
                 const insertVideo = connexion.query("INSERT INTO Media(message_id, name, type) VALUES(?,?,?)",
-                    [ insertedMessage.insertId, videoName, "video/"+ media.video.type  ]
+                    [ insertedMessage.insertId, videoName, "video/"+ media[0].video.type  ]
                 )
 
                 if(insertVideo.affectedRows < 1){
@@ -58,7 +71,7 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
                 }
 
                 const audioPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/video`, videoName)
-                const buffer = Buffer.from(media.video.blob, 'binary');
+                const buffer = Buffer.from(media[0].video.blob, 'binary');
                 fs.writeFileSync(audioPath, buffer)
             }
 
@@ -67,8 +80,15 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
             }
         }
 
+        io.to(talkSphereId).emit("newMessage", { 
+            media,
+            content,
+            senderId,
+            createdAt,
+            talkSphereId,
+            talkSphereFolder
+        })
         await connexion.commit()
-
     }
     catch (err) {
         await connexion.rollback()

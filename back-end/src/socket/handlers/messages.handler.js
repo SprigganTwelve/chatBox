@@ -46,9 +46,9 @@ module.exports = (socket, io) => {
                 console.log("[socket: privateMessage ] missings data")
                 return;
             }
-            socketController.insertIntoMessage(message);
+
+            socketController.insertIntoMessage(message, io);
             
-            io.to(message.talkSphereId).emit("newMessage", message)
             for(const id of message.receivers){
                 const receiverSocketId = users.get(id.toString());
                 if (receiverSocketId) 

@@ -9,17 +9,17 @@ import styles from './audio.progressor.module.css'
 const AudioProgressor = ({ media, talkSphereFolder }) => {
     
     const [ isPause, setIsPause ] = useState(false)
-    const [ audioProgressor, setAudioProgressor ] = useState(0)
 
     useEffect(()=>{
         if(media && talkSphereFolder){
             if(media.blob){
-                return
+                const url = URL.createObjectURL(media.blob)
+                const audio = new Audio(url)
+                
             }
             const audio = new Audio(`http://localhost:3000/uploads/talksphers/${talkSphereFolder}/audio/${media.name}`)
             audio.addEventListener("timeupdate", ()=>{
                 if(audio.duration){
-                    setAudioProgressor(()=> ((audio.currentTime / audio.duration) * 100))
                 }
             })
         }
@@ -50,7 +50,7 @@ const AudioProgressor = ({ media, talkSphereFolder }) => {
                 <div className={styles.gaugeContainer}>
                     <div 
                         className={styles.gauge}
-                        style={{ width: audioProgressor + '%' }}
+                        style={{ width: '' + '%' }}
                     >
                         <div
                             className={styles.round}

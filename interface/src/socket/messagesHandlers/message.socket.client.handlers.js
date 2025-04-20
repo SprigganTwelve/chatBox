@@ -27,6 +27,7 @@ const messagesSocketHandlers = (socket) => {
 
     const newMessagesResponses = (callback)=>{
         socket.on("newMessage", (message)=> {
+            console.log("message", message)
             if(message) callback(message)
         })
     }

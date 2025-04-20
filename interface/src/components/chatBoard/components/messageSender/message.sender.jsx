@@ -52,7 +52,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                 <AudioRecognition />
                 <AudioRecorder
                     onSend={ async (blob)=>{
-                        sendMessage( { media: { audio: {blob ,  type: "webm"} }} )
+                        sendMessage( { media: [ { audio: {blob ,  type: "webm"} } ]} )
                     }}
                 />
             </div>

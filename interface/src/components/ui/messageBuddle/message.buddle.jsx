@@ -17,7 +17,7 @@ const MessageBuddle = (
     }
 ) => {
 
-
+    console.log(media)
     return ( 
         <div style={{ 
                 backgroundColor: backgroundColor,

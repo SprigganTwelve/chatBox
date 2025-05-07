@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
 import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
-import { insertFormattedDate } from "/src/utils/function";
+import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/function";
 
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
@@ -20,7 +20,8 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
         try {
             if (talkSphereId) {
                 let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
-                setUserChatFromBdd(response.data);
+                insertFormattedDateFromArray(response.data)
+                setUserChatFromBdd(()=> response.data);
             }
         }
         catch (error) {
@@ -94,8 +95,8 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
                                 key={index}
                                 content={message.content}
                                 media = { message.media }
-                                time={message.formattedHours}
-                                isSent={message.sender_id === userId}
+                                time= { message.formattedHours }
+                                isSent= { message.sender_id === userId}
                                 talkSphereFolder = { talkSphereFolder }
                             />
                         );

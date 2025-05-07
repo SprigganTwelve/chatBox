@@ -8,22 +8,39 @@ import styles from './audio.progressor.module.css'
 
 const AudioProgressor = ({ media, talkSphereFolder }) => {
     
+    const [ audio, setAudio ] = useState(null)
+    const [ audioProgression, setAudioProgression ] = useState(0)
     const [ isPause, setIsPause ] = useState(false)
 
-    useEffect(()=>{
-        if(media && talkSphereFolder){
-            if(media.blob){
-                const url = URL.createObjectURL(media.blob)
-                const audio = new Audio(url)
-                
-            }
-            const audio = new Audio(`http://localhost:3000/uploads/talksphers/${talkSphereFolder}/audio/${media.name}`)
-            audio.addEventListener("timeupdate", ()=>{
-                if(audio.duration){
-                }
-            })
-        }
-    },[media])
+    useEffect(() => { ///MUST LIMIT IT
+        if (!media || !talkSphereFolder) return;
+      
+        const audioUrl = `http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`;
+        const audioObj = new Audio(audioUrl);
+        setAudio(audioObj);
+        audioObj.preload = 'auto';
+
+        const updateProgress = () => {
+          if (audioObj.duration) {
+            const progress = (100 * audioObj.currentTime) / audioObj.duration;
+            setAudioProgression(progress);
+          }
+        };
+      
+        audioObj.addEventListener("timeupdate", updateProgress);
+      
+        audioObj.addEventListener("ended", () => {
+          setIsPause(false);
+          setAudioProgression(0);
+        });
+      
+        return () => {
+          audioObj.pause();
+          audioObj.removeEventListener("timeupdate", updateProgress);
+          setAudio(null);
+        };
+      }, [media, media.name, talkSphereFolder]);      
+
 
     return ( 
         <div className={styles.audioSection} >
@@ -34,7 +51,10 @@ const AudioProgressor = ({ media, talkSphereFolder }) => {
                             src={ SVGpause }
                             className={styles.icon}
                             onClick={ () => {
-                                setIsPause((previous)=> !previous)
+                               if(audio){
+                                    audio.pause()
+                                    setIsPause((previous) => !previous)
+                               }
                             }}
                         />
                     
@@ -43,14 +63,21 @@ const AudioProgressor = ({ media, talkSphereFolder }) => {
                             alt="Start audio"
                             src={ SVGplayaudiowhite }
                             className={styles.icon}
-                            onClick={ () => setIsPause((previous)=> !previous)}
+                            onClick={ () => {
+                                if(audio){
+                                    audio.play()
+                                    setIsPause((previous) => !previous)
+                               }
+                            }}
                         />
                     )
                 }
-                <div className={styles.gaugeContainer}>
+                <div 
+                    className={styles.gaugeContainer}
+                >
                     <div 
                         className={styles.gauge}
-                        style={{ width: '' + '%' }}
+                        style={{ width: `${audioProgression || 0}%` }}
                     >
                         <div
                             className={styles.round}
@@ -65,8 +92,8 @@ export default AudioProgressor;
 
 AudioProgressor.propTypes = {
     media: PropTypes.shape({
-        blob: PropTypes.object,
-        name: PropTypes.object,
+        name: PropTypes.string,
     }),
+    progressorWidth: PropTypes.number,
     talkSphereFolder: PropTypes.string
 }

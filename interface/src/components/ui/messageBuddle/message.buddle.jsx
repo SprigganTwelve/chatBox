@@ -4,7 +4,6 @@ import AudioProgressor from './components/audioProgressor/audio.progressor'
 import styles from "./message.buddle.module.css"
 
 
-
 const MessageBuddle = (
     {
         time,
@@ -17,7 +16,6 @@ const MessageBuddle = (
     }
 ) => {
 
-    console.log(media)
     return ( 
         <div style={{ 
                 backgroundColor: backgroundColor,
@@ -32,7 +30,7 @@ const MessageBuddle = (
             {
                 media && media[0].type.includes('audio') && (
                     <AudioProgressor
-                        media={ media }
+                        media={ media[0] }
                         talkSphereFolder= { talkSphereFolder  }
                     />
                 )

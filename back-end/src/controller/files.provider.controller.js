@@ -18,7 +18,8 @@ exports.getUserFilesInParametersDirectory =  (req, res )=>{
 exports.getTalksphereMedias =  (req, res )=>{
     try{
         const { folder, folder2, filename } = req.params;
-        const filePath = path.join(__dirname, '../uploads/talksphere', folder, folder2, filename);
+        const filePath = path.join(__dirname, '../uploads/talkspheres', folder, folder2, filename);
+        console.log(filePath)
         res.sendFile(filePath);
     }
     catch(err){

@@ -26,7 +26,6 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
 
         mediaRecorder.current.ondataavailable = (event) => {
             chunks.current.push(event.data)  
-            console.log("chunks : ", chunks.current)
         }
 
         mediaRecorder.current.onstop = ()=> {

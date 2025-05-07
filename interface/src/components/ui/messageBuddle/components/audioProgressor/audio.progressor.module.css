@@ -38,6 +38,7 @@
     cursor: pointer;
     position: relative;
     border-radius: 50px;
+    transition: width 0.2s ease-out;
     background-image: linear-gradient(to right, #e100ff, #008cff);
 }
 
@@ -45,7 +46,7 @@
     right: 0;
     width: 15px;
     height: 15px;
-    bottom: -70%;
+    bottom: -75%;
     cursor: pointer;
     position: absolute;
     border-radius: 100%;

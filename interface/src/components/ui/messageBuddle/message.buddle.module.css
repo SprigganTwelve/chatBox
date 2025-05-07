@@ -1,5 +1,5 @@
 .bubble {
-    max-width: 350px;
+    width: 350px;
     font-size: 14px;
     font-size: 17px;
     position: relative;
@@ -16,11 +16,11 @@
   }
 
   .time{
-    width: 350px;
-    margin-top:5px ;
     display: flex;
-    justify-content: flex-end;
+    margin-top:5px ;
     font-size: 10px;
+    margin-right: 5px;
+    justify-content: flex-end;
   }
   
   .sent::after {
@@ -50,6 +50,7 @@
     left: 0px;
     content: "";
     bottom: -5px;
+    z-index: -10;
     position: absolute;
     border-top: 10px solid #e0e0e0;
     border-left: 10px solid #e0e0e0;

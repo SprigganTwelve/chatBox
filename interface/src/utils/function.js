@@ -10,7 +10,8 @@ function insertFormattedDateFromArray(data){
 function insertFormattedDate(message){
     const isNotDate = (object) => Object.prototype.toString.call(object) !== "[Object Date]";
 
-    const dateObj = isNotDate(message) ? new Date(message.createdAt) : message.createdAt;
+    const dateObj = isNotDate(message) ? new Date(message.createdAt ?? message.created_at) 
+                    : message.createdAt ?? message.created_at;
  
     if (isNaN(dateObj.getTime())) {
         console.warn(`Date invalide: ${message.createdAt}`);

@@ -22,7 +22,6 @@ const ChatBoard = ({ uploadedBackground }) => {
             const index = allChats.findIndex((item)=> item.id == talkSphereId)
 
             if(index != -1) {
-                console.log(allChats)
                 allChats[index].image_data = typeof allChats[index].image_data === "string"
                     ? JSON.parse(allChats[index].image_data)
                     : allChats[index].image_data;

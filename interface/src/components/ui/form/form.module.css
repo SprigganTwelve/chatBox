@@ -2,14 +2,14 @@
 .container{
     gap: 50px;
     display: flex;
-    font-family: 'Courier New', Courier, monospace sans-serif;
-    align-items: center;
-    border-radius: 5px;
-    min-height: 450px;
     color: black;
+    min-height: 450px;
+    border-radius: 5px;
+    padding: 30px 25px;
+    align-items: center;
     flex-direction: column;
     background-color: white;
-    padding: 30px 25px;
+    font-family: 'Courier New', Courier, monospace sans-serif;
 }
 
 .form{

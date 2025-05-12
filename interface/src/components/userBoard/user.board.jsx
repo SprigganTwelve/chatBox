@@ -27,6 +27,8 @@ const UserBoard = () => {
         }))
         localStorage.setItem("talkSphereId", JSON.stringify(chat.id));
 
+        console.log("chat", chat)
+
         setTalkSphereId( () => chat.id )
         toggleInvite( index ) //Mark the card as active
 
@@ -54,10 +56,10 @@ const UserBoard = () => {
                    
                         return(
                             <MessageCard  
-                                key={index}
+                                key={ index }
                                 url={  `http://localhost:3000/uploads/users/${imageData.folder}/parameters/${imageData.image}`  }
-                                name={chat.name}
-                                online={false}
+                                online={ false }
+                                name={ chat.name }
                                 isActive={isUserActive[index]}
                                 onClick={ ()=> handleOnClick(chat, index) }
                                 style={{

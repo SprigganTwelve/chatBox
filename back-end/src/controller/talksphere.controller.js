@@ -41,13 +41,16 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
                     )
                 END AS image_data,
 
-                -- Use talksphere.name if not null, otherwise get sender's name
+                -- Use talksphere.name if not null, otherwise get receiver's name
                 CASE
                     WHEN T.name IS NOT NULL THEN T.name
                     ELSE (
                         SELECT C.name
                         FROM Consumer C
-                        WHERE C.id = CT.consumer_id
+                        JOIN Consumer_Talksphere CT2 ON CT2.consumer_id = C.id
+                        WHERE CT2.talksphere_id = T.id
+                        AND C.id != ?
+                        ORDER BY C.id ASC
                         LIMIT 1
                     )
                 END AS name
@@ -55,7 +58,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
             FROM Consumer_Talksphere CT
             JOIN Talksphere T ON CT.talksphere_id = T.id
             WHERE CT.consumer_id = ?;
-        `, [userId])
+        `, [userId, userId])
         
         return res.status(200).json(response);
     } 

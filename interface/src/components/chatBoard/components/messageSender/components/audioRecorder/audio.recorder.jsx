@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect, useCallback } from 'react'
+import { useState, useRef, useContext, useCallback } from 'react'
 import PropTypes from 'prop-types'
 
 import styles from './audio.recorder.module.css'
@@ -7,17 +7,20 @@ import SVGvoicerecorder from '/src/assets/svg/callrecorder.svg'
 import SVGsend from '/src/assets/svg/send-email-svgrepo-com.svg'
 import SVGclose from '/src/assets/svg/close-circle-svgrepo-com.svg'
 import { ChatBoxApiContext } from '/src/context/context'
+import CoundtDown from '/src/components/ui/countdown/countdown'
 
 
 const AudioRecorder = ({ onSend = ()=>{} }) => {
 
-    const timer = useRef(null)
+    const chunks = useRef([])                               // Store chunks in useRef to persist across re-renders
     const mediaRecorder = useRef(null)
-    const chunks = useRef([])  // Store chunks in useRef to persist across re-renders
     const { setPopUp } = useContext(ChatBoxApiContext)
-    const [ audioCountdown, setAudioCountdonwn ] = useState(0)
     const [ isRecording, setIsRecording ] = useState(false)
-    const [ audioDuration, setAudioDuration ] = useState(null);
+    const [ countdownManager, setCountdownManager ] = useState({
+        reset: false,
+        pause: true,
+        newDuration: 0
+    })
     
 
     const startRecording = useCallback( async () => {
@@ -30,7 +33,7 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
 
         mediaRecorder.current.onstop = ()=> {
             const blob = new Blob(chunks.current, { type: "audio/webm" })
-            onSend(blob)  
+            onSend(blob)                                                        // callback for retreiving the blob object from the parent component
         }
 
         mediaRecorder.current.onerror = (err) => {
@@ -45,9 +48,7 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
         // Start the recording
         mediaRecorder.current.start()
 
-        timer.current = setInterval(() => {
-            setAudioCountdonwn((previous) => previous + 1)
-        }, 1000)
+        setCountdownManager(( previous )=> ({ ...previous, pause: false }))
 
     }, [onSend, setPopUp])
 
@@ -57,12 +58,9 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
         if (mediaRecorder.current?.stream) {
             mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
         }
-
         chunks.current = []
-        setAudioCountdonwn(0);
         setIsRecording(false);
-        setAudioDuration(null);
-        clearInterval(timer.current);
+        setCountdownManager((previous)=> ({ ...previous, reset: true, pause: true }))
     }, [])
 
 
@@ -74,24 +72,6 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
         }
         setIsRecording(false);
     }, [])
-
-
-    // Convert the audio countdown to a human-readable format
-    const convertDuration = useCallback(() => {
-        if (audioCountdown) {
-            const seconds = audioCountdown % 60
-            const minutes = Math.trunc(audioCountdown / 60);
-            const hours = Math.trunc(minutes / 60);
-            setAudioDuration({
-                hours, minutes, seconds
-            })
-        }
-    }, [audioCountdown])
-
-
-    useEffect(() => {
-        convertDuration()
-    }, [convertDuration])
 
     
     return (
@@ -114,13 +94,7 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
                         onClick={resetRecording}
                     />
                     <div className={styles.slideSection}>
-                        <p className={styles.p}>
-                            {audioDuration &&
-                                `${audioDuration.hours !== 0
-                                    ? audioDuration.hours.toString().padStart(2, '0') + ':'
-                                    : ''}${audioDuration.minutes.toString().padStart(2, '0')}:${audioDuration.seconds.toString().padStart(2, '0')}`
-                            }
-                        </p>
+                        <CoundtDown { ...countdownManager } />
                         <div className={styles.redRecorderButton} />
                         <div className={styles.gauge} />
                     </div>

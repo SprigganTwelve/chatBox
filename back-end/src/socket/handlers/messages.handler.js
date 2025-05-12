@@ -52,7 +52,7 @@ module.exports = (socket, io) => {
             for(const id of message.receivers){
                 const receiverSocketId = users.get(id.toString());
                 if (receiverSocketId) 
-                    io.to(receiverSocketId).emit("incommingMessage", message);
+                    socket.to(receiverSocketId).emit("incommingMessage", message);
             }
         }
         catch(err){

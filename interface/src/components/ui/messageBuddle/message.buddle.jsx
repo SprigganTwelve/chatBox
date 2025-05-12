@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import AudioProgressor from './components/audioProgressor/audio.progressor'
+import AudioReader from './components/audioReader/audio.reader'
 
 import styles from "./message.buddle.module.css"
 
@@ -29,7 +29,7 @@ const MessageBuddle = (
 
             {
                 media && media[0].type.includes('audio') && (
-                    <AudioProgressor
+                    <AudioReader
                         media={ media[0] }
                         talkSphereFolder= { talkSphereFolder  }
                     />

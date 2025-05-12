@@ -1,0 +1,24 @@
+.overlay{
+    position: relative;
+}
+
+.overlay:hover::after {
+    top: 0;
+    right: 0;
+    z-index: 10;
+    color: white;
+    font-size: 15px;
+    display: block;
+    min-width: 70px;
+    padding: 4px 8px;
+    min-height: 15px;
+    position: absolute;
+    padding-left: 12px;
+    border-radius: 5px;
+    pointer-events: none;
+    content: var(--overlayText);
+    transform: translate(70%,-70%);
+    background-color: rgba(42, 40, 40, 0.7);
+    font-family: 'Courier New', Courier, monospace sans-serif;
+}
+  

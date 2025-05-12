@@ -46,7 +46,13 @@ const Home = () => {
             >
                 <div className={styles.jsxComponentsContainer}>
                     <UserBoard />
-                    <ChatBoard uploadedBackground = {userChatDefaultSettings && !userChatDefaultSettings?.full  ? imageUploaded : null}/>
+                    <ChatBoard 
+                        uploadedBackground = { 
+                            userChatDefaultSettings && !userChatDefaultSettings?.full  
+                                ? imageUploaded 
+                                : null
+                        }
+                    />
                     <Action />
                 </div>
                 {

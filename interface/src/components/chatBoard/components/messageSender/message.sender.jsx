@@ -1,10 +1,15 @@
 
 import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
-import styles from './message.sender.module.css'
 import { ChatBoxApiContext } from "../../../../context/context";
+
 import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
+import AboutOverlay from "/src/components/ui/aboutOverlay/about.overlay";
+
+
+import styles from './message.sender.module.css'
+import FileExporter from './components/fileExporter/file.exporter';
 
 
 const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSphereFolder }) => {
@@ -49,12 +54,23 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                 }}
             />
             <div className={styles.recorders}>
-                <AudioRecognition />
-                <AudioRecorder
-                    onSend={ async (blob)=>{
-                        sendMessage( { media: [ { audio: {blob ,  type: "webm"} } ]} )
-                    }}
-                />
+                <AboutOverlay
+                    text="Audio recognition"
+                >
+                    <AudioRecognition />
+                </AboutOverlay>
+                <AboutOverlay
+                    text="Audio recorder"
+                >
+                    <AudioRecorder
+                        onSend={ async (blob)=>{
+                            sendMessage( { media: [ { audio: {blob ,  type: "webm"} } ]} )
+                        }}
+                    />
+                </AboutOverlay>
+                <AboutOverlay text="File exporter">
+                    <FileExporter />
+                </AboutOverlay>
             </div>
         </div>
      );

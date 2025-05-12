@@ -39,24 +39,27 @@
     background-color: rgb(55, 56, 57, var(--backGroundOpacity));
 }
 
-.profil{
+.profilSection{
     gap: 10px;
     display: flex;
     flex-direction: column;
 }
 
-.profil > * {
+.profilSection > * {
+    display: flex;
     cursor: pointer;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
     transition: all 1s ease;
     background-color: rgb(55, 56, 57);
 }
 
-.profil > *:hover{
+.profilSection > *:hover{
     padding: 10px;
-
 }
 
-.profil > img{
+.profilSection .profilImage{
     gap: 20px;
     width: 30px;
     height: 30px;

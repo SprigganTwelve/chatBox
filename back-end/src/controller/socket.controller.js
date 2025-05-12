@@ -61,6 +61,7 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
 
             if(media[0].video){
                 const videoName = Date.now() + '.' + media[0].video.type
+                const videoType =  "video/" + media[0].audio.type
                 const insertVideo = connexion.query("INSERT INTO Media(message_id, name, type) VALUES(?,?,?)",
                     [ insertedMessage.insertId, videoName, "video/"+ media[0].video.type  ]
                 )
@@ -73,7 +74,16 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
                 const audioPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/video`, videoName)
                 const buffer = Buffer.from(media[0].video.blob, 'binary');
                 fs.writeFileSync(audioPath, buffer)
+
+                media[0] = {
+                    id: insertVideo.insertId,
+                    name: videoName,
+                    type: videoType
+                }
+
             }
+
+            //Uploading Picture
 
             if(media.photos){
                 //TODO: IMPLEMENT
@@ -88,6 +98,7 @@ exports.insertIntoMessage = async ( { senderId, talkSphereId, content, createdAt
             talkSphereId,
             talkSphereFolder
         })
+
         await connexion.commit()
     }
     catch (err) {

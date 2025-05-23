@@ -120,7 +120,9 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                                 open: true,
                                 showCancelAndConfirmButtons: true,
                                 styleContent: { backgroundColor: 'transparent' },
-                                onContinueHandler: () => SmartImageProcessor.handleSaveCroppedImage(),
+                                onContinueHandler: () =>{ 
+                                    SmartImageProcessor.handleSaveCroppedImage()
+                                },
                                 ModalComponent: ()=>( <div 
                                     className={styles.imageManagerSection}
                                 >

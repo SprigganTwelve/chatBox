@@ -1,0 +1,32 @@
+.main {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+canvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.main .iconContainer{
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    display: flex;
+    cursor: pointer;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    transform: translate( -50%, -50% );
+    background-color: rgba(90, 91, 92, 0.476);
+}
+
+.icon{
+    width: 30px;
+    height: 30px;
+    transform: translate( 5% );
+}

@@ -6,7 +6,7 @@ import SVGplay from '/src/assets/svg/play-alt-svgrepo-com-white.svg'
 
 import styles from './video.frame.snapper.module.css'
 
-const FrameSnapper = ({ file }) => {
+const VideoFrameSnapper = ({ file, imageStyle= {} }) => {
 
     const videoRef = useRef()
     const canvasRef = useRef()
@@ -72,13 +72,16 @@ const FrameSnapper = ({ file }) => {
     },[file])
 
     return ( 
-        <div className={styles.main}>
+        <div 
+            className={styles.main}
+        >
             <video
                 hidden
                 ref={videoRef}
             />
             <canvas
                 ref={canvasRef}
+                style={imageStyle}
                 className={styles.canvas}
             />
             <div className={styles.iconContainer}> 
@@ -88,8 +91,9 @@ const FrameSnapper = ({ file }) => {
      );
 }
  
-export default FrameSnapper;
+export default VideoFrameSnapper;
 
-FrameSnapper.propTypes = {
-    file: PropTypes.object
+VideoFrameSnapper.propTypes = {
+    file: PropTypes.object,
+    imageStyle: PropTypes.object
 }

@@ -7,6 +7,8 @@ import styles from "./modal.module.css"
 
 /* For make this work you must provide the following object type to the set modal state function created in the context :
         { open: boolean, showCancelAndConfirmButtons?: boolean, onContinueHandler?: function , stylesContainer: objectStyles, styleContent?: styleObject  }
+    The modal is close by turning open into false;
+    The modal is clear by passing null or false to the setModal function
 */
 
 /* {
@@ -30,8 +32,8 @@ const Modal = () => {
             }
 
             if( modal && modal.onClose ){
-                console.log("modal", modal)
                 modal.onClose()
+                setModal(false)
             }
             setModal(()=> false);
         }

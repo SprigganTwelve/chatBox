@@ -5,7 +5,7 @@ import SVGfile from "/src/assets/svg/file.svg"
 import styles from "./file.exporter.module.css"
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
-import FileDeck from "./components/file.organizer";
+import FileDeck from "/src/components/ui/fileDeck/file.deck";
 
 const FileExporter = () => {
 

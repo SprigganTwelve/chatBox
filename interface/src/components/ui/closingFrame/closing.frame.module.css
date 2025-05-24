@@ -12,5 +12,6 @@
     outline: none;
     cursor: pointer;
     position: absolute;
+    border-radius: 20px;
     background-color: rgb(55, 56, 57);
 }

@@ -3,9 +3,9 @@
 }
 
 .overlay:hover::after {
-    top: 0;
-    right: 0;
-    z-index: 10;
+    top: var(--top-position);
+    right: var(--right-position);
+    z-index: 220;
     color: white;
     font-size: 15px;
     display: block;

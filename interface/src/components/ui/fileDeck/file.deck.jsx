@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
-import styles from './file.organizer.module.css'
 import {  useEffect, useRef, useState } from 'react';
 
 import SVGadd from '/src/assets/svg/add-circle-svgrepo-com.svg'
 import SVGclose from '/src/assets/svg/close-circle-svgrepo-com.svg'
 
 import ClosingFrame from '/src/components/ui/closingFrame/closing.frame';
-import FrameSnapper from '/src/components/ui/VideoframeSnapper/video.frame.snapper';
+import VideoFrameSnapper from '/src/components/ui/VideoframeSnapper/video.frame.snapper';
+import AboutOverlay from '/src/components/ui/aboutOverlay/about.overlay'
 
+import styles from './file.deck.module.css'
 
 
 
@@ -101,19 +102,29 @@ const FileDeck = ({
                         )
                         : currentOption === "videos" && Array.isArray(organizedFiles.videos) ? (
                             organizedFiles.videos.map((video, index)=>(
-                                <ClosingFrame
-                                    key={index}
-                                    onclose= {()=>{
-                                        setOrganizedFiles( ()=> {
-                                           organizedFiles.videos.splice(index, 1)
-                                           return { ...organizedFiles }
-                                        })
-                                    }}
+                                <AboutOverlay
+                                        key={index}
+                                        text={video.name}
+                                        positions={[ "100%", "50%" ]}
                                 >
-                                    <div className={styles.videos}>
-                                        <FrameSnapper file={video} />
-                                    </div>
-                                </ClosingFrame>
+                                    <ClosingFrame
+                                        onclose= {()=>{
+                                            setOrganizedFiles( ()=> {
+                                            organizedFiles.videos.splice(index, 1)
+                                            return { ...organizedFiles }
+                                            })
+                                        }}
+                                    >
+                                        <div className={styles.frameVideos}>
+                                            <VideoFrameSnapper 
+                                                file={video}
+                                                imageStyle={{ 
+                                                    borderRadius: 20
+                                                }}
+                                            />
+                                        </div>
+                                    </ClosingFrame>
+                                </AboutOverlay>
                             ))
                         )
                         : currentOption === "pdf" && Array.isArray(organizedFiles.pdf) && (

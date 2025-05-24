@@ -7,7 +7,8 @@ import styles from "./about.overlay.module.css"
 
 const AboutOverlay = ({
     text,
-    children
+    children,
+    positions = [ 0, 0 ]
 }) => {
 
     const overlayRef = useRef(null)
@@ -43,7 +44,11 @@ const AboutOverlay = ({
         <div 
             ref={ overlayRef }
             className={styles.overlay}
-            style={ showText ? { "--overlayText": `"${ text ?? ""}"`} : null }
+            style={ showText ? { 
+                "--overlayText": `"${ text ?? ""}"`,
+                "--top-position" :  `${ positions[0]  }` ,
+                "--right-position" : `${ positions[1]  }` ,
+            } : null }
         >
             { children }
         </div>
@@ -55,4 +60,5 @@ export default AboutOverlay;
 AboutOverlay.propTypes = {
     text: PropTypes.string,
     children: PropTypes.node,
+    positions: PropTypes.array,
 }

@@ -8,6 +8,7 @@ import styles from "./about.overlay.module.css"
 const AboutOverlay = ({
     text,
     children,
+    containerStyles = {},
     positions = [ 0, 0 ]
 }) => {
 
@@ -48,6 +49,7 @@ const AboutOverlay = ({
                 "--overlayText": `"${ text ?? ""}"`,
                 "--top-position" :  `${ positions[0]  }` ,
                 "--right-position" : `${ positions[1]  }` ,
+                ...containerStyles
             } : null }
         >
             { children }
@@ -61,4 +63,5 @@ AboutOverlay.propTypes = {
     text: PropTypes.string,
     children: PropTypes.node,
     positions: PropTypes.array,
+    containerStyles: PropTypes.object,
 }

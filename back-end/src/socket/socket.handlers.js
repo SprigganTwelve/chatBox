@@ -11,8 +11,10 @@ module.exports = (socket, io) => {
         console.log(users)
     });
 
+
     messagesHandler(socket, io)
 
+    
     socket.on('disconnect', () => {
         console.log(`Utilisateur déconnecté : ${socket.id}`);
         

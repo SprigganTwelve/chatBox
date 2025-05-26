@@ -1,5 +1,6 @@
 .overlay{
     position: relative;
+    display: inline-block;
 }
 
 .overlay:hover::after {

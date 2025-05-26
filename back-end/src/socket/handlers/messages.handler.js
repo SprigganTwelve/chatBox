@@ -60,5 +60,11 @@ module.exports = (socket, io) => {
         }
     });
 
+    //Here we receive a  custom object that contains different fiels of files
+
+    socket.on("sendFiles", (files)=>{
+        console.log({files})
+    })
+
 //---------------------
 }

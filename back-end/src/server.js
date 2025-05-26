@@ -1,4 +1,5 @@
 const PORT = 3000
+
 const http = require('http');
 const cors = require('cors');
 const express = require('express');
@@ -15,12 +16,11 @@ const io = new Server(server, {
     }
 });
 
+app.set( 'io', io )
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 
 const usersRouter = require("./routes/users.routes");
@@ -41,8 +41,9 @@ app.use("/uploads/themes", express.static(path.join(__dirname, 'uploads/themes')
 
 io.on("connection", (socket) => socketHandlers(socket, io));
 
-
 server.listen(PORT, () => {
     console.log("Server started on port 3000");
 });
 
+
+module.exports = app

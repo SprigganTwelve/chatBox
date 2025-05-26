@@ -3,8 +3,8 @@
 }
 
 .closeIcon{
-    top: 3px;
-    right: 3px;
+    top: var(--top-position);
+    right: var(--right-position);
     width: 25px;
     height: 25px;
     padding: 5px;

@@ -6,7 +6,7 @@ import SVGplay from '/src/assets/svg/play-alt-svgrepo-com-white.svg'
 
 import styles from './video.frame.snapper.module.css'
 
-const VideoFrameSnapper = ({ file, imageStyle= {} }) => {
+const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6 }) => {
 
     const videoRef = useRef()
     const canvasRef = useRef()
@@ -33,7 +33,7 @@ const VideoFrameSnapper = ({ file, imageStyle= {} }) => {
             canvasElement.width = canvasW;
             canvasElement.height = canvasH;
 
-            videoElement.currentTime = videoElement.duration > 12 ? 12 : 0;
+            videoElement.currentTime = videoElement.duration > cutPoint ? cutPoint : 0;
 
             //we simulate an cover (object-fit) effect and then crop the image
             videoElement.onseeked = () => {
@@ -95,5 +95,6 @@ export default VideoFrameSnapper;
 
 VideoFrameSnapper.propTypes = {
     file: PropTypes.object,
+    cutPoint: PropTypes.number,
     imageStyle: PropTypes.object
 }

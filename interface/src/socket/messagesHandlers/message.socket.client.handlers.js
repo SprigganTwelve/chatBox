@@ -36,6 +36,13 @@ const messagesSocketHandlers = (socket) => {
         socket.off("newMessage")
     }
 
+
+    //GB, received an structed named files  (as { image:[], videos: [] ... })
+
+    const sendFilesResponses = ()=>{
+
+    }
+
     //GB, Here we listen all the incoming message for handle the notifications through the socketId
 
     const captureIncommingMessageResponse = ()=> {
@@ -96,6 +103,8 @@ const messagesSocketHandlers = (socket) => {
         sendMessageRequest,
         newMessagesResponses,
         offNewMessageResponses,
+
+        sendFilesResponses,
 
         captureIncommingMessageResponse,
         offCaptureIncommingMessageResponse,

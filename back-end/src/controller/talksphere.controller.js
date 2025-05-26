@@ -146,6 +146,16 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
     }
 }
 
-exports.saveAudioMessage = () =>{
-    
+
+
+exports.saveFiles = (req, res) =>{
+    try{
+        const { organizedFiles, talkSphereFolder, receivers } = req.body
+        console.log({ organizedFiles, talkSphereFolder, receivers })
+        req.status(200).json()
+    }
+    catch(err){
+        console.log("Something went wrong ", err)
+        res.status(404).json({ message: 'Something wrong happened' })
+    }
 }

@@ -25,7 +25,7 @@ const FileDeck = ({
 
     useEffect(()=>{
 
-        const filesOrganizingHandler = () => {
+        const filesOrganizingHandler = (files) => {
 
             const fileDeckData = {
                 pdf: [],
@@ -33,14 +33,12 @@ const FileDeck = ({
                 videos: [],
                 others: [],
             }
-            console.log({files})
-            for(const singleFile of files){
+            for(const singleFile of files ){
                 if(singleFile.type.includes('image')){
                     fileDeckData.images.push(singleFile)
                 }
                 else if(singleFile.type.includes('video')){
                     fileDeckData.videos.push(singleFile)
-                    console.log("video",{singleFile}, 'filedekdata', fileDeckData)
                 }
                 else if(singleFile.type.includes('pdf')){
                     fileDeckData.pdf.push(singleFile)
@@ -52,7 +50,8 @@ const FileDeck = ({
 
         }
 
-        setOrganizedFiles(()=> filesOrganizingHandler())
+        const mediaItems = filesOrganizingHandler(files)
+        setOrganizedFiles(()=> mediaItems)
 
     },[files])
 
@@ -66,7 +65,7 @@ const FileDeck = ({
                     viewOptions.current.map((title, index)=>(
                         <div
                             key={index}
-                            className={ currentOption === title.toLowerCase() && styles.isActive }
+                            className={ currentOption === title.toLowerCase() ? styles.isActive : "" }
                             onClick={()=> {
                                 setCurrentOption(() => title.toLowerCase())
                             }}
@@ -115,7 +114,7 @@ const FileDeck = ({
                                             })
                                         }}
                                     >
-                                        <div className={styles.frameVideos}>
+                                        <div className={styles.frameVideos} style={{ width:152  , height:125 }} >
                                             <VideoFrameSnapper 
                                                 file={video}
                                                 imageStyle={{ 
@@ -131,6 +130,7 @@ const FileDeck = ({
                             organizedFiles.pdf.map((pdf, index)=>(
                                 <ClosingFrame
                                     key={index}
+                                    positions={["3px", "49%"]}
                                     onclose= {()=>{
                                         setOrganizedFiles( ()=> {
                                            organizedFiles.pdf.splice(index, 1)
@@ -138,11 +138,16 @@ const FileDeck = ({
                                         })
                                     }}                                
                                 >
-                                    <img 
-                                        className={styles.pdf}
-                                        src= "/image/PDF_file_icon.svg.png"
-                                        alt='Image'
-                                    /> 
+                                    <AboutOverlay 
+                                        text={pdf.name} 
+                                        positions={[ "100%", "50%" ]}
+                                    >
+                                        <img 
+                                            className={styles.pdf}
+                                            src= "/image/icon/pdf-download-4674895.png"
+                                            alt='Image'
+                                        />
+                                    </AboutOverlay>
                                 </ClosingFrame>
                             ))
                         )
@@ -173,7 +178,10 @@ const FileDeck = ({
                 <button 
                     className={styles.onSendButton} 
                     onClick={ ()=> {
-                        if(onSend)  onSend(organizedFiles) 
+                        if(onSend)  {
+                            console.log({onSend})
+                            onSend(organizedFiles)
+                        }
                     }}
                 >
                     Send

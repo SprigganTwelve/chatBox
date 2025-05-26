@@ -67,4 +67,6 @@ const getCroppedImage = (fileUrl, croppedAreaPixels, rotation = 0) => {
 
 
 
+
+
 export { insertFormattedDateFromArray, insertFormattedDate, getCroppedImage }

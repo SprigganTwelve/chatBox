@@ -1,4 +1,6 @@
 
+import axios from 'axios'
+
 import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../../../context/context";
@@ -6,10 +8,11 @@ import { ChatBoxApiContext } from "../../../../context/context";
 import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';
 import AboutOverlay from "/src/components/ui/aboutOverlay/about.overlay";
+import FileExporter from '/src/components/ui/fileExporter/file.exporter';
 
+import SVGfile from "/src/assets/svg/file.svg"
 
 import styles from './message.sender.module.css'
-import FileExporter from './components/fileExporter/file.exporter';
 
 
 const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSphereFolder }) => {
@@ -69,7 +72,17 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                     />
                 </AboutOverlay>
                 <AboutOverlay text="File exporter">
-                    <FileExporter />
+                    <FileExporter 
+                        callback = { (organizedFiles)=>{
+                            axios.post(`http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/:${talkSphereId}/sendFiles`, { organizedFiles, talkSphereFolder, receivers: receivers.split(',') })
+                        } }
+                    >
+                        <img 
+                            src={SVGfile}
+                            alt="Import file"
+                            className={styles.icon}
+                        />
+                    </FileExporter>
                 </AboutOverlay>
             </div>
         </div>

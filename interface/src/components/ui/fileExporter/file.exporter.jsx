@@ -5,8 +5,6 @@ import PropTypes from 'prop-types'
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChatBoxApiContext } from "/src/context/context";
 
-import { convertFilesListIntoBase64 } from "/src/utils/files";
-
 import FileDeck from "/src/components/ui/fileDeck/file.deck";
 
 
@@ -40,16 +38,6 @@ const FileExporter = ( { callback, children } ) => {
                             inputRef = { inputRef }
                             onSend = {async (organizedFiles)=>{
                                 if(socket){
-                                    const failedConvertionFiles = {}
-                                    if(organizedFiles.images && organizedFiles.images.length > 0){
-                                       failedConvertionFiles.images = await convertFilesListIntoBase64(organizedFiles.images)
-                                    }
-                                    if(organizedFiles.videos && organizedFiles.videos.length > 0){
-                                       failedConvertionFiles.videos = await convertFilesListIntoBase64(organizedFiles.videos)
-                                    }
-                                    if(organizedFiles.pdf && organizedFiles.pdf.length > 0){
-                                       failedConvertionFiles.pdf = await convertFilesListIntoBase64(organizedFiles.pdf)
-                                    }
                                     callback(organizedFiles)
                                     setModal(null)  //clear the modal
                                 }

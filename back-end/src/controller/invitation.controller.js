@@ -120,9 +120,11 @@ exports.ConfirmAnInvitation = async (req, res) => {
 
         const folder =  uuidv4()
         const pathRepertory = path.join(__dirname, `../uploads/talkspheres/${folder}` )
+        
         fs.mkdirSync( pathRepertory + "/audios", { recursive: true } )
         fs.mkdirSync( pathRepertory + '/videos', { recursive: true } )
         fs.mkdirSync( pathRepertory + '/photos', { recursive: true } )
+        fs.mkdirSync( pathRepertory + '/documents', { recursive: true } )
 
         const areCreeatedFiles = !fs.existsSync(pathRepertory + "/audios") && !fs.existsSync( pathRepertory + '/videos' ) && !fs.existsSync(pathRepertory + '/photos');
         if(areCreeatedFiles){

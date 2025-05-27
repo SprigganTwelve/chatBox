@@ -1,5 +1,8 @@
 
 const db = require("../database/connexion")
+const path = require('path')
+const fs = require('fs')
+
 
 exports.getAllChatsStoredInBdd = async (req, res)=>{
     try {
@@ -150,9 +153,49 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
 
 exports.saveFiles = (req, res) =>{
     try{
-        const { organizedFiles, talkSphereFolder, receivers } = req.body
-        console.log({ organizedFiles, talkSphereFolder, receivers })
-        req.status(200).json()
+        let writeStream;
+        let receivedBytes = 0;
+        const { talksphereId, talkSphereFolder } = req.params
+        const fileName = req.headers['x-filename']
+        const fileSize = parseInt(req.headers['x-file-size'], 10) // size from octet to number
+
+        const fileType = req.headers['x-file-type']
+
+        if(!talksphereId || !talkSphereFolder || !fileName || !fileSize || !fileType ){
+            return res.status(404).json({ message: 'Parameter (inside the route or the header ) are missing' })
+        }
+
+        if(fileType.includes('image')){
+            writeStream = fs.createWriteStream(path.join(__dirname), `../uploads/talkspheres/${talkSphereFolder}/images/${fileName}`)
+        }
+        else if(fileType.includes('video')){
+            writeStream = fs.createWriteStream(path.join(__dirname), `../uploads/talkspheres/${talkSphereFolder}/videos/${fileName}`)
+        }
+        else{
+            writeStream = fs.createWriteStream(path.join(__dirname), `../uploads/talkspheres/${talkSphereFolder}/documents/${fileName}`)
+        }
+    
+        res.setHeader('Content-Type', 'text/plain')
+        res.setHeader('Transfer-Encoding', 'chunked')
+
+        req.on('data', (chunk)=> {
+            receivedBytes += chunk.length
+            const trandferRation = ( receivedBytes / fileSize ).toFixed(2)
+
+            res.write(`PROGRESS:${trandferRation}\n`)
+        })
+
+        req.pipe(writeStream)
+
+        req.on('end', ()=> {
+            res.write(`DONE\n`)
+            res.end()
+        })
+
+        req.on('error', (err)=> {
+            res.write(` ERROR:${err.message}\n `)
+        })
+
     }
     catch(err){
         console.log("Something went wrong ", err)

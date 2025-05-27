@@ -6,6 +6,10 @@ const express = require('express');
 const { Server } = require("socket.io");
 const path = require('path')
 
+const expressJson = express.json()
+const { unless } = require('express-unless')
+
+expressJson.unless = unless  //GB it will help use to disable the bodyParse or expressJson middleware to some specific route
 
 const app = express();
 const server = http.createServer(app);
@@ -19,7 +23,16 @@ const io = new Server(server, {
 app.set( 'io', io )
 
 app.use(cors());
-app.use(express.json());
+
+const expressJsonDisablePath = [
+    { url: '/talkSphere/message/:talksphereId/:talkSphereFolder/sendFiles', methods: ['POST'] }
+]
+
+app.use(
+    expressJson.unless({
+        path: expressJsonDisablePath
+    })
+);
 app.use(express.urlencoded({ extended: true }));
 
 

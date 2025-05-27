@@ -1,5 +1,4 @@
 
-import axios from 'axios'
 
 import PropTypes from 'prop-types'
 import { useContext, useState } from "react";
@@ -73,9 +72,51 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                 </AboutOverlay>
                 <AboutOverlay text="File exporter">
                     <FileExporter 
-                        callback = { (organizedFiles)=>{
-                            axios.post(`http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/:${talkSphereId}/sendFiles`, { organizedFiles, talkSphereFolder, receivers: receivers.split(',') })
-                        } }
+                        callback = { async  (organizedFiles)=>{
+                            for( const filesArray of Object.values(organizedFiles) ){
+                                for( const file of filesArray ){
+                                    const response = await fetch(
+                                        `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/:${talkSphereId}/${talkSphereFolder}/sendFiles`,{
+                                        Body: file.stream(),
+                                        method: "POST",
+                                        headers: {
+                                            'X-filename': file.name,
+                                            'X-File-Size': file.size,
+                                            'Content-Type': 'application/octet-stream',
+                                            'X-File-Type' : file.type
+                                        }
+                                    })
+
+                                    let buffer = ''
+                                    const reader = response.body.getReader()
+                                    const decoder = new TextDecoder();
+
+                                    while (true) {
+                                        const { done, value } = await reader.read();
+                                        if (done) break;
+
+                                        buffer += decoder.decode(value, { stream: true });
+
+                                        let lines = buffer.split('\n');
+                                        buffer = lines.pop(); 
+
+                                        for (const line of lines) {
+                                            if (line.startsWith('PROGRESS:')) {
+                                                const trandferRation = line.replace('PROGRESS:', '');
+                                                console.log(`Progression: ${trandferRation}`);
+                                            } 
+                                            else if (line.startsWith('DONE')) {
+                                                console.log('Téléversement terminé.');
+                                            } 
+                                            else if (line.startsWith('ERROR:')) {
+                                                console.error('Erreur:', line.replace('ERROR:', ''));
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }}
                     >
                         <img 
                             src={SVGfile}

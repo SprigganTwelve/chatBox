@@ -62,8 +62,11 @@ module.exports = (socket, io) => {
 
     //Here we receive a  custom object that contains different fiels of files
 
-    socket.on("sendFiles", (files)=>{
+    socket.on("sendFiles", ({ fileNameArray, room })=>{
         console.log({files})
+        if(Array.isArray(fileNameArray) && room){
+            socket.to(room).emit("receivedFiles", fileNameArray)
+        }
     })
 
 //---------------------

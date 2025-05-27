@@ -11,6 +11,6 @@ router.get( "/:userId", controller.getAllChatsStoredInBdd )
 router.get( "/messages/:id", controller.getMessagesFromTalkSphere )
 router.get( '/:senderId/:talksphereId', controller.getTalkSphere  )
 
-router.post('/message/:talksphereId/sendFiles', upload.single('audio'), controller.saveFiles )
+router.post('/message/:talksphereId/:talkSphereFolder/sendFiles', upload.single('audio'), controller.saveFiles )
 
 module.exports = router; 

@@ -5,11 +5,14 @@ const cors = require('cors');
 const express = require('express');
 const { Server } = require("socket.io");
 const path = require('path')
-
-const expressJson = express.json()
 const { unless } = require('express-unless')
 
+const expressJson = express.json({ limit: '22mb' })
+const expressUrlencoded = express.urlencoded({ extended: true, limit: '22mb' })
+
 expressJson.unless = unless  //GB it will help use to disable the bodyParse or expressJson middleware to some specific route
+
+expressUrlencoded.unless = unless
 
 const app = express();
 const server = http.createServer(app);
@@ -25,15 +28,11 @@ app.set( 'io', io )
 app.use(cors());
 
 const expressJsonDisablePath = [
-    { url: '/talkSphere/message/:talksphereId/:talkSphereFolder/sendFiles', methods: ['POST'] }
+    { url: '/talkSphere/messages/:talksphereId/:talkSphereFolder/sendFiles', methods: ['POST'] }
 ]
 
-app.use(
-    expressJson.unless({
-        path: expressJsonDisablePath
-    })
-);
-app.use(express.urlencoded({ extended: true }));
+app.use(expressJson.unless({ path: expressJsonDisablePath }));
+app.use(expressUrlencoded.unless({ path: expressJsonDisablePath }));
 
 
 const usersRouter = require("./routes/users.routes");

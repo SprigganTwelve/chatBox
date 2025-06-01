@@ -19,7 +19,8 @@ const messagesSocketHandlers = (socket) => {
         socket.emit("leaveRoom", room)
     }
 
-    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder }) => {
+    
+    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder }) => {   //TODO: To review herer
         socket.emit("privateMessage", { senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder })
     }
 
@@ -37,11 +38,6 @@ const messagesSocketHandlers = (socket) => {
     }
 
 
-    //GB, received an structed named files  (as { image:[], videos: [] ... })
-
-    const sendFilesResponses = ()=>{
-
-    }
 
     //GB, Here we listen all the incoming message for handle the notifications through the socketId
 
@@ -103,8 +99,6 @@ const messagesSocketHandlers = (socket) => {
         sendMessageRequest,
         newMessagesResponses,
         offNewMessageResponses,
-
-        sendFilesResponses,
 
         captureIncommingMessageResponse,
         offCaptureIncommingMessageResponse,

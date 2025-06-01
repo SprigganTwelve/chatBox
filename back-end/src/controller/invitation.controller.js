@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt")
 const { v4: uuidv4 } =require('uuid')
 const db = require("../database/connexion")
 
+
+
 exports.getUserVisible = async (req,res) => {
     try{
         const { userId } = req.params
@@ -120,7 +122,7 @@ exports.ConfirmAnInvitation = async (req, res) => {
 
         const folder =  uuidv4()
         const pathRepertory = path.join(__dirname, `../uploads/talkspheres/${folder}` )
-        
+
         fs.mkdirSync( pathRepertory + "/audios", { recursive: true } )
         fs.mkdirSync( pathRepertory + '/videos', { recursive: true } )
         fs.mkdirSync( pathRepertory + '/photos', { recursive: true } )

@@ -77,7 +77,7 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
         else{
             socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
         }
-    }, [handleReceivingSocketMessage, joinRoomResponse, socket, talkSphereId])
+    }, [ handleReceivingSocketMessage, joinRoomResponse, socket, talkSphereId])
 
 
 

@@ -40,19 +40,27 @@ module.exports = (socket, io) => {
 
     //Here we receive and send messages to the client
 
-    socket.on("privateMessage", (message) => {
+    socket.on("privateMessage", ({ senderId, talkSphereId, content, receivers ,createdAt, media, talkSphereFolder }) => {
         try{
-            if(!message){
+            if( !senderId || !talkSphereId || !createdAt || !talkSphereFolder || !receivers ){
                 console.log("[socket: privateMessage ] missings data")
                 return;
             }
 
-            socketController.insertIntoMessage(message, io);
+
+            socket.to(talkSphereId).emit("newMessage", { 
+                media,
+                content,
+                senderId,
+                createdAt,
+                talkSphereId,
+                talkSphereFolder,
+            })
             
-            for(const id of message.receivers){
+            for(const id of receivers){
                 const receiverSocketId = users.get(id.toString());
                 if (receiverSocketId) 
-                    socket.to(receiverSocketId).emit("incommingMessage", message);
+                    socket.to(receiverSocketId).emit("incommingMessage", {  } );
             }
         }
         catch(err){
@@ -60,14 +68,6 @@ module.exports = (socket, io) => {
         }
     });
 
-    //Here we receive a  custom object that contains different fiels of files
-
-    socket.on("sendFiles", ({ fileNameArray, room })=>{
-        console.log({files})
-        if(Array.isArray(fileNameArray) && room){
-            socket.to(room).emit("receivedFiles", fileNameArray)
-        }
-    })
 
 //---------------------
 }

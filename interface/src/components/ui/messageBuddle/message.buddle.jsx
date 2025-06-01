@@ -1,5 +1,7 @@
 import PropTypes from "prop-types"
+
 import AudioReader from './components/audioReader/audio.reader'
+import VideoReader from './components/videoReader/video.reader'
 
 import styles from "./message.buddle.module.css"
 
@@ -28,12 +30,24 @@ const MessageBuddle = (
         >
 
             {
-                media && media[0].type.includes('audio') && (
-                    <AudioReader
-                        media={ media[0] }
-                        talkSphereFolder= { talkSphereFolder  }
-                    />
-                )
+                Array.isArray(media) ?
+                    ( 
+                        media[0].type.includes('audio') ? (
+                            <AudioReader
+                                media={ media[0] }
+                                talkSphereFolder= { talkSphereFolder  }
+                            />
+                        )
+                        : media.map((item, index)=>{
+                            return (
+                                <VideoReader key={ index }/>
+                            )
+                        })
+                    )
+                     :
+                    (
+                        <></>
+                    )
             }
             <p className={styles.message} >{content}</p>
             <div className={styles.time}>{time}</div>

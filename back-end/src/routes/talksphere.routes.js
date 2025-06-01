@@ -8,9 +8,15 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage }) 
 
 router.get( "/:userId", controller.getAllChatsStoredInBdd )
+
 router.get( "/messages/:id", controller.getMessagesFromTalkSphere )
+
 router.get( '/:senderId/:talksphereId', controller.getTalkSphere  )
 
-router.post('/message/:talksphereId/:talkSphereFolder/sendFiles', upload.single('audio'), controller.saveFiles )
+router.post('/messages/store', controller.insertMessageIntoBdd ) // Here we store/record a message in the bdd
+
+router.post('/messages/store/files', controller.storeMediaIntoBdd) // Here we store/record the files in the bdd
+
+router.post('/messages/:talksphereId/:talkSphereFolder/sendFiles', controller.saveFiles ) // Here we download the files into the storage (chunked transfer)
 
 module.exports = router; 

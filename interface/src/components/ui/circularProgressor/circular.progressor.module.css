@@ -1,0 +1,49 @@
+
+.main{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: transparent;
+}
+
+.outer{
+    width: 100%;
+    height: 100%;
+    padding: 12.5%;
+    border-radius: 50%;
+    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+    -6px -6px 10px -1px rgba(255,255,255,0.7);
+}
+
+.inner{
+    display: flex;
+    width: calc(100% - 25%);
+    height: calc(100% - 25%);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 4px 4px 6px -1px rgba(0,0,0,0.2), inset -4px
+        -4px 6px -1px rgba(255,255,255,0.7),
+        -0.5px 0.5px 0px rgba(255,255,255,1), 0.5px 0.5px 0px rgb(0,0,0,0.15),
+        0px 12px 10px -10px  rgba(0,0,0,0.05);
+    ;
+}
+
+.indicator{
+    font-weight: 600;
+    color: #555;
+    font-size: 22px;
+}
+
+
+.svg{
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+
+
+.circle{
+    fill: none;
+    transition: stroke-dashoffset  2s linear forwards;
+}

@@ -7,6 +7,7 @@ import SVGplayaudiowhite from "/src/assets/svg/play-alt-svgrepo-com-white.svg";
 import styles from './audio.reader.module.css';
 
 const AudioReader = ({ media, talkSphereFolder }) => {
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgression, setAudioProgression] = useState(0);
 

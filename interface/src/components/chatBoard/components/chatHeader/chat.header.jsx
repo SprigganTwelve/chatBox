@@ -18,7 +18,7 @@ const ChatHeader = ({  fullBackgroundOpacity, currentBasicData }) => {
                 >
                     <img 
                         src={ currentBasicData.imageData != "" ?
-                            `http://localhost:3000/uploads/users/${currentBasicData.imageData.folder}/parameters/${currentBasicData.imageData.image}` 
+                            `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${currentBasicData.imageData.folder}/parameters/${currentBasicData.imageData.image}` 
                             : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"
                         }
                         alt="profil"

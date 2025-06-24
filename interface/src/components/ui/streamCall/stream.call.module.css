@@ -1,0 +1,93 @@
+.main{
+    width: 900px;
+    height: 770px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.profileImage{
+    width: 14rem;
+    height: 14rem;
+    outline: none;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+
+
+.videoSection{
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    position: relative;
+}
+
+
+.remoteVideo{
+    width: 900px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 30px ;
+}
+
+
+
+.localVideo{
+    right: 0;
+    bottom: 0;
+    width: 250px;
+    position: absolute;
+    border-radius: 30px ;
+}
+
+
+
+.iconSection{
+    bottom: 12px;
+    display: flex;
+    gap: 150px;
+    position: absolute;
+}
+
+
+.iconContainer{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding:  0px 30px;
+    border-radius: 50px;
+    transition: all 2s ease;
+}
+
+
+
+.icon{
+    width: 80px;
+}
+
+
+
+.green{
+    background-color: rgba(50, 150, 50, 0.362);
+}
+
+
+
+.green:hover{
+    background-color: rgb(13, 188, 13);
+}
+
+
+
+.red{
+    background-color: rgba(189, 30, 30, 0.859);
+}
+
+
+
+.red:hover{
+    background-color: rgb(221, 54, 54);
+}

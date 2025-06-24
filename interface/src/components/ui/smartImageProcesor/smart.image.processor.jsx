@@ -33,8 +33,6 @@ const SmartImageProcessor = ({
     onApectRatioChange = ()=>{},
 }) => {
 
-    // const { setModal } = useContext(ChatBoxApiContext)
-
     const [ zoom, setZoom ] = useState(1)
     const [rotation, setRotation] = useState(0)
     const [crop, setCrop] = useState({ x:0, y:0 })

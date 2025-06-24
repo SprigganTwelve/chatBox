@@ -1,7 +1,7 @@
 
 import axios from "axios"
 import PropTypes from 'prop-types';
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useState } from 'react';
 import { ChatBoxApiContext } from '/src/context/context';
 
 import ChatBoxForm from "/src/components/ui/form/form";
@@ -18,16 +18,19 @@ import SVGdchange from "/src/assets/svg/change-style-svgrepo-com.svg"
 import SVGddoublecheck from "/src/assets/svg/double-check-svgrepo-com.svg"
 import SVGaccount from "/src/assets/svg/account-svgrepo-com.svg"
 import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
+import Modal from "/src/components/ui/modal/modal";
 
 
 const EditProfileSettings = ({ userData }) => {
-    const { setUserData, setPopUp, setModal } = useContext( ChatBoxApiContext )
+
+    const { setUserData, setPopUp } = useContext( ChatBoxApiContext )
+    const [ ModalManager, setModalManger ] = useState({ args: null, children: null })
 
     const handleChangeSingleFieldInBDD = useCallback(async ({ id, key, value }) => {
         if (!id || !key) return;
         
         try {
-          await axios.patch('http://localhost:3000/users/', { id, key, value });
+          await axios.patch(`http://localhost:${import.meta.env.VITE_API_PORT}/users/`, { id, key, value });
     
           setUserData?.((previous) => {
             if (previous[key] === value) return previous;
@@ -113,7 +116,9 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGabout}
                         description="What do you usually do ?"
                         onClick={()=> {
-                            setModal({open: true, ModalComponent: ()=> <FlexEdit
+                            setModalManger({
+                                args: { open: true },
+                                children: ()=> <FlexEdit
                                                     title="Description"
                                                     resize="none"
                                                     placeholder = {userData.description == "" ? "Void description" : undefined}
@@ -173,7 +178,9 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdchange}
                         description="Here change your password if needed"
                         onClick={()=>{
-                            setModal({open: true, ModalComponent: ()=> 
+                            setModalManger({ 
+                                args: { open: true }, 
+                                children: ()=> 
                                 (
                                     <FlexEdit 
                                         title="Change password"
@@ -204,7 +211,9 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdchange}
                         description="A key friend is a tool that allow user to directly acces to ..."
                         onClick={()=>{
-                            setModal({open: true, ModalComponent: () => <FlexEdit 
+                            setModalManger({
+                                args: { open: true }, 
+                                children: () => <FlexEdit 
                                                         title="Change Key Friend"
                                                         resize="none"
                                                         placeholder = "New Key Friend"
@@ -248,10 +257,12 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGaccount}
                         description=""
                         onClick={()=>{
-                            setModal({open: true, styleContent: {backgroundColor: "transparent"}, ModalComponent: () => 
+                            setModalManger({ 
+                                args: { open: true, styleContent: {backgroundColor: "transparent"} } ,
+                                children: () => 
                             (
                                 <ChatBoxForm
-                                     url="http://localhost:3000/users/login"
+                                     url={`http://localhost:${import.meta.env.VITE_API_PORT}/users/login`}
                                      btnContent = "Add new account"
                                      formStyle={{
                                          width: "fit-content",
@@ -277,20 +288,21 @@ const EditProfileSettings = ({ userData }) => {
                         leading={SVGdelete}
                         description="This action can't be undone..."
                         onClick={()=>{
-                            setModal({
-                                open: true,
-                                showCancelAndConfirmButtons: true,
-                                onContinueHandler:async  () => {
-                                    try{
-                                        await axios.delete(`http://localhost:3000/users/delete/${userData.id}`)
-                                        localStorage.clear()
-                                        window.location.reload()
-                                    }
-                                    catch(err){
-                                        console.log("Something went wrong while deleting user, err: ", err)
-                                    }
-                                },
-                                ModalComponent: ()=>( 
+                            setModalManger({
+                                args:{  open: true,
+                                        showCancelAndConfirmButtons: true,
+                                        onContinueHandler:async  () => {
+                                            try{
+                                                await axios.delete(`http://localhost:${import.meta.env.VITE_API_PORT}/users/delete/${userData.id}`)
+                                                localStorage.clear()
+                                                window.location.reload()
+                                            }
+                                            catch(err){
+                                                console.log("Something went wrong while deleting user, err: ", err)
+                                            }
+                                        }
+                                    },
+                                children: ()=>( 
                                     <p style={{color: "red", fontSize: 17}}>
                                      This action can&apos;t be undone 
                                     </p>
@@ -299,6 +311,19 @@ const EditProfileSettings = ({ userData }) => {
                         }}
                 />
             </div>
+            {
+                ModalManager.args && ModalManager.children && (
+                    <Modal
+                        { ...ModalManager.args }
+                        onClose={()=>{
+                            if(ModalManager.args?.onClose) ModalManager.args.onClose()
+                            setModalManger({args: null, children: null})
+                        }}
+                    >
+                        <ModalManager.children />
+                    </Modal>
+                )
+            }
         </div>
      );
 }

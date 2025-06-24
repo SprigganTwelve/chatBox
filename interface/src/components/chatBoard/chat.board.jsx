@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {  useContext, useEffect, useState } from "react";
+import {  useContext, useEffect } from "react";
 import { ChatBoxApiContext } from "../../context/context";
 
 import ChatHeader from "./components/chatHeader/chat.header";
@@ -14,8 +14,13 @@ import styles from './chat.board.module.css';
 
 const ChatBoard = ({ uploadedBackground }) => {
 
-    const [currentChat, setCurrentChat] = useState(null)
-    const { allChats, talkSphereId, userChatDefaultSettings, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
+    const { allChats, 
+            currentChat,
+            talkSphereId,
+            setCurrentChat,
+            userChatDefaultSettings,
+            fullBackgroundOpacity,
+        } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(allChats && talkSphereId && allChats.length > 0){

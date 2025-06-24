@@ -1,19 +1,22 @@
 
-const users = require("../global/constants") 
+
+const RTCHandlers = require('./handlers/RTChandlers')
 const messagesHandler = require("./handlers/messages.handler")
 
-module.exports = (socket, io) => {
+module.exports = (socket, io, users) => {
     console.log(`L'user ${socket.id} est connecté`);
 
     socket.on("register", ({ userId }) => {
-        users.set(userId.toString(), socket.id) ;
-        console.log(`Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users.get(userId)}`);
-        console.log(users)
+        users.set( userId.toString(), socket.id ) ;
+        console.log('\n',{users})
+        console.log(`
+            Utilisateur enregistré : userId=${userId}, socketId=${socket.id}, userRegister: ${users.get(userId)}
+        `);
     });
 
 
-    messagesHandler(socket, io)
-
+    RTCHandlers(socket, io, users)
+    messagesHandler(socket, io, users)
     
     socket.on('disconnect', () => {
         console.log(`Utilisateur déconnecté : ${socket.id}`);

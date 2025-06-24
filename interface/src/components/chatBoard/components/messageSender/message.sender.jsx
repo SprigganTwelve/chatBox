@@ -97,7 +97,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                         
         }
         catch(err){
-            console.log("Something went wrong while downoading the file n the server, [filename] ", file.name, "[error]", err)
+            console.log("Something went wrong while downoading the file on the server, [filename] ", file.name, "[error]", err)
             throw(Error("Something went wrong while sending the file to the server"))
         }
     }, [talkSphereFolder, talkSphereId, userId])

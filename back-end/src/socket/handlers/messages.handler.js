@@ -1,8 +1,7 @@
 
-const users = require("../../global/constants")
-const socketController = require("../../controller/socket.controller")
+// const socketController = require("../../controller/socket.controller")
 
-module.exports = (socket, io) => {
+module.exports = (socket, io, users) => {
 //-----------------
 
     //Here we make the join to one specific room
@@ -33,8 +32,8 @@ module.exports = (socket, io) => {
             socket.leave(room)
         }
         catch(err){
-            socket.emit("joinRoomResponse", { state: false } )
-            console.log("[socket: leaveRoom ] Something went wrong while leaving the room ")
+            socket.emit( "joinRoomResponse", { state: false } )
+            console.log( "[socket: leaveRoom ] Something went wrong while leaving the room ")
         }
     })
 
@@ -56,6 +55,8 @@ module.exports = (socket, io) => {
                 talkSphereId,
                 talkSphereFolder,
             })
+
+            console.log("user", users)
             
             for(const id of receivers){
                 const receiverSocketId = users.get(id.toString());

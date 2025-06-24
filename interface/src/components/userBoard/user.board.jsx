@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../context/context"
-import MessageCard from "./components/userCard/user.card";
+import UserCard from "./components/userCard/user.card";
 import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
@@ -8,11 +8,19 @@ import styles from "./user.board.module.css"
 
 const UserBoard = () => {
 
+    const { 
+        socket,
+        allChats, 
+        talkSphereId,
+        setTalkSphereId,
+        setUsersTemporaryChat,
+        fullBackgroundOpacity,
+    } = useContext(ChatBoxApiContext)
+
     const [isUserActive, setIsUserActive] = useState({})
-    const { allChats, setTalkSphereId, setUsersTemporaryChat , fullBackgroundOpacity } = useContext(ChatBoxApiContext)
 
 
-    const toggleInvite = useCallback((id) => {
+    const toggleActive = useCallback((id) => {
         setIsUserActive((prev) => ({
             [id]: !prev[id]
         }));
@@ -25,14 +33,15 @@ const UserBoard = () => {
             id: chat.id,
             messages: []
         }))
+
         localStorage.setItem("talkSphereId", JSON.stringify(chat.id));
 
         console.log("chat", chat)
 
         setTalkSphereId( () => chat.id )
-        toggleInvite( index ) //Mark the card as active
+        toggleActive( index )               //Mark the card as active
 
-    },[setTalkSphereId, setUsersTemporaryChat, toggleInvite])
+    },[setTalkSphereId, setUsersTemporaryChat, toggleActive])
 
 
     return (
@@ -55,13 +64,17 @@ const UserBoard = () => {
                         : chat.image_data;
                    
                         return(
-                            <MessageCard  
+                            <UserCard  
                                 key={ index }
                                 url={  `http://localhost:3000/uploads/users/${imageData.folder}/parameters/${imageData.image}`  }
                                 online={ false }
                                 name={ chat.name }
                                 isActive={isUserActive[index]}
-                                onClick={ ()=> handleOnClick(chat, index) }
+                                onClick={ ()=> {
+                                    if(socket.current) 
+                                        socket.current.messagesSocketHandlers.leaveRoom(talkSphereId)
+                                    handleOnClick(chat, index)
+                                } }
                                 style={{
                                     "--backGroundOpacity": fullBackgroundOpacity
                                 }}

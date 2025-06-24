@@ -16,6 +16,7 @@ import styles from './file.deck.module.css'
 const FileDeck = ({
     files,
     onSend,
+    onClose,
     inputRef
 }) => {
 
@@ -161,6 +162,7 @@ const FileDeck = ({
                         alt="close"
                         src={SVGclose} 
                         className={styles.icon}
+                        onClick={onClose}
                     />
                 </div>
                 <div className={styles.iconContainer}>
@@ -195,6 +197,7 @@ export default FileDeck;
 
 FileDeck.propTypes = {
     onSend: PropTypes.func,
+    onClose: PropTypes.func,
     inputRef: PropTypes.object,
     files: PropTypes.arrayOf(PropTypes.object)
 }

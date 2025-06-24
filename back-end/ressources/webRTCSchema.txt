@@ -1,0 +1,38 @@
+
+
++-----------+                                      +-----------+
+|   CALLER  | ←(UI click) Initie l'appel           |  CALLEE   |
+| (Initiator)                                      | (Receiver)|
++-----------+                                      +-----------+
+     |                                                  |
+     |   getUserMedia (audio/video)                     |
+     |------------------------------------------------->|   (optionnel)
+     |                                                  |
+     |   Crée RTCPeerConnection                         |
+     |   peer.addTrack(localStream)                     |
+     |                                                  |
+     |   ➤ peer.createOffer()                          |
+     |   ➤ peer.setLocalDescription(offer)             |
+     |                                                  |
+     |   ↓ Envoie l'offer via WebSocket ↓               |
+     |----------------- offer ------------------------->|
+     |                                                  |
+     |                                   reçoit offer → setRemoteDescription
+     |                                  getUserMedia (si pas déjà fait)
+     |                                  ➤ addTrack(localStream)
+     |                                  ➤ createAnswer()
+     |                                  ➤ setLocalDescription(answer)
+     |                                                  |
+     |   ← Envoie l'answer via WebSocket ←              |
+     |<---------------- answer -------------------------|
+     |                                                  |
+     |   reçoit answer → setRemoteDescription           |
+     |                                                  |
+     |   ⤵️ Échange des ICE candidates via WS ⤵️       |
+     |----------------- candidate --------------------->|
+     |<---------------- candidate ----------------------|
+     |----------------- candidate --------------------->|
+     |<-----------------candidate ----------------------|
+     |                                                  |
+     |         ✅ RTCPeerConnection CONNECTED
+

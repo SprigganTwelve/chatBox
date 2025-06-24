@@ -16,15 +16,20 @@ import SVGthemes from '/src/assets/svg/vivo-themes-svgrepo-com.svg'
 import SVGmode from '/src/assets/svg/quit-full-screen-svgrepo-com.svg'
 
 import styles from "./interface.settings.module.css"
+import Modal from "/src/components/ui/modal/modal";
 
 
 
-const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
+const InterfaceSettings = ({ defaultSettings, userFolder }) => {
 
     const inputFileRef = useRef(null)
+
     const [isFocus, setFocus] = useState(0)
-    const [imageUploaded, setImageUploaded]= useState("")
+    const [croppedFile, setCroppedFile]= useState("")
     const [isActive, setIsActive] = useState(defaultSettings.fontsize)
+
+    const [ selectedFile, setSelectedFile  ] = useState(false)
+
 
     const fontSize = {
         fontSize1: 15,
@@ -37,7 +42,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
 
     const handleChangeBasicsSettings = async ({key, value, id}) => {
         try{
-            const response = await axios.patch('http://localhost:3000/settings/general/basics', {key, value, id})
+            const response = await axios.patch(`http://localhost:${import.meta.env.VITE_API_PORT}/settings/general/basics`, {key, value, id})
             if(response.status !== 200) {
                 console.log("Something went wrong when changing the setting, response : ", response)
                 return ;
@@ -58,13 +63,13 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
 
     
     useEffect(()=>{
-        if (defaultSettings && userFolder && !imageUploaded) {
+        if (defaultSettings && userFolder && !croppedFile) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:3000/uploads/users/${userFolder}/parameters/${defaultSettings.theme}`
+            imageLoader.src = `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${userFolder}/parameters/${defaultSettings.theme}`
            
             imageLoader.onload = ()=>{ 
-                setImageUploaded(imageLoader.src)
+                setCroppedFile(imageLoader.src)
                 setFocus(themes.length - 1 )
             }
 
@@ -73,7 +78,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[defaultSettings, imageUploaded])
+    },[defaultSettings, croppedFile])
 
 
     return ( 
@@ -84,7 +89,7 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                    return (
                         <VibeBox
                             key={key}
-                            imageUrl={"http://localhost:3000/uploads/themes/" + item }
+                            imageUrl={`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/themes/` + item }
                             isFocus={isFocus === key}
                             onClick={()=> {
                                 setFocus(key)
@@ -93,11 +98,11 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                     )
                 })}
                 {
-                    imageUploaded && 
+                    croppedFile && 
                     <VibeBox 
                     imageUrl={ 
-                            imageUploaded instanceof File ? URL.createObjectURL(imageUploaded)
-                            : imageUploaded
+                            croppedFile instanceof File ? URL.createObjectURL(croppedFile)
+                            : croppedFile
                         }
                         isFocus= {isFocus === themes.length}
                         onClick={()=> setFocus(themes.length)}
@@ -114,34 +119,37 @@ const InterfaceSettings = ({ defaultSettings, setModal, userFolder }) => {
                 ref={inputFileRef}
                 onChange={() => {
                     if(inputFileRef.current.files[0]){
-                        
-                        setModal(()=>{
-                            return({
-                                open: true,
-                                showCancelAndConfirmButtons: true,
-                                styleContent: { backgroundColor: 'transparent' },
-                                onContinueHandler: () =>{ 
-                                    SmartImageProcessor.handleSaveCroppedImage()
-                                },
-                                ModalComponent: ()=>( <div 
-                                    className={styles.imageManagerSection}
-                                >
-                                    <SmartImageProcessor
-                                        showGrid={true}
-                                        inputRef={inputFileRef}
-                                        enableChangeOpacity = {true}
-                                        setCroppedFile = {setImageUploaded}
-                                        idInBdd={ defaultSettings.settings_id }
-                                        folder = { userFolder }
-                                        url= 'http://localhost:3000/settings/general/image'
-                                        fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
-                                    />
-                                </div> )
-                            })
-                        })
+                        setSelectedFile(inputFileRef.current.files[0])
                     }
                 }}
             />
+            <Modal
+                open={!!selectedFile}
+                showCancelAndConfirmButtons={true}
+                styleContent = {{ backgroundColor: 'transparent' }}
+                onClose = {()=>{ 
+                    setSelectedFile(null)
+                    inputFileRef.current.value = null
+                }}
+                onContinueHandler={ () =>{ 
+                    SmartImageProcessor.handleSaveCroppedImage()
+                }}
+            >
+                <div 
+                    className={styles.imageManagerSection}
+                >
+                    <SmartImageProcessor
+                        showGrid={true}
+                        inputRef={inputFileRef}
+                        enableChangeOpacity = {true}
+                        folder = { userFolder }
+                        idInBdd={ defaultSettings.settings_id }
+                        setCroppedFile = {setCroppedFile}
+                        url= {`http://localhost:${import.meta.env.VITE_API_PORT}/settings/general/image`}
+                        fileUrl={ selectedFile &&  URL.createObjectURL(selectedFile)}
+                    />
+                </div> 
+            </Modal>
             <ViewOption
                 title="Add a global chat background"
                 leading={SVGadd}
@@ -229,8 +237,6 @@ InterfaceSettings.propTypes = {
         fontsize: PropTypes.number,
         settings_id: PropTypes.number,
     }),
-    modal: PropTypes.bool,
-    setModal: PropTypes.func,
     userFolder: PropTypes.string
 }
  

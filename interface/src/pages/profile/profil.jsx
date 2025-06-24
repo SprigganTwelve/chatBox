@@ -11,13 +11,24 @@ import Confidentiality from "/src/components/profile/confidentiality/confidentia
 import SmartImageProcessor from "/src/components/ui/smartImageProcesor/smart.image.processor";
 
 import styles from "./profil.module.css"
+import Modal from "/src/components/ui/modal/modal";
 
 const Profil = () => {
     const navigate = useNavigate()
     const inputFileRef = useRef(null)
-    const { setUserData, userId, setUserId, userData, userChatDefaultSettings, modal, setModal  } = useContext(ChatBoxApiContext)
+
+    const { 
+        userId,
+        userData,
+        setUserId,
+        setUserData,
+        userChatDefaultSettings,
+    } = useContext(ChatBoxApiContext)
+    
     const [isButtonActive, setIsButtonActive] = useState("Edit")
     const [croppedProfileImage, setCroppedProfileImge] = useState(null)
+
+    const [ selectedFile,  setSelectedFile ] = useState(null)
 
 
     useEffect(()=>{
@@ -28,7 +39,8 @@ const Profil = () => {
     [userId, navigate, userData])
 
     useEffect(()=>{
-        if(croppedProfileImage) setUserData((prev) => ({...prev, image: URL.createObjectURL(croppedProfileImage) }))
+        if(croppedProfileImage) 
+            setUserData((prev) => ({...prev, image: URL.createObjectURL(croppedProfileImage) }))
     },[croppedProfileImage, setUserData])
 
     return (
@@ -46,7 +58,7 @@ const Profil = () => {
                                     userData?.image
                                     ? (userData.image.startsWith("blob") 
                                         ? userData.image 
-                                        : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
+                                        : `http://localhost:${import.meta.env.VITE_API_PORT }/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
                                     : "/image/randomUser.png"
                                 }
                             className={styles.imageProfil}
@@ -57,32 +69,34 @@ const Profil = () => {
                             ref={inputFileRef}
                             onChange={ ()=>{
                                 if (inputFileRef.current) {
-                                    setModal(()=>({
-                                        open: true,
-                                        showCancelAndConfirmButtons: true,
-                                        styleContent: { backgroundColor: 'transparent' },
-                                        onContinueHandler: () => {
-                                            SmartImageProcessor.handleSaveCroppedImage()
-                                        },
-                                        ModalComponent: ()=>( <div 
-                                            className={styles.imageManagerSection}
-                                        >
-                                            <SmartImageProcessor
-                                                shape = "round"
-                                                ratio = { 1 }
-                                                idInBdd=  { userData.id }
-                                                inputRef= { inputFileRef }
-                                                folder = { userData.folder }
-                                                setCroppedFile = { setCroppedProfileImge }
-                                                url= "http://localhost:3000/users/profile/image"
-                                                fileUrl={URL.createObjectURL(inputFileRef.current.files[0])}
-                                            />
-                                        </div> )
-                                    }))
+                                    const file = inputFileRef.current?.files?.[0]
+                                    setSelectedFile(file)
                                 }
                             }}
                         />
                     </div>
+                    <Modal 
+                        open={ !!selectedFile }
+                        showCancelAndConfirmButtons={true}
+                        onClose = {()=>{ 
+                            setSelectedFile(null)
+                            inputFileRef.current.value = null
+                        }}
+                        onContinueHandler={() => {
+                            SmartImageProcessor.handleSaveCroppedImage()
+                        }} 
+                    >
+                        <SmartImageProcessor
+                            ratio = { 1 }
+                            shape = "round"
+                            idInBdd=  { userData.id }
+                            inputRef= { inputFileRef }
+                            folder = { userData.folder }
+                            setCroppedFile = { setCroppedProfileImge }
+                            url= "http://localhost:3000/users/profile/image"
+                            fileUrl={ selectedFile && URL.createObjectURL(selectedFile) }
+                        />   
+                    </Modal>
                     <div className={styles.textSection}>
                             <p>
                                 <span className={styles.userName}>
@@ -145,8 +159,6 @@ const Profil = () => {
                     {
                         userData && isButtonActive =="Discussion" && (
                             <InterfaceSettings 
-                                modal={modal}
-                                setModal={setModal}
                                 userFolder= { userData.folder }
                                 defaultSettings={userChatDefaultSettings}
                             />

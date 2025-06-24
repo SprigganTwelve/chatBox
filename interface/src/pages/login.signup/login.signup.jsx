@@ -46,7 +46,9 @@ const LoginSingUp = () => {
                     btnContent ={isNotRegistered ? "Sing Up" : "Login"}
                     backendResponse = {formResponse}
                     setBackendResponse = {setFormResponse}
-                    url= {isNotRegistered ?  "http://localhost:3000/users/signUp" : "http://localhost:3000/users/login"  }
+                    url= {isNotRegistered ?  
+                            `http://localhost:${import.meta.env.VITE_API_PORT}/users/signUp` 
+                            : `http://localhost:${import.meta.env.VITE_API_PORT}/users/login`}
                 >
                     {  !isNotRegistered ?
                         (

@@ -275,6 +275,7 @@ exports.saveFiles = async (req, res) => {
 
     const dirPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/${folder}`);
     fs.mkdirSync(dirPath, { recursive: true });
+    
     const filePath = path.join(dirPath, fileName);
     const writeStream = fs.createWriteStream(filePath);
 

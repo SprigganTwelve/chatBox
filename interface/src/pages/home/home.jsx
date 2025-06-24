@@ -11,13 +11,13 @@ import styles from "./home.module.css"
 const Home = () => {
     const navigate = useNavigate()
     const [imageUploaded, setImageUploaded] = useState("")
-    const { userId, userData, userChatDefaultSettings, talkSphereId } = useContext(ChatBoxApiContext)
+    const { socket, userId, userData, userChatDefaultSettings, talkSphereId } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(!userId){
             navigate("/")
         }
-    },[userId, navigate])
+    },[userId, navigate, socket])
 
     useEffect(()=>{
         if (userChatDefaultSettings) {

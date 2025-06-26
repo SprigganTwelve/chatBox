@@ -36,3 +36,5 @@
      |                                                  |
      |         ✅ RTCPeerConnection CONNECTED
 
+                      <--       -->
+        | Bidirectionnal communication (ex : socket)  |

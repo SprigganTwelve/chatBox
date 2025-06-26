@@ -2,9 +2,10 @@
 
 module.exports = (socket, io, users)=>{
     
-    socket.on("offer",({ offer, userId, type, iceCandidateArray , senderImageData})=>{
-        if( offer && userId && type && iceCandidateArray ){
-            const socketId = users.get(userId.toString())
+    socket.on("offer",({ offer, userId, type, iceCandidateArray , senderImageData, receiverId})=>{
+        if( offer && userId && type && iceCandidateArray && receiverId){
+            const socketId = users.get(receiverId.toString())
+            console.log({socketId})
             if(socketId) 
                 return socket.to(socketId).emit("offer", { offer, type, iceCandidateArray, senderImageData, userId })
             else
@@ -26,9 +27,9 @@ module.exports = (socket, io, users)=>{
     })
 
 
-    socket.on("abortPreConnection", ({ userId })=>{
-        if(userId){
-            const socketId = users.get(userId.toString())
+    socket.on("abortPreConnection", ({ userId, receiverId })=>{
+        if(userId && receiverId){
+            const socketId = users.get(receiverId.toString())
             if(socketId)
                return socket.to(socketId).emit("abortPreConnection", { userId })
             else

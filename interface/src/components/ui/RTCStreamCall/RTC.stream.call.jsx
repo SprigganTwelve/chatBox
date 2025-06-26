@@ -10,7 +10,7 @@ import SVGanswer from '/src/assets/svg/phone-svgrepo-com.svg'
 import SVGreject from '/src/assets/svg/phone-down-svgrepo-com.svg'
 // import SVGsharescreen from '/src/assets/svg/screen-svgrepo-com.svg'
 
-import styles from './stream.call.module.css'
+import styles from './RTC.stream.call.module.css'
 
 
 
@@ -25,7 +25,7 @@ const StreamCall = ({
 
 
     const [ mode ] = useState(defaultMode)              //switch from one mode to the other one (ex: audio -> video)
-    const [ isPickUp, setIsPickUp ] = useState(false)  // Help determine when the call is accepted or turnt down
+    const [ isPickUp, setIsPickUp ] = useState(false)   // Help determine when the call is accepted or turnt down
 
     const { 
         socket,
@@ -64,7 +64,8 @@ const StreamCall = ({
                 socketManager.RTCHandlers.offerRequest({
                     offer,
                     iceCandidateArray,
-                    userId: currentChat.receivers.split(' ')[0],
+                    userId: userData.id,
+                    receiverId: currentChat?.receivers.split(" ")[0],
                     senderImageData: {
                         image: userData.image,
                         folder: userData.folder,
@@ -133,14 +134,19 @@ const StreamCall = ({
     //--Handle answer 
 
     const handleReceiveAnswer = useCallback(({ peer, socketManager })=>{
+
+        if(peer && socketManager) return
+
+        socketManager.RTCHandlers.offAnswerResponses()
+
         socketManager.RTCHandlers.answerResponses( async ({ answer, iceCandidateArray })=>{
             if(answer && iceCandidateArray){
 
                //---store answer/icecandidates
 
                await  peer.setRemoteDescription(new RTCSessionDescription(answer))
-               
-               for ( const candidate of activeCall.currentActiveCall.iceCandidatesArray ){
+               console.log("handleReacived answer", iceCandidateArray)
+               for ( const candidate of iceCandidateArray ){
                   await peer.addIceCandidate(candidate)
                }
 
@@ -150,7 +156,8 @@ const StreamCall = ({
                setIsPickUp( ()=> true )
             }
         })
-    }, [activeCall.currentActiveCall])
+
+    }, [])
     
 
     //---Main handler to deal with incoming and outgoing call
@@ -158,7 +165,6 @@ const StreamCall = ({
     const handleStramCall = useCallback(async ()=>{
         try{
 
-            console.log(activeCall)
             const socketManager = socket.current
             const localVideo = localVideoRef.current
             const remoteVideo = remoteVideoRef.current
@@ -167,12 +173,12 @@ const StreamCall = ({
 
             
             //-----ringing
-
+            
             if(ringing){
                 ringing.volume = 1
                 ringing.muted = false
-                await ringing.play()
             }
+            //---- place track
 
             await navigator.mediaDevices.getUserMedia({  audio: true }).then((stream)=>{
                 stream.getTracks().forEach((track)=>{
@@ -191,13 +197,13 @@ const StreamCall = ({
                 })
             }
 
-            if(rtcSession && activeCall && remoteVideo){
+            if(rtcSession && activeCall && remoteVideo && socketManager){
                 
                 //---- peer and connection state
 
                 const remoteCombinedStream =  new MediaStream()
 
-                rtcSession.peer.ontrack = (event)=>{
+                rtcSession.peer.ontrack = (event) => {
                     remoteCombinedStream.addTrack(event.track)
                     if( remoteVideo && remoteVideo.srcObject != remoteCombinedStream ){               
                         remoteVideo.srcObject = remoteCombinedStream
@@ -215,19 +221,14 @@ const StreamCall = ({
                             }
 
                         if(Array.isArray(rtcSession.callOfferArray) && rtcSession.callOfferArray.length > 0){
-                            updatedActiveCall.currentActiveCall = rtcSession.callOfferArray[0]; 
-                            rtcSession.callOfferArray.splice( 0, 1 )
+                            updatedActiveCall.currentActiveCall = rtcSession.callOfferArray.shift(); 
                             setActiveCall( ()=> updatedActiveCall )
                             return
                         }
 
                         stopRTCSender(rtcSession.peer)
+                        setActiveCall( ()=> updatedActiveCall )
                         rtcSession.peer.isAvailable = true;
-                    }
-                    else if( rtcSession.peer.connectionState === "failed" ){
-                        stopRTCSender(rtcSession.peer)
-                        alert('Connection between users failed')
-                        setActiveCall( ()=> ({ initiate: null, currentActiveCall: null }) )
                     }
                     else if (rtcSession.peer.connectionState === "connected") {
                         console.log("Connexion WebRTC établie !");
@@ -235,7 +236,7 @@ const StreamCall = ({
 
                 }
 
-                //---- picking up....
+                //---- initializing call....
 
                 if(activeCall.initiate){
                     handleReceiveAnswer({
@@ -316,20 +317,26 @@ const StreamCall = ({
                         playsInline
                         ref={localVideoRef}
                         className={styles.localVideo}
-                        hidden= { activeCall && activeCall.initiate 
-                                  && activeCall.initiate.type !== "video"
+                        hidden= { activeCall && ((activeCall.initiate 
+                                  && activeCall.initiate.type !== "video") || (
+                                    activeCall.currentActiveCall.type !== "video"
+                                  ))
                         }
                     />
                     <video
                         ref={remoteVideoRef}
                         className={styles.remoteVideo}
-                        hidden= { activeCall && activeCall.initiate 
-                                  && activeCall.initiate.type !== "video"
+                        hidden= { activeCall && ((activeCall.initiate 
+                                  && activeCall.initiate.type !== "video") || (
+                                    activeCall.currentActiveCall.type !== "video"
+                                  ))
                         } 
                     />
                 </div>
                 <audio 
+                    muted
                     hidden
+                    autoPlay
                     ref={ringingAudioRef}
                     src="/src/assets/audio/pelupelupelu_song.mp3"
                 />
@@ -377,13 +384,17 @@ const StreamCall = ({
                             const peer = PeerConnection.current?.peer
 
                             if(peer)  {//stop the session
-                                peer.close()
-                                stopRTCSender(peer)
                                 if(currentChat && peer.connectionState !== "connected"){
                                     socket.current.RTCHandlers.abortPreConnection({ 
-                                        userId: currentChat.receivers.split(' ')[0]
+                                        userId: userData.id,
+                                        receiverId: currentChat?.receivers.split(" ")[0],
                                     })
                                 }
+                                else{
+                                    peer.close()
+                                }
+                                stopRTCSender(peer)
+                                PeerConnection.current.peer = null
                             }
 
                             setActiveCall(()=> ({ 
@@ -398,8 +409,8 @@ const StreamCall = ({
                         className={styles.icon}
                     />
                 </div>
-            </div>
 
+            </div>
         </div>
      );
 }

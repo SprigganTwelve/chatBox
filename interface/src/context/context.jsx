@@ -8,181 +8,173 @@ import messagesSocketHandlers from '/src/socket/messagesHandlers/message.socket.
 // import {} from '/src/entities/objects.of.context.js'
 
 
-
 const ChatBoxApiContext = createContext();
 
 const ChatBoxApiContextProvider = ({ children }) => {
 
 
-    const [userId, setUserId] = useState(()=>{
-        const saved = JSON.parse(localStorage.getItem("userId"))
-        return saved != null ? saved : null;
-    })
+    const [userId, setUserId] = useState(() => JSON.parse(localStorage.getItem("userId")) || null);
+    const [talkSphereId, setTalkSphereId] = useState(() => JSON.parse(localStorage.getItem("talkSphereId")) || null);
 
-    const [ userData, setUserData ] = useState(null)
-
-
-    const [talkSphereId, setTalkSphereId] = useState(
-        ()=>{
-            const saved = JSON.parse(localStorage.getItem("talkSphereId"))
-            return saved != null && saved != undefined ? saved : null;
-    }
-    );
-
-    const [usersTemporaryChat, setUsersTemporaryChat] = useState({
-        id: talkSphereId,
-        messages: []
-    });
-
-    const [fullBackgroundOpacity, setFullBackgroundOpacity] = useState(1)
+    
+    const [userData, setUserData] = useState(null);
+    const [usersTemporaryChat, setUsersTemporaryChat] = useState({ id: talkSphereId, messages: [] });
 
 
-    const [ popUp, setPopUp ] = useState(null); 
-    const [ allChats, setAllChats ] = useState([]);
-    const [ loading, setLoading ] = useState(true); 
-    const [ currentChat, setCurrentChat ] = useState(null)
-    const [ userChatDefaultSettings, setUserChatDefaultSettings ] = useState(null);
-
-    const [ activeCall, setActiveCall ] = useState({ 
-        initiate: null,
-        currentActiveCall: null
-    })
+    const [popUp, setPopUp] = useState(null);
+    const [allChats, setAllChats] = useState([]);
 
 
-
-    const socket = useRef(null)
-    const PeerConnection  = useRef({ peer: null, isAvailable: true , callOfferArray: [] })
-
+    const [loading, setLoading] = useState(true);
+    const [currentChat, setCurrentChat] = useState(null);
 
 
-    const fetchChatsFromBdd = useCallback(async () => {
-        if(userId){
-            try {
-                setLoading(true);
+    const [fullBackgroundOpacity, setFullBackgroundOpacity] = useState(1);
+    const [userChatDefaultSettings, setUserChatDefaultSettings] = useState(null);
+
+
+    const [activeCall, setActiveCall] = useState({ initiate: null, currentActiveCall: null });
+
+
+    const socket = useRef(null);
+    const PeerConnection = useRef({ peer: null, isAvailable: true, callOfferArray: [] });
+
+
+    // Centralise l'initialisation socket in one fold
+
+    const initializeSocket = useCallback(() => {
+        
+        if (!socket.current) {
+            socket.current = io(`http://localhost:${import.meta.env.VITE_API_PORT}`);
+            socket.current.emit("register", { userId: userId.toString() });
+
+            socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current);
+            socket.current.RTCHandlers = RTCHandlers(socket.current);
+
+            const rtcSession = PeerConnection.current;
+
+            //  Cleanup previous to avoid duplicates
+
+            socket.current.RTCHandlers.offOfferResponses();
+
+            socket.current.RTCHandlers.offerResponses(({ offer, type, iceCandidateArray, senderImageData, userId }) => {
+                if (rtcSession.isAvailable) {
+                    setActiveCall(() => ({
+                        initiate: null,
+                        currentActiveCall: { userId, type, offer, iceCandidateArray, senderImageData }
+                    }));
+                    rtcSession.isAvailable = false;
+                } else {
+                    rtcSession.callOfferArray.push({ type, offer, iceCandidateArray, senderImageData, userId });
+                }
+            });
+
+            socket.current.RTCHandlers.offAbortPreConnectionResponses();
+
+            socket.current.RTCHandlers.abortPreConnectionResponses((abort) => {
+                if (!abort) return;
+
+                const { currentActiveCall, initiate } = activeCall;
+                console.log("Pre abort rtc connection",{ currentActiveCall, initiate, currentChatRecivers: currentChat?.receivers.split(' ')[0] , abortUserId: abort.userId })
                 
-
-                //--- Socket
-
-                socket.current = io(`http://localhost:${import.meta.env.VITE_API_PORT}`)
-                socket.current.emit("register", { userId: userId.toString() })
-                socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current)
-                socket.current.RTCHandlers = RTCHandlers(socket.current)
-
-                //---WebRTC
-                    //----dealing with offers
-
-                const rtcSession = PeerConnection.current
-
-                socket.current.RTCHandlers.offerResponses(async ({ offer, type, iceCandidateArray, senderImageData , userId})=>{
-                    if( rtcSession.isAvailable ){
-                        rtcSession.isAvailable = false
-                        setActiveCall( ()=>({ 
+                // call receiver ( case whre the call to abort is the current one (sender or receiver) )
+                if ( (currentActiveCall?.userId === abort.userId) || 
+                        (initiate?.type && abort.userId.toString() === currentChat?.receivers.split(' ')[0] 
+                    ) ) {
+                    if (rtcSession.callOfferArray.length > 0) {
+                        setActiveCall(() => ({
                             initiate: null,
-                            currentActiveCall: { userId, type, offer, iceCandidateArray , senderImageData }
-                        }) )
+                            currentActiveCall: rtcSession.callOfferArray.shift()
+                        }));
+                        return;
                     }
-                    else{
-                        rtcSession.callOfferArray.push( { type, offer, iceCandidateArray , senderImageData } )
+                    rtcSession.isAvailable = true;
+                    setActiveCall(() => ({ initiate: null, currentActiveCall: null }));
+                }
+                else {            // call receiver (case where the call to abort is in the awaiting list ) 
+                    const index = rtcSession.callOfferArray.findIndex( o => o.userId === abort.userId );
+                    if (index !== -1) {
+                        rtcSession.callOfferArray.splice(index, 1);
+                        return
                     }
-                })
+                }
 
-                    //---abort session that has been rejected and where connection state never change to connected
-
-                socket.current.RTCHandlers.abortPreConnectionResponses(({userId})=>{
-                    console.log("abortPreConnection", { userId })
-                    if(userId){
-                        if(rtcSession.callOfferArray && rtcSession.callOfferArray.length > 0){
-                            const index = rtcSession.callOfferArray.findIndex((offer)=> offer.userId.toString() === userId.toString())
-                            if(index !== -1){
-                                rtcSession.callOfferArray.splice(index, 1)
-                            }
-                            setActiveCall(()=>({ initiate: null, currentActiveCall: rtcSession.callOfferArray[0] }))
-                            rtcSession.callOfferArray.splice( 0, 1 )
-                            return
-
-                        }
-                        setActiveCall(()=>({ initiate: null, currentActiveCall: null }))
-                    }
-                })
-
-                //-----
-
-                const requestForUserData = await axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/users/${userId}`)
-                const requestForChats = await axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/${userId}`);
-                const {
-                    full,
-                    theme,
-                    dialect,
-                    opacity,
-                    fontsize,
-                    settings_id,
-                    typing_indicator,
-                    auto_delete_messages,
-                    read_receipts,
-                    sound_notification,
-                    desktop_notification,
-                    mention_notification,
-                    }  = requestForUserData.data;
-
-                setUserData(requestForUserData.data)
-                setAllChats(requestForChats.data);
-                setUserChatDefaultSettings( () => (
-                    {
-                        full,
-                        theme,
-                        dialect,
-                        opacity,
-                        fontsize,
-                        settings_id,
-                        read_receipts,
-                        typing_indicator,
-                        sound_notification,
-                        auto_delete_messages,
-                        desktop_notification,
-                        mention_notification,
-                    })
-                )
-                if(full) setFullBackgroundOpacity(0.5)
-            }
-            catch (err) {
-                setPopUp({ message: "Something went wrong while initializing", type: "error" }
-                );
-                console.log(err) 
-            } 
-            finally {
-                setLoading(false);
-            }
+            });
         }
-        return () => socket.current.disconnect();
-    }, [userId, socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId, activeCall]);
+
+
+    //  Initialisation data
+
+
+    const fetchInitialData = useCallback(async () => {
+        if (!userId) return;
+
+        try {
+            setLoading(true);
+            initializeSocket();
+
+            const [userRes, chatRes] = await Promise.all([
+                axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/users/${userId}`),
+                axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/${userId}`)
+            ]);
+
+            const {
+                full, theme, dialect, opacity, fontsize, settings_id,
+                typing_indicator, auto_delete_messages, read_receipts,
+                sound_notification, desktop_notification, mention_notification
+            } = userRes.data;
+
+            setUserData(userRes.data);
+            setAllChats(chatRes.data);
+            setUserChatDefaultSettings({
+                full, theme, dialect, opacity, fontsize, settings_id,
+                read_receipts, typing_indicator, sound_notification,
+                auto_delete_messages, desktop_notification, mention_notification
+            });
+
+            if (full) setFullBackgroundOpacity(0.5);
+        }
+        catch (err) {
+            console.error(err);
+            setPopUp({ message: "Something went wrong while initializing", type: "error" });
+        }
+        finally {
+            setLoading(false);
+        }
+
+    }, [userId, initializeSocket]);
 
 
 
     useEffect(() => {
-        fetchChatsFromBdd();
+        if (userId) {
+            fetchInitialData();
+        }
+
         return () => {
             if (socket.current) {
-                socket.current.off("register")
                 socket.current.disconnect();
                 socket.current = null;
             }
         };
-    }, [fetchChatsFromBdd]);
+    }, [fetchInitialData, userId]);
 
 
 
-    return ( 
-        <ChatBoxApiContext.Provider value={{ 
-            fetchChatsFromBdd, setTalkSphereId, setPopUp,  setUsersTemporaryChat, setUserId, setUserData,setCurrentChat , setActiveCall,
-            allChats, loading, popUp, talkSphereId , usersTemporaryChat, socket, PeerConnection, userId, userData, userChatDefaultSettings, fullBackgroundOpacity,
-            currentChat, activeCall
-        }}
-        >
-                {children}
+    return (
+        <ChatBoxApiContext.Provider value={{
+            fetchInitialData, setTalkSphereId, setPopUp, setUsersTemporaryChat,
+            setUserId, setUserData, setCurrentChat, setActiveCall,
+            allChats, loading, popUp, talkSphereId, usersTemporaryChat,
+            socket, PeerConnection, userId, userData, userChatDefaultSettings,
+            fullBackgroundOpacity, currentChat, activeCall
+        }}>
+            {children}
         </ChatBoxApiContext.Provider>
     );
 };
-
 
 
 ChatBoxApiContextProvider.propTypes = {

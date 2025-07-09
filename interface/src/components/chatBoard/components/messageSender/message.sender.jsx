@@ -23,11 +23,12 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
     const [ value, setValue ] = useState("")
     const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
 
-    const sendMessage = async ({ media, content, createdAt }) => {
+    const sendMessage = useCallback(async ({ media, content, createdAt }) => {
         try{
-            if(socket && setUsersTemporaryChat && receivers){
+            if( socket && setUsersTemporaryChat && receivers ){
 
-                const messageSent = { senderId: userId, talkSphereId, content, createdAt: createdAt ?? new Date(), media, talkSphereFolder }
+                console.log("sending messages or note through socket...")
+                const messageSent = { senderId: userId, content, talkSphereId, createdAt: createdAt ?? new Date(), media, talkSphereFolder }
 
                 insertFormattedDate(messageSent);
 
@@ -44,17 +45,24 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
         catch(error){
             console.log(error)
         }
-    }
+    },[receivers, setUsersTemporaryChat, socket, talkSphereFolder, talkSphereId, userId])
 
-    const sendFile = useCallback( async (file, uploadedFilesArrayData)=>{
+
+    const sendFile = useCallback( async ( file, sucess, failed )=>{
         try{
+            let fileName = Date.now() + "_" + file.name
+
+            fileName = fileName
+                    .replace(/\s+/g, '_')
+                    .replace(/[^\w.-]/g, '');
+
             const response = await fetch(
                                     `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/${talkSphereId}/${talkSphereFolder}/sendFiles`,{
-                                    body: file.stream(),
+                                    body: file,
                                     method: "POST",
                                     headers: {
                                         'X-user-id': userId,
-                                        'X-filename': file.name,
+                                        'X-filename': fileName,
                                         'X-File-Size': file.size,
                                         'X-File-Type' : file.type,
                                         'Content-Type': 'application/octet-stream',
@@ -86,21 +94,31 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                         console.log(`Progression: ${trandferRation}`);
                     } 
                     else if (line.startsWith('DONE')) {
-                        console.log('Téléversement terminé.');
-                        if(Array.isArray(uploadedFilesArrayData)) uploadedFilesArrayData.push({ name: file.name, type: file.type })
+                        console.log('Uploading ended.');
+
+                        await axios.post(
+                                    `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/store/files`,{
+                                     userId, talkSphereId, fileName, fileType: file.type
+                        })
+    
+                        await sendMessage({ content: null, media: [ { name: fileName ,  type: file.type } ] });
+
+                        if(Array.isArray(sucess))
+                            sucess.push({fileName , fileType: file.type })
                     } 
                     else if (line.startsWith('ERROR:')) {
-                        console.error('Erreur:', line.replace('ERROR:', ''));
+                        console.error('Error:', line.replace('ERROR:', ''));
+                        if(Array.isArray(failed))
+                            failed.push(file);
                     }
                 }
             }
                         
         }
         catch(err){
-            console.log("Something went wrong while downoading the file on the server, [filename] ", file.name, "[error]", err)
-            throw(Error("Something went wrong while sending the file to the server"))
+            throw new Error(`Upload failed for file ${file.name}: ${err.message}`);
         }
-    }, [talkSphereFolder, talkSphereId, userId])
+    }, [sendMessage, talkSphereFolder, talkSphereId, userId])
 
 
     return ( 
@@ -144,19 +162,12 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                     <AudioRecorder
                         onSend={ async (blob)=>{
                             try{
-                                blob.name = Date.now() + '.' + blob.type
-                                const media = [ { name: blob.name ,  type: blob.type }  ]
-
+                                blob.name = Date.now() + '.' + blob.type.split('/')[1]
+                                console.log("name ", blob.name, 'type' , blob.type)
                                 await sendFile(blob)
-                                await axios.post(
-                                    `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/store/files`,{
-                                     userId, talkSphereId, media
-                                })
-                                sendMessage( { media, content: null } )
-       
                             }
                             catch(err){
-                                console.log("Something went wrong while recording the audio into the server storage", err)
+                                console.log("Something went wrong while makin the request ", err)
                             }
                         }}
                     />
@@ -164,23 +175,17 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                 <AboutOverlay text="File exporter">
                     <FileExporter 
                         callback = { async  (organizedFiles)=>{
-                            try{
-                                const uploadedFilesArrayData = []
-                                for( const filesArray of Object.values(organizedFiles) ){
-                                    for( const file of filesArray ){
-                                        console.log("Sending file ...")
-                                        await sendFile(file, uploadedFilesArrayData )
-                                    }
+                            const uploadedFilesArray = []
+                            const failedUploadingFilesArray = []
+                            for( const filesArray of Object.values(organizedFiles) ){
+                                for( const file of filesArray ){
+                                    console.log("Sending file ...")
+                                    await sendFile( file, uploadedFilesArray, failedUploadingFilesArray ).catch((err)=>{
+                                        console.log("Something went wrong while recording all the files into the server storage", err)
+                                    })
                                 }
-                                await axios.post(
-                                    `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/store/files`,{
-                                     userId, talkSphereId, media: uploadedFilesArrayData
-                                })
-                                sendFile({ media: uploadedFilesArrayData, content: null })
                             }
-                            catch(err){
-                                console.log("Something went wrong while recording all the files into the server storage", err)
-                            }
+                            console.log("uploading uploaded files", { uploadedFilesArray })
                         }}
                     >
                         <img 
@@ -196,7 +201,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
 }
 
 MessageSender.propTypes = {
-    receivers: PropTypes.array,
+    receivers: PropTypes.string,
     talkSphereId: PropTypes.number,
     currentChatId: PropTypes.number,
     talkSphereFolder: PropTypes.string,

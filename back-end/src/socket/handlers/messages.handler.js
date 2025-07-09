@@ -41,11 +41,13 @@ module.exports = (socket, io, users) => {
 
     socket.on("privateMessage", ({ senderId, talkSphereId, content, receivers ,createdAt, media, talkSphereFolder }) => {
         try{
-            if( !senderId || !talkSphereId || !createdAt || !talkSphereFolder || !receivers ){
+
+            console.log('[socket: privateMessage] mesage ',{senderId, talkSphereId, content, receivers ,createdAt, media, talkSphereFolder})
+
+            if( !senderId  || !createdAt || !talkSphereId || !talkSphereFolder || !Array.isArray(receivers) ){
                 console.log("[socket: privateMessage ] missings data")
                 return;
             }
-
 
             socket.to(talkSphereId).emit("newMessage", { 
                 media,
@@ -56,8 +58,6 @@ module.exports = (socket, io, users) => {
                 talkSphereFolder,
             })
 
-            console.log("user", users)
-            
             for(const id of receivers){
                 const receiverSocketId = users.get(id.toString());
                 if (receiverSocketId) 

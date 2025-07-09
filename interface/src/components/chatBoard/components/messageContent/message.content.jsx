@@ -11,10 +11,11 @@ import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/fu
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
+
+
 const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     const container = useRef(null)
     const [ userChatFromBdd, setUserChatFromBdd ] = useState([])
-    const [ joinRoomResponse, setJoinRoomResponse] = useState(false)
     const { socket, userId, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
 
 
@@ -34,50 +35,37 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     },[talkSphereId]);
     
 
-    useEffect(()=>{
-        if (container) {
-            container.current.scrollTo({ top : container.current.scrollHeight, behaviour: "smooth"});
-        }
-    })
-
-
     useEffect(() => {
         if (!socket?.current) return;
 
         getUserChat();
         socket.current.messagesSocketHandlers.offJoinRoomResponse()
         socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
-        socket.current.messagesSocketHandlers.joinRoomResponse((state)=> setJoinRoomResponse(()=> state))
-
+        socket.current.messagesSocketHandlers.joinRoomResponse((state)=> {
+            if(state){
+                socket.current.messagesSocketHandlers.offNewMessageResponses()
+                socket.current.messagesSocketHandlers.newMessagesResponses(handleReceivingSocketMessage);
+            }
+            else{
+                socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
+            }
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getUserChat, socket?.current]);
     
 
     const handleReceivingSocketMessage = useCallback((message)=>{
-        console.log("receivedMessage :", message);
-        if (message.talkSphereId === talkSphereId) {
+        console.log("receivedMessage :  ", message);
+        if ( message.talkSphereId === talkSphereId ) {
             message.createdAt = new Date(message.createdAt);
 
             insertFormattedDate(message);
     
             setUsersTemporaryChat((previous) => ({
-                id: message.talkSphereId,
+                id: talkSphereId,
                 messages: [...(previous.messages || []), message ],
             }));
     } }, [setUsersTemporaryChat, talkSphereId])
-
-
-
-    useEffect(()=>{
-        if (!socket?.current) return;
-        if(joinRoomResponse){
-            socket.current.messagesSocketHandlers.offNewMessageResponses()
-            socket.current.messagesSocketHandlers.newMessagesResponses(handleReceivingSocketMessage);
-        }
-        else{
-            socket.current.messagesSocketHandlers.joinRoomRequest(talkSphereId)
-        }
-    }, [ handleReceivingSocketMessage, joinRoomResponse, socket, talkSphereId])
 
 
 

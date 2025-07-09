@@ -63,6 +63,8 @@ const AudioReader = ({ media, talkSphereFolder }) => {
       audio.play().then(() => {
         animationRef.current = requestAnimationFrame(updateProgress);
         setIsPlaying(true);
+      }).catch((err) => {
+        console.warn("Erreur de lecture audio :", err);
       });
     }
   };

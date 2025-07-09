@@ -10,6 +10,8 @@ import SVGanswer from '/src/assets/svg/phone-svgrepo-com.svg'
 import SVGreject from '/src/assets/svg/phone-down-svgrepo-com.svg'
 // import SVGsharescreen from '/src/assets/svg/screen-svgrepo-com.svg'
 
+import { handleShifttingAwaitingCallList, stopRTCSender } from './share';
+
 import styles from './RTC.stream.call.module.css'
 
 
@@ -37,19 +39,102 @@ const StreamCall = ({
     } = useContext(ChatBoxApiContext)
 
 
-    //--- Handler to or stop track
+    
+    useEffect(()=>{
+        const rtcSession = PeerConnection.current
+        if(rtcSession && (!rtcSession.peer || rtcSession.peer.signalingState === "closed")){
+            rtcSession.peer = new RTCPeerConnection({
+                iceServers: [
+                    { urls:  'stun:stun.l.google.com:19302' }
+                ]
+            })
+        }
+        handleStramCall()
 
-    const stopRTCSender = useCallback((peer, kind)=>{
-        const senders = peer.getSenders()
-        senders.forEach((sender)=> {
-            if(kind && typeof kind == "string" ){
-                if(sender.track.kind === kind.trim())
-                    sender.track.stop()
-                return
+    },[PeerConnection, defaultMode, handleStramCall, socket])
+
+
+    //---Main handler to deal with incoming and outgoing call
+
+    const handleStramCall = useCallback(async ()=>{
+        try{
+
+            const socketManager = socket.current
+            const localVideo = localVideoRef.current
+            const remoteVideo = remoteVideoRef.current
+            const rtcSession  = PeerConnection.current
+            const ringing = ringingAudioRef.current
+
+            
+            //-----ringing
+            
+            if(ringing){
+                ringing.volume = 1
+                ringing.muted = false
             }
-            sender.track.stop()
-        })
-    },[])
+            //---- place track
+
+            await navigator.mediaDevices.getUserMedia({  audio: true }).then((stream)=>{
+                stream.getTracks().forEach((track)=>{
+                    rtcSession.peer.addTrack(track, stream)
+                })
+            })
+
+            if(defaultMode === "video"){
+                await navigator.mediaDevices.getUserMedia({  video: true }).then((stream)=>{
+                    if(localVideo){
+                        const videoTrack = stream.getVideoTracks()[0]
+                        rtcSession.peer.addTrack(videoTrack, stream)
+                        localVideo.srcObject = stream
+                        localVideo.play()
+                    }
+                })
+            }
+
+            if(rtcSession && activeCall && remoteVideo && socketManager){
+                
+                //---- peer and connection state
+
+                const remoteCombinedStream =  new MediaStream()
+
+                rtcSession.peer.ontrack = (event) => {
+                    remoteCombinedStream.addTrack(event.track)
+                    if( remoteVideo && remoteVideo.srcObject != remoteCombinedStream ){               
+                        remoteVideo.srcObject = remoteCombinedStream
+                        remoteVideo.play().catch((err) => console.log(" Error whole reading video ", err))
+                    }
+                }
+
+                //---- initializing call....
+
+                if(activeCall.initiate){
+                    handleReceiveAnswer({
+                        socketManager,
+                        peer: rtcSession.peer,
+                    })
+                    handleSendingRTCOffer({
+                        socketManager,
+                        peer: rtcSession.peer,
+                    })
+                }
+            }
+
+        }
+        catch(err){
+            console.log("Something went wrong", err)
+        }
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        socket,
+        activeCall,
+        currentChat,
+        PeerConnection, 
+        handleReceiveOffer,
+        handleSendingRTCOffer,
+    ])
+
+
 
 
     //--- Handler to mange outgoing call 
@@ -128,7 +213,7 @@ const StreamCall = ({
 
         }
 
-    },[activeCall.currentActiveCall, currentChat.receivers, stopRTCSender])
+    },[activeCall.currentActiveCall, currentChat.receivers])
 
 
     //--Handle answer 
@@ -159,130 +244,6 @@ const StreamCall = ({
 
     }, [])
     
-
-    //---Main handler to deal with incoming and outgoing call
-
-    const handleStramCall = useCallback(async ()=>{
-        try{
-
-            const socketManager = socket.current
-            const localVideo = localVideoRef.current
-            const remoteVideo = remoteVideoRef.current
-            const rtcSession  = PeerConnection.current
-            const ringing = ringingAudioRef.current
-
-            
-            //-----ringing
-            
-            if(ringing){
-                ringing.volume = 1
-                ringing.muted = false
-            }
-            //---- place track
-
-            await navigator.mediaDevices.getUserMedia({  audio: true }).then((stream)=>{
-                stream.getTracks().forEach((track)=>{
-                    rtcSession.peer.addTrack(track, stream)
-                })
-            })
-
-            if(defaultMode === "video"){
-                await navigator.mediaDevices.getUserMedia({  video: true }).then((stream)=>{
-                    if(localVideo){
-                        const videoTrack = stream.getVideoTracks()[0]
-                        rtcSession.peer.addTrack(videoTrack, stream)
-                        localVideo.srcObject = stream
-                        localVideo.play()
-                    }
-                })
-            }
-
-            if(rtcSession && activeCall && remoteVideo && socketManager){
-                
-                //---- peer and connection state
-
-                const remoteCombinedStream =  new MediaStream()
-
-                rtcSession.peer.ontrack = (event) => {
-                    remoteCombinedStream.addTrack(event.track)
-                    if( remoteVideo && remoteVideo.srcObject != remoteCombinedStream ){               
-                        remoteVideo.srcObject = remoteCombinedStream
-                        remoteVideo.play().catch((err) => console.log(" Error whole reading video ", err))
-                    }
-                }
-
-                rtcSession.peer.onconnectionstatechange = ()=>{
-
-                    if( rtcSession.peer.connectionState === "closed" ){
-
-                        const updatedActiveCall = {
-                                initiate: null, 
-                                currentActiveCall: null
-                            }
-
-                        if(Array.isArray(rtcSession.callOfferArray) && rtcSession.callOfferArray.length > 0){
-                            updatedActiveCall.currentActiveCall = rtcSession.callOfferArray.shift(); 
-                            setActiveCall( ()=> updatedActiveCall )
-                            return
-                        }
-
-                        stopRTCSender(rtcSession.peer)
-                        setActiveCall( ()=> updatedActiveCall )
-                        rtcSession.peer.isAvailable = true;
-                    }
-                    else if (rtcSession.peer.connectionState === "connected") {
-                        console.log("Connexion WebRTC établie !");
-                    }
-
-                }
-
-                //---- initializing call....
-
-                if(activeCall.initiate){
-                    handleReceiveAnswer({
-                        socketManager,
-                        peer: rtcSession.peer,
-                    })
-                    handleSendingRTCOffer({
-                        socketManager,
-                        peer: rtcSession.peer,
-                    })
-                }
-            }
-
-        }
-        catch(err){
-            console.log("Something went wrong", err)
-        }
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        socket,
-        activeCall,
-        currentChat,
-        PeerConnection, 
-        handleReceiveOffer,
-        handleSendingRTCOffer,
-    ])
-
-
-
-
-
-    useEffect(()=>{
-        const rtcSession = PeerConnection.current
-        if(rtcSession && (!rtcSession.peer || rtcSession.peer.signalingState === "closed")){
-            rtcSession.peer = new RTCPeerConnection({
-                iceServers: [
-                    { urls:  'stun:stun.l.google.com:19302' }
-                ]
-            })
-        }
-        handleStramCall()
-
-    },[PeerConnection, defaultMode, handleStramCall, socket])
-
-
 
 
     if(!userData){
@@ -381,26 +342,14 @@ const StreamCall = ({
                             ringingAudioRef.current?.pause()
 
                             setIsPickUp( ()=> false )
-                            const peer = PeerConnection.current?.peer
 
-                            if(peer)  {//stop the session
-                                if(currentChat && peer.connectionState !== "connected"){
-                                    socket.current.RTCHandlers.abortPreConnection({ 
-                                        userId: userData.id,
-                                        receiverId: currentChat?.receivers.split(" ")[0],
-                                    })
-                                }
-                                else{
-                                    peer.close()
-                                }
-                                stopRTCSender(peer)
-                                PeerConnection.current.peer = null
-                            }
-
-                            setActiveCall(()=> ({ 
-                                initiate: null, 
-                                currentActiveCall: null
-                            }))
+                            socket.current.RTCHandlers.abortPreConnection({ 
+                                userId: userData.id,
+                                receiverId: currentChat?.receivers.split(" ")[0],
+                            })
+                            handleShifttingAwaitingCallList(PeerConnection.current, setActiveCall)
+                            PeerConnection.current.peer = null
+                            
                     }}
                 >
                     <img 
@@ -415,12 +364,13 @@ const StreamCall = ({
      );
 }
 
- 
-export default StreamCall;
 
 
 StreamCall.propTypes = {
     peerAnswer: PropTypes.object ,
     defaultMode: PropTypes.string
 }
+
+
+export default StreamCall;
 

@@ -205,12 +205,13 @@ exports.insertMessageIntoBdd = async ( req, res )=>{
 
 
 
-exports.storeMediaIntoBdd = async (req, res)=>{
+exports.recordMediaIntoBdd = async (req, res)=>{
     try {
 
-        const { userId, talkSphereId, media } = req.body
+        const { userId, talkSphereId, fileName, fileType } = req.body
 
-        if(!userId || !talkSphereId || !Array.isArray(media) ){
+        
+        if(!userId || !talkSphereId || !fileName || !fileType ){
           return res.status(500).json({ message: "Mising or incorrect sent data" })
         }
 
@@ -230,20 +231,20 @@ exports.storeMediaIntoBdd = async (req, res)=>{
           return res.status(500).json({ message: "Something went wrong" });
         }
 
-        for( const file of media ){
-          const mediaResult = await conn.query(
-            'INSERT INTO Media (message_id, name, type) VALUES (?, ?, ?)',
-            [messageResult.insertId, file.name, file.type]
-          );
 
-          if (mediaResult.affectedRows < 1) {
-            await conn.rollback();
-            console.log('[DB ERROR] Insertion média échouée');
-            return res.status(500).json({ message: "Something went wrong" });;
-          }
+        const mediaResult = await conn.query(
+          'INSERT INTO Media (message_id, name, type) VALUES (?, ?, ?)',
+          [messageResult.insertId, fileName, fileType]
+        );
+
+        if (mediaResult.affectedRows < 1) {
+          await conn.rollback();
+          console.log('[DB ERROR] Insertion média échouée');
+          return res.status(500).json({ message: "Something went wrong" });;
         }
-
+        
         await conn.commit();
+        return  res.status(200).json({ message: "File metadata recorded successfully" });
       }
       catch (dbErr) {
         console.error('Erreur DB :', dbErr);
@@ -259,24 +260,26 @@ exports.saveFiles = async (req, res) => {
     const userId = Number(req.headers['x-user-id']);
     const { talksphereId, talkSphereFolder } = req.params;
     const fileNameRaw = req.headers['x-filename'];
-    const fileSize = parseInt(req.headers['x-file-size'], 10);
+    const fileSize = parseInt( req.headers['x-file-size'], 10 );
     const fileType = req.headers['x-file-type'];
-    const fileName =  Date.now() + '_' + fileNameRaw;
 
-    if (!talksphereId || !talkSphereFolder || !fileName || !fileSize || !fileType || !userId) {
+    
+    if (!talksphereId || !talkSphereFolder || !fileNameRaw || !fileSize || !fileType || !userId) {
       return res.status(400).json({ message: 'Paramètres manquants.' });
     }
 
-    console.log("[functions : saveFiles], received data ", {talksphereId ,talkSphereFolder ,fileName ,fileSize , fileType ,userId} )
 
     let folder = 'documents';
     if (fileType.includes('image')) folder = 'photos';
     else if (fileType.includes('video')) folder = 'videos';
+    else if (fileType.includes('audio')) folder = 'audios';
 
     const dirPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/${folder}`);
-    fs.mkdirSync(dirPath, { recursive: true });
+    fs.mkdirSync( dirPath, { recursive: true } );
     
-    const filePath = path.join(dirPath, fileName);
+    const filePath = path.join(dirPath, fileNameRaw);
+
+
     const writeStream = fs.createWriteStream(filePath);
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -286,32 +289,60 @@ exports.saveFiles = async (req, res) => {
 
     const passThrough = new PassThrough();
     let receivedBytes = 0;
+    let responseEnded = false;
+
+    const safeWritting = (data)=>{
+      if(!responseEnded) res.write(data)
+    }
 
     // Lecture du flux pour afficher la progression
 
     passThrough.on('data', (chunk) => {
       receivedBytes += chunk.length;
       const ratio = (receivedBytes / fileSize).toFixed(2);
-      res.write(`PROGRESS:${ratio}\n`);
+      safeWritting(`PROGRESS:${ratio}\n`);
     });
 
 
     passThrough.on('error', (err) => {
-      res.write(`ERROR:${err.message}\n`);
-      res.end();
+      console.log(`[POST, function: savesFiles]  user <${userId}> passThrough error : ${err}`)
+      if(!responseEnded){
+          res.write(`ERROR:${err.message}\n`);
+          res.end();
+          responseEnded = true
+      }
     });
 
-    req.pipe(passThrough);         
-    passThrough.pipe(writeStream) ; 
+    writeStream.on('finish', ()=>{
+      if(!responseEnded){
+        res.write('DONE \n')
+        res.end()
+        responseEnded = true
+      }
+    })
 
-    req.on('end', async () => {
-      res.write('DONE\n');
-      res.end();
-    });
+    writeStream.on('error', (err)=>{
+      console.log(`[POST, function: savesFiles] user <${userId}>, Writanle stream error : ${err}`)
+      if(!responseEnded){
+        res.write(`Error:${err.message}\n`)
+        res.end()
+        responseEnded = true
+      }
+    })
+
+    req.pipe(passThrough).pipe(writeStream) ; 
+
 
     req.on('error', (err) => {
-      res.write(`ERROR:${err.message}\n`);
-      res.end();
+      console.log(`[POST, function: savesFiles] user <${userId}>, request error : ${err}`)
+      if(!responseEnded){
+          res.write(`ERROR:${err.message}\n`);
+          res.end();
+          responseEnded = true
+          
+          if(fs.existsSync(filePath))
+              fs.unlinkSync(filePath)
+      }
     });
 
   }

@@ -20,15 +20,14 @@ const messagesSocketHandlers = (socket) => {
     }
 
     
-    const sendMessageRequest = ({ senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder }) => {   //TODO: To review herer
-        socket.emit("privateMessage", { senderId, talkSphereId, content, createdAt, receivers, media, talkSphereFolder })
+    const sendMessageRequest = ({ senderId, content, talkSphereId, createdAt, receivers, media, talkSphereFolder }) => {   //TODO: To review herer
+        socket.emit("privateMessage", { senderId, content, talkSphereId, createdAt, receivers, media, talkSphereFolder })
     }
 
     //Here we listen all the incomming message through one specific room (talksphereId)
 
     const newMessagesResponses = (callback)=>{
         socket.on("newMessage", (message)=> {
-            console.log("message", message)
             if(message) callback(message)
         })
     }

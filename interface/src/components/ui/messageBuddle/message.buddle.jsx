@@ -4,6 +4,10 @@ import AudioReader from './components/audioReader/audio.reader'
 import VideoReader from './components/videoReader/video.reader'
 
 import styles from "./message.buddle.module.css"
+import PhotoReader from "./components/photoReader/photoReader"
+import DocumentReader from "./components/documentReader/documentReader"
+import { useEffect } from "react"
+import { useState } from "react"
 
 
 const MessageBuddle = (
@@ -18,10 +22,22 @@ const MessageBuddle = (
     }
 ) => {
 
+    const [enableContainerBackgroundColor, setEnableContainerBackgroundColor] = useState(true) 
+
+    useEffect(() => {
+        if (Array.isArray(media)) {
+            const hasVisualMedia = media.some(item => item?.type && (item.type.includes("image") || item.type.includes("video") || item.type.includes("document")));
+            setEnableContainerBackgroundColor(!hasVisualMedia);
+        }
+    }, [media]);
+
     return ( 
         <div style={{ 
                 backgroundColor: backgroundColor,
-                "--dynamic-color": backgroundColor ?? "#0078ff",
+                "--sender-border-dynamic-color"         : enableContainerBackgroundColor ? "#0078ff" : "", 
+                "--sender-container-background-color"   : enableContainerBackgroundColor ? "#0078ff" : "",
+                "--receive-border-background-color"     : enableContainerBackgroundColor ? "#e0e0e0" : "", 
+                "--receiver-container-background-color" : enableContainerBackgroundColor ? "#e0e0e0" : "", 
                 ...containerStyle
             }}
             className={`${styles.bubble} 
@@ -32,7 +48,7 @@ const MessageBuddle = (
             {
                 Array.isArray(media) ?
                     ( 
-                        media[0].type.includes('audio') ? (
+                        media[0].type.includes('audio') && media.length > 0 ? (
                             <AudioReader
                                 media={ media[0] }
                                 talkSphereFolder= { talkSphereFolder  }
@@ -40,7 +56,25 @@ const MessageBuddle = (
                         )
                         : media.map((item, index)=>{
                             return (
-                                <VideoReader key={ index }/>
+                                <div key={index} className={ styles.videoAndImageSection }>
+                                    {
+                                    item.type.includes("video")
+                                    ?   <VideoReader 
+                                            key={ index }
+                                            name = { item.name }
+                                            talkSphereFolder = { talkSphereFolder }
+                                        />
+                                    : item.type.includes('image') ?
+                                            <PhotoReader
+                                                key={ index }
+                                                name = { item.name }
+                                                talkSphereFolder = { talkSphereFolder }
+                                            />
+                                       :    <DocumentReader
+                                                key={ index }
+                                            />
+                                    }
+                                </div>
                             )
                         })
                     )
@@ -49,8 +83,14 @@ const MessageBuddle = (
                         <></>
                     )
             }
-            <p className={styles.message} >{content}</p>
-            <div className={styles.time}>{time}</div>
+            {
+                content && content.length > 0 && (
+                    <div>
+                        <p className={styles.message} >{content}</p>
+                        <div className={styles.time}>{time}</div>
+                    </div>
+                )
+            }
         </div>
      );
 }

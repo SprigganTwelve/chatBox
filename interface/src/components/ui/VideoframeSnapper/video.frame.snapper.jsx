@@ -6,7 +6,7 @@ import SVGplay from '/src/assets/svg/play-alt-svgrepo-com-white.svg'
 
 import styles from './video.frame.snapper.module.css'
 
-const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6 }) => {
+const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6, httpUrl }) => {
 
     const videoRef = useRef()
     const canvasRef = useRef()
@@ -22,7 +22,7 @@ const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6 }) => {
 
         if(!videoElement && !canvasElement) return
 
-        videoElement.src = URL.createObjectURL(file)
+        videoElement.src = file ? URL.createObjectURL(file) : httpUrl
 
         const handleLoadedData  = () => {
 
@@ -95,6 +95,7 @@ export default VideoFrameSnapper;
 
 VideoFrameSnapper.propTypes = {
     file: PropTypes.object,
+    httpUrl: PropTypes.string,
     cutPoint: PropTypes.number,
     imageStyle: PropTypes.object
 }

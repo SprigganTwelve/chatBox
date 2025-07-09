@@ -7,10 +7,10 @@
 .container{
     left: 50%;
     gap: 10px;
-    bottom: 90px;
-    z-index: 20;
-    width: 85%;
-    height: 80%;
+    z-index: 09;
+    width:  85%;
+    height: 82%;
+    margin-top: 89px;
     display: flex;
     color: white;
     overflow-y: auto;

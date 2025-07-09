@@ -5,7 +5,14 @@ import React, { createContext, useState, useEffect, useCallback, useRef } from "
 import RTCHandlers from "/src/socket/RTCHandlers/RTCHandlers.socket";
 import messagesSocketHandlers from '/src/socket/messagesHandlers/message.socket.client.handlers.js'
 
+//Import fom RTC Stream Call  component folder
+
+import { handleShifttingAwaitingCallList } from '/src/components/ui/RTCStreamCall/share';
+
 // import {} from '/src/entities/objects.of.context.js'
+
+
+
 
 
 const ChatBoxApiContext = createContext();
@@ -81,15 +88,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
                 if ( (currentActiveCall?.userId === abort.userId) || 
                         (initiate?.type && abort.userId.toString() === currentChat?.receivers.split(' ')[0] 
                     ) ) {
-                    if (rtcSession.callOfferArray.length > 0) {
-                        setActiveCall(() => ({
-                            initiate: null,
-                            currentActiveCall: rtcSession.callOfferArray.shift()
-                        }));
-                        return;
-                    }
-                    rtcSession.isAvailable = true;
-                    setActiveCall(() => ({ initiate: null, currentActiveCall: null }));
+                    handleShifttingAwaitingCallList(rtcSession, setActiveCall)
                 }
                 else {            // call receiver (case where the call to abort is in the awaiting list ) 
                     const index = rtcSession.callOfferArray.findIndex( o => o.userId === abort.userId );

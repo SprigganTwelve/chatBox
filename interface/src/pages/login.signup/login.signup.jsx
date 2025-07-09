@@ -36,7 +36,7 @@ const LoginSingUp = () => {
             localStorage.setItem("userId", JSON.stringify(formResponse.data.user.id))
             window.location.reload();
         }
-    }, [formResponse])
+    }, [formResponse, isNotRegistered, navigate, setUserId])
     
     return ( 
         <div className={styles.container}>

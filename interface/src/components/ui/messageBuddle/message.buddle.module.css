@@ -7,6 +7,8 @@
     padding: 9px 15px 9px 15px;
     /* box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); */
   }
+
+  
   
   /* Message envoyé (à droite) */
   .sent {
@@ -37,6 +39,7 @@
   }
   
   /* Message reçu (à gauche) */
+  
   .received {
     background-color: var(--receiver-container-background-color) ;
     color: black;

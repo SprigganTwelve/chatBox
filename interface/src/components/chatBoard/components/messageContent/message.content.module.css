@@ -1,22 +1,24 @@
 
 
-.topSpace{
-    height: 100px;
+.container {
+  left: 50%;
+  top: 89px;
+  gap: 10px;
+  z-index: 9;
+  width: 85%;
+  height: 80%;
+  display: flex;
+  overflow-y: auto;
+  padding: 0 70px;
+  position: absolute;
+  flex-direction: column;
+  transform: translateX(-50%);
 }
 
-.container{
-    left: 50%;
-    gap: 10px;
-    z-index: 09;
-    width:  85%;
-    height: 82%;
-    margin-top: 89px;
-    display: flex;
-    color: white;
-    overflow-y: auto;
-    position: absolute;
-    flex-direction: column;
-    transform: translateX(-50%);
+
+
+.scrollWrapper::-webkit-scrollbar{
+    display: none;
 }
 
 .container::-webkit-scrollbar {

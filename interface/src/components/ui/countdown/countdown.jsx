@@ -30,7 +30,8 @@ const CoundtDown = ({
 
     
 
-    // Convert the audio countdown to a human-readable format
+    // Convert the audio countdown to a human-readable format (hours-minutes-seconds)
+
     const convertDuration = useCallback(() => {
         if (audioCountdown) {
             const seconds = audioCountdown % 60

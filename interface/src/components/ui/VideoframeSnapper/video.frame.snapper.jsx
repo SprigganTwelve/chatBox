@@ -6,26 +6,19 @@ import SVGplay from '/src/assets/svg/play-alt-svgrepo-com-white.svg'
 
 import styles from './video.frame.snapper.module.css'
 
-const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6, httpUrl }) => {
+const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6, httpUrl, onClick }) => {
 
     const videoRef = useRef()
     const canvasRef = useRef()
 
-    useEffect(()=>{
+    useEffect(() => {
+        const videoElement = videoRef.current;
+        const canvasElement = canvasRef.current;
+        if (!videoElement || !canvasElement) return;
 
-        if(!file) return
+        const context = canvasElement.getContext('2d');
 
-        const videoElement = videoRef.current
-        const canvasElement = canvasRef.current
-
-        const context = canvasElement.getContext('2d')
-
-        if(!videoElement && !canvasElement) return
-
-        videoElement.src = file ? URL.createObjectURL(file) : httpUrl
-
-        const handleLoadedData  = () => {
-
+        const handleLoadedData = () => {
             const parent = canvasElement.parentElement;
             const canvasW = parent.offsetWidth;
             const canvasH = parent.offsetHeight;
@@ -35,15 +28,14 @@ const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6, httpUrl }) => {
 
             videoElement.currentTime = videoElement.duration > cutPoint ? cutPoint : 0;
 
-            //we simulate an cover (object-fit) effect and then crop the image
             videoElement.onseeked = () => {
-                    const videoW = videoElement.videoWidth;
-                    const videoH = videoElement.videoHeight;
+                const videoW = videoElement.videoWidth;
+                const videoH = videoElement.videoHeight;
 
-                    const videoRatio = videoW / videoH;
-                    const canvasRatio = canvasW / canvasH;
+                const videoRatio = videoW / videoH;
+                const canvasRatio = canvasW / canvasH;
 
-                    let sx, sy, sWidth, sHeight;
+                let sx, sy, sWidth, sHeight;
 
                 if (videoRatio > canvasRatio) {
                     sHeight = videoH;
@@ -61,19 +53,23 @@ const VideoFrameSnapper = ({ file, imageStyle= {}, cutPoint = 6, httpUrl }) => {
             };
         };
 
+        videoElement.addEventListener("loadedmetadata", handleLoadedData);
 
-        videoElement.addEventListener("loadeddata", handleLoadedData)
-        
-        return ()=>{
-            videoElement.removeEventListener("loadeddata", handleLoadedData)
-        }
-    
+        // Important : assign after the listener added
 
-    },[file])
+        const source = file ? URL.createObjectURL(file) : httpUrl;
+        videoElement.setAttribute("src", source);
+
+        return () => {
+            videoElement.removeEventListener("loadedmetadata", handleLoadedData);
+        };
+    }, [cutPoint, file, httpUrl]);
+
 
     return ( 
         <div 
             className={styles.main}
+            onClick={onClick}
         >
             <video
                 hidden
@@ -95,7 +91,8 @@ export default VideoFrameSnapper;
 
 VideoFrameSnapper.propTypes = {
     file: PropTypes.object,
+    onClick: PropTypes.func,
     httpUrl: PropTypes.string,
     cutPoint: PropTypes.number,
-    imageStyle: PropTypes.object
+    imageStyle: PropTypes.object,
 }

@@ -34,7 +34,8 @@ const MessageBuddle = (
     return ( 
         <div style={{ 
                 backgroundColor: backgroundColor,
-                "--sender-border-dynamic-color"         : enableContainerBackgroundColor ? "#0078ff" : "", 
+                "--sender-border-dynamic-color"         : backgroundColor ? backgroundColor 
+                                                                : enableContainerBackgroundColor ? "#0078ff" : "", 
                 "--sender-container-background-color"   : enableContainerBackgroundColor ? "#0078ff" : "",
                 "--receive-border-background-color"     : enableContainerBackgroundColor ? "#e0e0e0" : "", 
                 "--receiver-container-background-color" : enableContainerBackgroundColor ? "#e0e0e0" : "", 
@@ -48,7 +49,7 @@ const MessageBuddle = (
             {
                 Array.isArray(media) ?
                     ( 
-                        media[0].type.includes('audio') && media.length > 0 ? (
+                         media.length > 0  && media[0].type.includes('audio') && media[0].name ? (
                             <AudioReader
                                 media={ media[0] }
                                 talkSphereFolder= { talkSphereFolder  }

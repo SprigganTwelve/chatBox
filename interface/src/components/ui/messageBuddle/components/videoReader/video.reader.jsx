@@ -5,14 +5,15 @@ import VideoFrameSnapper from "/src/components/ui/VideoframeSnapper/video.frame.
 
 import styles from './video.reader.module.css'
 
-const VideoReader = ({ name, talkSphereFolder }) => {
 
-    if(name && talkSphereFolder) 
-        console.log(`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`)
+
+const VideoReader = ({ name, talkSphereFolder }) => {
+    
     
     return ( 
         <div className={styles.container}>
-            <VideoFrameSnapper 
+            <VideoFrameSnapper
+                onClick={ ()=> window.open(`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`, '_blank') }
                 httpUrl = {`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`}
             />
         </div>

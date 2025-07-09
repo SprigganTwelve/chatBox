@@ -79,7 +79,7 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     return (
         <>
             <div ref={container} className={styles.container}>
-                { userChatFromBdd.length > 0 && (
+                    { userChatFromBdd.length > 0 && (
                     userChatFromBdd.map((message, index) => {
                         return (
                             <MessageBuddle

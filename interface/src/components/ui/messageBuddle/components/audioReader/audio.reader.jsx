@@ -16,40 +16,54 @@ const AudioReader = ({ media, talkSphereFolder }) => {
 
   const updateProgress = () => {
     const current = audioRef.current.currentTime;
-    const total = audioRef.current.duration || 1;
-    setAudioProgression((current / total) * 100);
-    animationRef.current = requestAnimationFrame(updateProgress);
+    const total = audioRef.current.duration;
+    setAudioProgression( (current / total) * 100 );
+    animationRef.current = requestAnimationFrame( updateProgress );
   };
 
+
+
   useEffect(() => {
+
+    if (!media?.name || !talkSphereFolder) return;
+
     const audio = audioRef.current;
-  
-    const handleDurationFix = () => {
-      if (audio.duration === Infinity) {
-        audio.currentTime = 1e101;              // make the current time so big to force the duration updating 
-        audio.ontimeupdate = () => {
-          audio.ontimeupdate = null;
-          audio.currentTime = 0;
-        };
-      }
-    };
-  
+    const audioPath = `http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`
+    
     const handleEnded = () => {
       setIsPlaying(false);
       setAudioProgression(0);
       cancelAnimationFrame(animationRef.current);
     };
-  
-    audio.addEventListener("loadedmetadata", handleDurationFix);
-    audio.addEventListener("ended", handleEnded);
-  
+
+    const handleLoadedMetaData = ()=> {
+      console.log("Audio Loaded meta data : ", audio.duration)
+    }
+
+    const handleError =  (e) => {
+      console.error("Erreur lors du chargement de l'audio :", e);
+    }
+    
+    audio.addEventListener("loadedmetadata", handleLoadedMetaData)
+    audio.addEventListener( "ended", handleEnded );
+    audio.addEventListener("error", handleError);
+
+    audio.setAttribute( "src", audioPath );
+
+    if ( audio.src !== audioPath ) {
+      audio.setAttribute( "src", audioPath );
+    }
+
     return () => {
-      audio.removeEventListener("loadedmetadata", handleDurationFix);
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetaData)
+      audio.removeEventListener("error", handleError)
     };
 
-  }, []);
+  }, [media.name, talkSphereFolder]);
   
+
+  // switch to play or pause
 
   const togglePlayback = () => {
     const audio = audioRef.current;
@@ -59,29 +73,26 @@ const AudioReader = ({ media, talkSphereFolder }) => {
       audio.pause();
       cancelAnimationFrame(animationRef.current);
       setIsPlaying(false);
-    } else {
+    } 
+    else {
       audio.play().then(() => {
-        animationRef.current = requestAnimationFrame(updateProgress);
-        setIsPlaying(true);
-      }).catch((err) => {
-        console.warn("Erreur de lecture audio :", err);
+          animationRef.current = requestAnimationFrame(updateProgress);
+          setIsPlaying(true);
+      })
+      .catch((err) => {
+          console.warn("Erreur de lecture audio :", err);
       });
     }
   };
 
-  if (!media || !talkSphereFolder) return null;
 
   return (
     <div className={styles.audioSection}>
       <audio
         hidden
-        ref={audioRef}
-        preload="metadata"
+        preload="auto"
+        ref={ audioRef }
       >
-        <source
-          src={`http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`}
-          type="audio/webm"
-        />
       </audio>
 
       <img

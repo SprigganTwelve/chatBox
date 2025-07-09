@@ -8,7 +8,10 @@ const PhotoReader = ({ name, talkSphereFolder }) => {
     
 
     return ( 
-        <div className={styles.container}>
+        <div 
+            className={styles.container}
+            onClick={ () => window.open( `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/photos/${name}`, '_blank') }
+        >
             <img 
                 alt=""
                 className={ styles.image }

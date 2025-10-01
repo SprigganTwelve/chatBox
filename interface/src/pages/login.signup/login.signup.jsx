@@ -14,8 +14,8 @@ import styles from "./login.signup.module.css"
 const LoginSingUp = () => {
 
     const navigate = useNavigate()
-    const [formResponse, setFormResponse] = useState(null)
-    const [isNotRegistered, setIsNotRegistered] = useState(false)
+    const [ formResponse, setFormResponse ] = useState(null)
+    const [ isNotRegistered, setIsNotRegistered ] = useState(false) // if it is set to false then we proceed with login, otherwise we sign up 
 
     const { userId, setUserId } = useContext(ChatBoxApiContext)
 
@@ -25,11 +25,16 @@ const LoginSingUp = () => {
         }
     }, [userId])
 
+
     useEffect(()=>{
-        if(!formResponse?.data.message && !formResponse?.data.user){ 
-           //when message = "" the user is sign up
-           if(isNotRegistered) setIsNotRegistered(false)
+        console.log("isNotRegistered : ",isNotRegistered);
+        console.log("formResponse : ", formResponse);
+        console.log("Status : ", formResponse?.data.status)
+        
+        if(formResponse && (formResponse.status === 200 || formResponse.status === 204) ){
+            if(isNotRegistered) setIsNotRegistered(false)
         }
+
         if(formResponse?.data.user){
             navigate("/home")
             setUserId(formResponse.data.user.id)
@@ -46,6 +51,9 @@ const LoginSingUp = () => {
                     btnContent ={isNotRegistered ? "Sing Up" : "Login"}
                     backendResponse = {formResponse}
                     setBackendResponse = {setFormResponse}
+                    onSubmit = { ()=>{ 
+                        }
+                    } 
                     url= {isNotRegistered ?  
                             `http://localhost:${import.meta.env.VITE_API_PORT}/users/signUp` 
                             : `http://localhost:${import.meta.env.VITE_API_PORT}/users/login`}

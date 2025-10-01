@@ -2,6 +2,7 @@
 .audioSection{
     gap: 20px;
     border: none;
+    width: 421px;
     margin: -5px;
     display: flex;
     margin-top: 5px ;
@@ -9,7 +10,7 @@
     border-radius: 10px;
     align-items: center;
     justify-content: center;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 10px;
     background-color:  rgba(55, 56, 57, 0.365);
   }
 
@@ -50,5 +51,6 @@
     cursor: pointer;
     position: absolute;
     border-radius: 100%;
+    transform: translate(10px, 12%);
     background-image: linear-gradient(to right, #e100ff, #008cff);
 }

@@ -3,8 +3,7 @@
     border: none;
     outline: none;
     height: 420px;
-    width: 420px;
-    margin: 10px 0;
+    /* width: 420px; */
     cursor: pointer;
 }
 

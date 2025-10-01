@@ -5,65 +5,66 @@ import SVGpause from "/src/assets/svg/pause-svgrepo-com.svg";
 import SVGplayaudiowhite from "/src/assets/svg/play-alt-svgrepo-com-white.svg";
 
 import styles from './audio.reader.module.css';
+import CoundtDown from "/src/components/ui/countdown/countdown";
+import { convertDuration } from "/src/utils/time.utils";
+
+
+
+
 
 const AudioReader = ({ media, talkSphereFolder }) => {
-  
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audioProgression, setAudioProgression] = useState(0);
+
+  const [ isPlaying, setIsPlaying ] = useState(false);
+  const [ audioDuration, setAudioDuration ] = useState()
+  const [ audioProgression, setAudioProgression ] = useState(0);
+  const [ audioCurrentTime, setAudioCurrentTime ] = useState(0)
 
   const audioRef = useRef(null);
-  const animationRef = useRef(null);
 
-  const updateProgress = () => {
-    const current = audioRef.current.currentTime;
-    const total = audioRef.current.duration;
-    setAudioProgression( (current / total) * 100 );
-    animationRef.current = requestAnimationFrame( updateProgress );
-  };
-
-
+  const audioPath =
+    media?.name && talkSphereFolder
+      ? `http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`
+      : null;
 
   useEffect(() => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      const handleEnded = () => {
+          setIsPlaying(false);
+          setAudioProgression(0);
+      };
 
-    if (!media?.name || !talkSphereFolder) return;
+      const handleTimeUpdate = () => {
+          if (audio.duration) {
+            setAudioProgression((audio.currentTime / audio.duration) * 100);
+          }
+      };
 
-    const audio = audioRef.current;
-    const audioPath = `http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`
-    
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setAudioProgression(0);
-      cancelAnimationFrame(animationRef.current);
-    };
+      const handleError = (e) => {
+        console.error("Erreur audio :", e);
+      };
 
-    const handleLoadedMetaData = ()=> {
-      console.log("Audio Loaded meta data : ", audio.duration)
-    }
+      const handleLoadedMetatData = ()=>{
+          if(audio.duration && !isNaN(audio.duration)){
+            const lecturingTime  = convertDuration(audio.duration)
+            setAudioDuration(()=> lecturingTime)
+          }
+      }
 
-    const handleError =  (e) => {
-      console.error("Erreur lors du chargement de l'audio :", e);
-    }
-    
-    audio.addEventListener("loadedmetadata", handleLoadedMetaData)
-    audio.addEventListener( "ended", handleEnded );
-    audio.addEventListener("error", handleError);
+      audio.addEventListener("ended", handleEnded);
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("error", handleError);
+      audio.addEventListener("loadedmetadata", handleLoadedMetatData)
 
-    audio.setAttribute( "src", audioPath );
+      return () => {
+          audio.removeEventListener("ended", handleEnded);
+          audio.removeEventListener("timeupdate", handleTimeUpdate);
+          audio.removeEventListener("error", handleError);
+          audio.removeEventListener("loadedmetadata", handleLoadedMetatData);
+      };
+  }, [audioPath]);
 
-    if ( audio.src !== audioPath ) {
-      audio.setAttribute( "src", audioPath );
-    }
 
-    return () => {
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("loadedmetadata", handleLoadedMetaData)
-      audio.removeEventListener("error", handleError)
-    };
-
-  }, [media.name, talkSphereFolder]);
-  
-
-  // switch to play or pause
 
   const togglePlayback = () => {
     const audio = audioRef.current;
@@ -71,45 +72,50 @@ const AudioReader = ({ media, talkSphereFolder }) => {
 
     if (isPlaying) {
       audio.pause();
-      cancelAnimationFrame(animationRef.current);
       setIsPlaying(false);
-    } 
-    else {
-      audio.play().then(() => {
-          animationRef.current = requestAnimationFrame(updateProgress);
-          setIsPlaying(true);
-      })
-      .catch((err) => {
-          console.warn("Erreur de lecture audio :", err);
-      });
+    } else {
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.warn("Erreur de lecture audio :", err));
     }
   };
 
 
+
   return (
     <div className={styles.audioSection}>
-      <audio
-        hidden
-        preload="auto"
-        ref={ audioRef }
-      >
-      </audio>
+        <audio hidden preload="auto" ref={audioRef} src={audioPath} />
 
-      <img
-        alt={isPlaying ? "Pause audio" : "Play audio"}
-        src={isPlaying ? SVGpause : SVGplayaudiowhite}
-        className={styles.icon}
-        onClick={togglePlayback}
-      />
+        <img
+          alt={isPlaying ? "Pause audio" : "Play audio"}
+          src={isPlaying ? SVGpause : SVGplayaudiowhite}
+          className={styles.icon}
+          onClick={togglePlayback}
+        />
+            <div style={{ display: isPlaying ? "initial" : "none" }} className={styles.time}>
+                <CoundtDown
+                    pause = { !isPlaying }
+                    start = { isPlaying ? null : audioCurrentTime }
+                    onPause={(audioCountdown)=> setAudioCurrentTime(audioCountdown) }
+                />
+            </div>
+            <span style={{ display: !isPlaying ? "initial" : "none" }} className={styles.time}> 
+                  {audioDuration != null &&
+                                  `${audioDuration?.hours !== 0
+                                          ? audioDuration?.hours?.toString().padStart(2, '0') + ':'
+                                          : ''}${audioDuration?.minutes?.toString().padStart(2, '0')}:${audioDuration?.seconds?.toString().padStart(2, '0')}`
+                  }
+            </span>
 
-      <div className={styles.gaugeContainer}>
-        <div
-          className={styles.gauge}
-          style={{ width: `${audioProgression}%` }}
-        >
-          <div className={styles.round} />
-        </div>
-      </div>
+          <div className={styles.gaugeContainer}>
+              <div
+                className={styles.gauge}
+                style={{ width: `${audioProgression}%` }}
+              >
+                <div className={styles.round} />
+              </div>
+          </div>
     </div>
   );
 };
@@ -118,7 +124,6 @@ AudioReader.propTypes = {
   media: PropTypes.shape({
     name: PropTypes.string,
   }),
-  progressorWidth: PropTypes.number,
   talkSphereFolder: PropTypes.string,
 };
 

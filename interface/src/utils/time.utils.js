@@ -1,11 +1,15 @@
 
+//modify all the dates inside an array by the formated one
+
 function insertFormattedDateFromArray(data){
     if (data.length > 0) {
          for (const message of data) {
             insertFormattedDate(message)
          }
     }
- }
+}
+
+// Format Date 
 
 function insertFormattedDate(message){
     const isNotDate = (object) => Object.prototype.toString.call(object) !== "[Object Date]";
@@ -37,36 +41,25 @@ function insertFormattedDate(message){
     message.formattedHours = formattedHours;
 }
 
+    // Convert time (in seconds) to a human-readable format (hours-minutes-seconds)
 
-
-const getCroppedImage = (fileUrl, croppedAreaPixels, rotation = 0) => {
-    const image = new Image()
-    image.src = fileUrl
-    return new Promise(( resolve, reject )=>{
-        image.onload = ()=>{
-            const canvas =  document.createElement('canvas')
-
-            const ctx = canvas.getContext('2d')
-    
-            const { x, y, width, height } = croppedAreaPixels;
-            canvas.width = width;
-            canvas.height = height;
-            
-            ctx.rotate((rotation * Math.PI) / 180);
-    
-            ctx.drawImage(image, x, y, width, height, 0, 0, width, height )
-    
-            canvas.toBlob((blob)=>{
-                const file = new File([blob], Date.now() + '.jpeg' , {lastModified: Date.now(), type: 'image/jpeg'}  )
-                resolve(file)
-            }, 'image/jpeg')
+const convertDuration = (time) => {
+    if (time) {
+        const seconds = Math.trunc(time % 60)
+        const minutes = Math.trunc(time / 60);
+        const hours = Math.trunc(time / 60);
+        return  {
+            hours, minutes, seconds
         }
-        image.onerror = reject
-    })
+    }
 }
+    
 
 
 
 
 
-export { insertFormattedDateFromArray, insertFormattedDate, getCroppedImage }
+
+
+
+export { insertFormattedDateFromArray, insertFormattedDate, convertDuration }

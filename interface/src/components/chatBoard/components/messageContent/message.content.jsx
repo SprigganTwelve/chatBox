@@ -6,7 +6,7 @@ import { ChatBoxApiContext } from "/src/context/context";
 
 import MessageBuddle from "/src/components/ui/messageBuddle/message.buddle";
 
-import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/function";
+import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/time.utils";
 
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";

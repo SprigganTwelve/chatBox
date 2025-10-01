@@ -10,7 +10,7 @@ import SVGanswer from '/src/assets/svg/phone-svgrepo-com.svg'
 import SVGreject from '/src/assets/svg/phone-down-svgrepo-com.svg'
 // import SVGsharescreen from '/src/assets/svg/screen-svgrepo-com.svg'
 
-import { handleShifttingAwaitingCallList, stopRTCSender } from './share';
+import { handlelocalAndRemoteTrack, handleReceiveAnswer, handleReceiveOffer,  handleSendingRTCOffer, handleShifttingAwaitingCallList, stopRTCSender } from './handlers';
 
 import styles from './RTC.stream.call.module.css'
 
@@ -26,7 +26,7 @@ const StreamCall = ({
     const pickUpAudioRef = useRef(null)
 
 
-    const [ mode ] = useState(defaultMode)              //switch from one mode to the other one (ex: audio -> video)
+    const [ mode ] = useState(defaultMode)              //switch from one mode to the other one (ex: audio -> audio & video)
     const [ isPickUp, setIsPickUp ] = useState(false)   // Help determine when the call is accepted or turnt down
 
     const { 
@@ -38,217 +38,83 @@ const StreamCall = ({
         setActiveCall,
     } = useContext(ChatBoxApiContext)
 
-
-    
-    useEffect(()=>{
-        const rtcSession = PeerConnection.current
-        if(rtcSession && (!rtcSession.peer || rtcSession.peer.signalingState === "closed")){
-            rtcSession.peer = new RTCPeerConnection({
-                iceServers: [
-                    { urls:  'stun:stun.l.google.com:19302' }
-                ]
+    const mediaDevicesHandler = useCallback( async ({ rtcSession })=>{
+            await handlelocalAndRemoteTrack({
+                defaultMode,
+                peer: rtcSession.peer,
+                localVideo: localVideoRef.current,
+                remoteVideo: remoteVideoRef.current,
             })
-        }
-        handleStramCall()
-
-    },[PeerConnection, defaultMode, handleStramCall, socket])
+    },[])
 
 
-    //---Main handler to deal with incoming and outgoing call
-
-    const handleStramCall = useCallback(async ()=>{
+    const initiateCallHandler = useCallback(async ({ rtcSession }) => {
         try{
-
-            const socketManager = socket.current
-            const localVideo = localVideoRef.current
-            const remoteVideo = remoteVideoRef.current
-            const rtcSession  = PeerConnection.current
-            const ringing = ringingAudioRef.current
-
-            
-            //-----ringing
-            
-            if(ringing){
-                ringing.volume = 1
-                ringing.muted = false
-            }
-            //---- place track
-
-            await navigator.mediaDevices.getUserMedia({  audio: true }).then((stream)=>{
-                stream.getTracks().forEach((track)=>{
-                    rtcSession.peer.addTrack(track, stream)
-                })
-            })
-
-            if(defaultMode === "video"){
-                await navigator.mediaDevices.getUserMedia({  video: true }).then((stream)=>{
-                    if(localVideo){
-                        const videoTrack = stream.getVideoTracks()[0]
-                        rtcSession.peer.addTrack(videoTrack, stream)
-                        localVideo.srcObject = stream
-                        localVideo.play()
-                    }
-                })
-            }
-
-            if(rtcSession && activeCall && remoteVideo && socketManager){
-                
-                //---- peer and connection state
-
-                const remoteCombinedStream =  new MediaStream()
-
-                rtcSession.peer.ontrack = (event) => {
-                    remoteCombinedStream.addTrack(event.track)
-                    if( remoteVideo && remoteVideo.srcObject != remoteCombinedStream ){               
-                        remoteVideo.srcObject = remoteCombinedStream
-                        remoteVideo.play().catch((err) => console.log(" Error whole reading video ", err))
-                    }
-                }
-
-                //---- initializing call....
-
-                if(activeCall.initiate){
-                    handleReceiveAnswer({
-                        socketManager,
-                        peer: rtcSession.peer,
-                    })
-                    handleSendingRTCOffer({
-                        socketManager,
-                        peer: rtcSession.peer,
-                    })
-                }
-            }
-
+            handleReceiveAnswer({ peer: rtcSession.peer, socketManager: socket.current })
+            await handleSendingRTCOffer({
+                userData,
+                currentChat,
+                activeCall,
+                peer: rtcSession.peer,
+                socketManager: socket.current,
+            });
         }
         catch(err){
-            console.log("Something went wrong", err)
+            console.log("Something went wrong while sending an offer", err)
+            window.alert("Something went wrong")
         }
+    }, [activeCall, currentChat, userData, socket]);
+
+
+
+    const receiveCallhandler = useCallback((peer)=>{
+        try{
+            handleReceiveOffer({currentChat, activeCall, peer, socketManager: socket.current})
+        }
+        catch(error){
+            console.log("Something went wrong while handling an the offer", error)
+            window.alert("Something went wrong")
+        }
+    },[activeCall, currentChat, socket])
+
+
+
     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        socket,
-        activeCall,
-        currentChat,
-        PeerConnection, 
-        handleReceiveOffer,
-        handleSendingRTCOffer,
-    ])
+    useEffect(() => {
 
+        const setup = async ()=>{
+            const rtcSession = PeerConnection.current;
 
+            if (!rtcSession) return;
+            if (!socket.current) return; 
 
+            ringingAudioRef.current.play();
 
-    //--- Handler to mange outgoing call 
+            if (!rtcSession.peer || rtcSession.peer.signalingState === "closed") {
+                rtcSession.peer = new RTCPeerConnection({
+                    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+                });
 
-    const handleSendingRTCOffer = useCallback(async ({peer, socketManager})=>{
-        const iceCandidateArray = []
-        const offer  = await peer.createOffer()
-        await peer.setLocalDescription(offer)
+                console.log("activeCall", activeCall)
+                console.log("rtcSession", rtcSession)
+                await mediaDevicesHandler({rtcSession})
 
-        peer.onicegatheringstatechange = (()=>{
-            if(peer.iceGatheringState === "complete"){
-                socketManager.RTCHandlers.offerRequest({
-                    offer,
-                    iceCandidateArray,
-                    userId: userData.id,
-                    receiverId: currentChat?.receivers.split(" ")[0],
-                    senderImageData: {
-                        image: userData.image,
-                        folder: userData.folder,
-                    },
-                    type: activeCall.initiate.type,
-                })
+                if (activeCall.initiate && socket.current)
+                    initiateCallHandler({ rtcSession });
             }
-        })
-
-        peer.onicecandidate = ((event)=>{
-            if(event.candidate){
-                iceCandidateArray.push(event.candidate)
-            }
-        })
-
-    },[activeCall, currentChat, userData])
-
-
-    //---Handler to manage incoming call offer 
-
-    const handleReceiveOffer = useCallback(async ({ peer, socketManager })=>{
-        if( peer && activeCall.currentActiveCall ){
-
-            const iceCandidateArray = []
-            
-            await peer.setRemoteDescription(new RTCSessionDescription(activeCall.currentActiveCall.offer))
-
-            for ( const candidate of activeCall.currentActiveCall.iceCandidatesArray ){
-                await peer.addIceCandidate(candidate)
-            }
-
-            const answer = await peer.createAnswer()
-            await peer.setLocalDescription(answer)
-
-            peer.onicecandidate = (event)=>{
-                if(event.candidate){
-                    iceCandidateArray.push(event.candidate)
-                }
-            }
-
-            peer.onicegatheringstatechange = ()=>{
-                if(peer.iceGatheringState === "complete"){
-                    socketManager.RTCHandlers.answerRequest({ 
-                        answer, 
-                        iceCandidateArray,
-                        userId: currentChat.receivers.split(" ")[0],
-                    })
-                }
-            }
-
-            if(activeCall.currentActiveCall.type && activeCall.currentActiveCall.type.trim() === "call-only"){
-                stopRTCSender(peer, 'video')
-            }
-
-
-            ringingAudioRef.current.pause()
-            pickUpAudioRef.current.play()
-
-            setIsPickUp( ()=> true )
-
         }
 
-    },[activeCall.currentActiveCall, currentChat.receivers])
+        setup()
+
+    }, [initiateCallHandler]);
 
 
-    //--Handle answer 
-
-    const handleReceiveAnswer = useCallback(({ peer, socketManager })=>{
-
-        if(peer && socketManager) return
-
-        socketManager.RTCHandlers.offAnswerResponses()
-
-        socketManager.RTCHandlers.answerResponses( async ({ answer, iceCandidateArray })=>{
-            if(answer && iceCandidateArray){
-
-               //---store answer/icecandidates
-
-               await  peer.setRemoteDescription(new RTCSessionDescription(answer))
-               console.log("handleReacived answer", iceCandidateArray)
-               for ( const candidate of iceCandidateArray ){
-                  await peer.addIceCandidate(candidate)
-               }
-
-               //-----stop-ringing
-               ringingAudioRef.current.pause()
-               pickUpAudioRef.current.play()
-               setIsPickUp( ()=> true )
-            }
-        })
-
-    }, [])
-    
 
 
     if(!userData){
         return;
     }
+
 
     return ( 
         <div className={styles.main}>
@@ -278,24 +144,15 @@ const StreamCall = ({
                         playsInline
                         ref={localVideoRef}
                         className={styles.localVideo}
-                        hidden= { activeCall && ((activeCall.initiate 
-                                  && activeCall.initiate.type !== "video") || (
-                                    activeCall.currentActiveCall.type !== "video"
-                                  ))
-                        }
+                        // hidden= { activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video") }
                     />
                     <video
                         ref={remoteVideoRef}
                         className={styles.remoteVideo}
-                        hidden= { activeCall && ((activeCall.initiate 
-                                  && activeCall.initiate.type !== "video") || (
-                                    activeCall.currentActiveCall.type !== "video"
-                                  ))
-                        } 
+                        // hidden= {  activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video")  } 
                     />
                 </div>
-                <audio 
-                    muted
+                <audio
                     hidden
                     autoPlay
                     ref={ringingAudioRef}
@@ -315,16 +172,12 @@ const StreamCall = ({
                         <div 
                             className={ clsx(styles.iconContainer, styles.green) }
                             onClick={()=>{
+                                setIsPickUp(()=> true)
                                 ringingAudioRef.current?.pause()
                                 pickUpAudioRef.current?.play()
-                                setIsPickUp(()=> true)
 
-                                if (activeCall.currentActiveCall && socket.current && PeerConnection.current){
-                                    handleReceiveOffer({
-                                        socketManager: socket.current,
-                                        peer: PeerConnection.current.peer,
-                                    })
-                                }
+                                if (activeCall.currentActiveCall && socket.current && PeerConnection.current)
+                                    receiveCallhandler(PeerConnection.current.peer)
                             }}
                         >
                             <img 

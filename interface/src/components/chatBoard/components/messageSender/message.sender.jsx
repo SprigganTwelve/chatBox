@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { ChatBoxApiContext } from "../../../../context/context";
 import { useCallback } from 'react';
 
-import { insertFormattedDate } from "/src/utils/function";
+import { insertFormattedDate } from "/src/utils/time.utils";
 
 import AudioRecognition from './components/audioRecognition/audio.recognition';
 import AudioRecorder from './components/audioRecorder/audio.recorder';

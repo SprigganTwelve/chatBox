@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import {  useEffect, useRef, useState } from 'react';
 import styles from './input.module.css';
 
-const Input = ({ 
+const Input = ({
+    id,
     name,
     type,
     title,
@@ -32,7 +33,7 @@ const Input = ({
     }, [controller])
 
     return ( 
-        <div className={styles.inputContainer}>
+        <div id={id} className={styles.inputContainer}>
             {title && <span className={styles.title}>{title}</span>}
             <input
                 ref={inputRef}
@@ -61,4 +62,5 @@ Input.propTypes = {
     title: PropTypes.string,
     controller: PropTypes.func,
     placeholder: PropTypes.string,
+    id: PropTypes.string | PropTypes.number,
 }

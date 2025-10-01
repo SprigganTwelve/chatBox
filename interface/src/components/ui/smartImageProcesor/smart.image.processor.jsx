@@ -8,7 +8,7 @@ import styles from "./smart.image.processor.module.css"
 import MenuItem from "./components/menu.item";
 import Slider from "/src/components/ui/slider/silider";
 
-import { getCroppedImage } from '/src/utils/function'
+import { getCroppedImage } from '/src/utils/image.utils'
 
 import SVGrotation from '/src/assets/svg/rotation-reset-svgrepo-com.svg'
 import SVGfilter from '/src/assets/svg/filter-options-preferences-settings-svgrepo-com.svg'

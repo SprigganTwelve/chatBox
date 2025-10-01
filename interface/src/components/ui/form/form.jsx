@@ -68,7 +68,9 @@ const ChatBoxForm = ({
                     return child;
                 })}
                 {backendResponse?.data.message ? (<span className={styles.errorMessage}>{backendResponse.data.message}</span>) : null}
-                <button>{btnContent}</button>
+                <button>
+                    { btnContent }
+                </button>
                 {ComponentAtTheBottom.map((component) => component)}
             </form>
         </div>
@@ -76,8 +78,8 @@ const ChatBoxForm = ({
 };
 
 ChatBoxForm.propTypes = {
-    title: PropTypes.string,
     url: PropTypes.string,
+    title: PropTypes.string,
     children: PropTypes.node,
     btnContent: PropTypes.string,
     formStyle: PropTypes.object,

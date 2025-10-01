@@ -26,12 +26,12 @@ const Layout = () => {
             <PopUp />
             {
                 activeCall && 
-                    ( activeCall.initiate || (
-                        activeCall.currentActiveCall
-                    )) ? (
+                    (   activeCall.initiate ||              // if initiate exist then the current user is the one making a call to someone
+                        activeCall.currentActiveCall        // if currentActiveCall exist then current user is receiving a call that come first (if many call) and must be dealt with
+                    ) ? (
                         <Modal
+                            open = { true }
                             styleContent = { { background: 'transparent' } }
-                            open={ true }
                         >
                             <RTCStreamCall 
                                 defaultMode= {  

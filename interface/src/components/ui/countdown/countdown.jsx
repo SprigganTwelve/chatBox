@@ -4,11 +4,15 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import propTypes from "prop-types"
 
 import styles from "./countdown.module.css"
+import { convertDuration } from "/src/utils/time.utils";
+
+
 
 const CoundtDown = ({
     pause,
     reset,
-    newDuration
+    start = null,
+    onPause = ()=>{}
 }) => {
 
     const timer = useRef()
@@ -16,74 +20,69 @@ const CoundtDown = ({
     const [ audioCountdown, setAudioCountdonwn ] = useState(0)
 
     useEffect(() => {
-        if (!pause) {
+        if (!pause && !reset) {
             timer.current = setInterval(() => {
-                setAudioCountdonwn((prev) => prev + 1);
+            setAudioCountdonwn((prev) => prev + 1);
             }, 1000);
-        } else {
+        } 
+        else {
             clearInterval(timer.current);
+            if(pause)
+                onPause(audioCountdown) // execute callback when paused is triggered
         }
-    
+
         return () => clearInterval(timer.current);
-    }, [pause]);
-    
+    }, [pause, reset]);
 
-    
 
-    // Convert the audio countdown to a human-readable format (hours-minutes-seconds)
-
-    const convertDuration = useCallback(() => {
-        if (audioCountdown) {
-            const seconds = audioCountdown % 60
-            const minutes = Math.trunc(audioCountdown / 60);
-            const hours = Math.trunc(minutes / 60);
-            setAudioDuration({
-                hours, minutes, seconds
-            })
-        }
-    }, [audioCountdown])
-    
+    //generate duration 
     
     useEffect(() => {
-        convertDuration()
-    }, [convertDuration])
+        const duration = convertDuration(audioCountdown)
+        setAudioDuration(duration)
+    }, [audioCountdown])
 
-    //Here we handle the reset
+    //define a start for the countdown
+
+    useEffect(() => {
+        if (start != null) {
+            setAudioCountdonwn(start);
+        }
+    }, [start]);
+
+
+    //reset the countdown and the duration
 
     useEffect(() => {
         if (reset) {
             clearInterval(timer.current);
             setAudioCountdonwn(0);
-            setAudioDuration({ hours: 0, minutes: 0, seconds: 0 });
+            setAudioDuration(null);
         }
     }, [reset]);
-    
-    useEffect(() => {
-        if (
-            newDuration &&
-            !isNaN(newDuration.hours) &&
-            !isNaN(newDuration.minutes) &&
-            !isNaN(newDuration.seconds)
-        ) {
-            setAudioDuration(newDuration);
-        }
-    }, [newDuration]);
+
+
+    if(audioCountdown === 0)
+            return <span className={styles.span}>00:00</span>
+
 
     return ( 
-            <p className={styles.p}>
+            <span className={styles.span}>
                 {audioDuration &&
                     `${audioDuration.hours !== 0
                             ? audioDuration.hours.toString().padStart(2, '0') + ':'
                             : ''}${audioDuration.minutes.toString().padStart(2, '0')}:${audioDuration.seconds.toString().padStart(2, '0')}`
                 }
-            </p>
+            </span>
      );
 }
+
  
 export default CoundtDown;
 
 CoundtDown.propTypes = {
     pause: propTypes.bool,
     reset: propTypes.bool,
-    newDuration: propTypes.number
+    start: propTypes.number,
+    onPause: propTypes.func
 }

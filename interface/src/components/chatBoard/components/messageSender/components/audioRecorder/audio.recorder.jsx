@@ -23,7 +23,6 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
     const [ countdownManager, setCountdownManager ] = useState({
         reset: false,
         pause: true,
-        newDuration: 0
     })
     
 

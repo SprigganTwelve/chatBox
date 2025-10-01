@@ -19,7 +19,6 @@ import styles from "./action.module.css"
 
 const Action = () => {
 
-    const audioRef = useRef(null)
     const { talkSphereId, setActiveCall, PeerConnection } = useContext(ChatBoxApiContext)
 
     return ( 
@@ -71,11 +70,6 @@ const Action = () => {
                             <img src={SVGoptions} className={styles.icon} />
                         </AboutOverlay>
                         
-                        <audio 
-                            hidden
-                            ref={audioRef}
-                        />
-
                     </div>
                 )
             }

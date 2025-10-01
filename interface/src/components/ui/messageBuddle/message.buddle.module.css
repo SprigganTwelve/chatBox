@@ -1,21 +1,32 @@
+
+
+.wrapper{
+  position: relative;
+  /* background: #000; */
+}
+
+
+
 .bubble {
-    width: 350px;
     font-size: 14px;
-    font-size: 17px;
-    position: relative;
-    border-radius: 15px;
     padding: 9px 15px 9px 15px;
     /* box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); */
-  }
+}
 
+.textOrAudioBoxOnly{
+  width: 315px;
+}
   
   
   /* Message envoyé (à droite) */
   .sent {
     color: white;
     align-self: flex-end;
+    border-radius: 10px 10px 0 10px ;
     background-color: var(--sender-container-background-color);
   }
+
+
 
   .time{
     display: flex;
@@ -30,7 +41,8 @@
     right: 0;
     width: 0;
     height: 0;
-    bottom: -5px;
+    bottom: -15px;
+    z-index: -10;
     position: absolute;
     border-left: 10px solid transparent;
     border-top: 10px solid var(--sender-border-dynamic-color);
@@ -41,10 +53,17 @@
   /* Message reçu (à gauche) */
   
   .received {
-    background-color: var(--receiver-container-background-color) ;
     color: black;
     align-self: flex-start;
+    border-radius: 10px 10px 10px 0;
+    background-color: var(--receiver-container-background-color) ;
   }
+
+  .bubble:has(.image) .time{
+    color: white;
+  }
+
+
   
   .received::after {
     width: 0;
@@ -52,7 +71,7 @@
     height: 0;
     left: 0px;
     content: "";
-    bottom: -5px;
+    bottom: -15px;
     z-index: -10;
     position: absolute;
     border-top: 10px solid var(--receive-border-background-color);

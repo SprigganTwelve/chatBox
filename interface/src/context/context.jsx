@@ -7,7 +7,7 @@ import messagesSocketHandlers from '/src/socket/messagesHandlers/message.socket.
 
 //Import fom RTC Stream Call  component folder
 
-import { handleShifttingAwaitingCallList } from '/src/components/ui/RTCStreamCall/share';
+import { handleShifttingAwaitingCallList } from '/src/components/ui/RTCStreamCall/handlers';
 
 // import {} from '/src/entities/objects.of.context.js'
 
@@ -44,7 +44,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
     const socket = useRef(null);
-    const PeerConnection = useRef({ peer: null, isAvailable: true, callOfferArray: [] });
+    const PeerConnection = useRef({ peer: null, isAvailable: false, callOfferArray: [] });
 
 
     // Centralise l'initialisation socket in one fold
@@ -52,13 +52,16 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const initializeSocket = useCallback(() => {
         
         if (!socket.current) {
-            socket.current = io(`http://localhost:${import.meta.env.VITE_API_PORT}`);
+            socket.current =  io(`http://localhost:${import.meta.env.VITE_API_PORT}`);
             socket.current.emit("register", { userId: userId.toString() });
 
             socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current);
             socket.current.RTCHandlers = RTCHandlers(socket.current);
 
             const rtcSession = PeerConnection.current;
+            socket.current.on("connect", ()=>{
+                rtcSession.isAvailable = true;
+            })
 
             //  Cleanup previous to avoid duplicates
 
@@ -66,6 +69,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
             socket.current.RTCHandlers.offerResponses(({ offer, type, iceCandidateArray, senderImageData, userId }) => {
                 if (rtcSession.isAvailable) {
+                    console.log("Answer side", { offer, type, iceCandidateArray, senderImageData, userId })
                     setActiveCall(() => ({
                         initiate: null,
                         currentActiveCall: { userId, type, offer, iceCandidateArray, senderImageData }

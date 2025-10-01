@@ -6,7 +6,7 @@ import { ChatBoxApiContext } from '/src/context/context';
 
 import ChatBoxForm from "/src/components/ui/form/form";
 import Input from "/src/components/ui/input/input";
-import Switch from "/src/components/ui/switch/Switch"
+import Switch from "/src/components/ui/switch/switch"
 import FlexEdit from "/src/components/ui/flexEdit/flex.edit"
 import ViewOption from "/src/components/ui/viewOption/view.option";
 import styles from "./edit.profile.settings.module.css"

@@ -144,12 +144,12 @@ const StreamCall = ({
                         playsInline
                         ref={localVideoRef}
                         className={styles.localVideo}
-                        // hidden= { activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video") }
+                        hidden= { activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video") }
                     />
                     <video
                         ref={remoteVideoRef}
                         className={styles.remoteVideo}
-                        // hidden= {  activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video")  } 
+                        hidden= {  activeCall && !(activeCall.initiate?.type == "video" || activeCall.currentActiveCall?.type == "video")  } 
                     />
                 </div>
                 <audio

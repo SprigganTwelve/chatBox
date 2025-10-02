@@ -1,0 +1,7 @@
+FROM mariadb:11.8
+
+# pass down sql script
+
+COPY chatManagement.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+        context: ./ressources/db
+        dockerfile: DockerFile  
+    
+    container_name: my_mariadb
+
+    environment: 
+        MYSQL_ROOT_PASSWORD: rootpassword@KSLMO
+        MARIADB_LOG_CONSOLE: "error"
+
+    ports:
+      - "3306:3306"
+    
+    volumes:
+      - db_data:/var/lib/mysql
+
+
+  backend:
+    build:
+        context: ./back-end
+        dockerfile: DockerFile
+
+    container_name: my_backend
+
+    env_file:
+      - ./back-end/.env
+
+    depends_on:
+      - db
+
+    ports:
+      - "3000:3000"
+    
+    command: ["./wait-for-it.sh", "db:3306", "--", "npm", "start"]
+
+
+volumes:
+  db_data:

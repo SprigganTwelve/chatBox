@@ -1,7 +1,7 @@
 
 //---port
 
-const API_PORT = process.env.PORT | 3000
+const API_PORT = 3000
 const users = new Map()
 
 //--- library import

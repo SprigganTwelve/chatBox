@@ -9,4 +9,5 @@ const connexion = db.createConnection({
     database : process.env.DB_NAME
 })
 
+
 module.exports = { connexion };

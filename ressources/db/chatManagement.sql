@@ -1,9 +1,9 @@
 /*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.19-11.7.2-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.19-11.8.3-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: chatManagement
 -- ------------------------------------------------------
--- Server version	11.7.2-MariaDB
+-- Server version	11.8.3-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -20,6 +20,14 @@
 -- Table structure for table `assoc_request`
 --
 
+CREATE DATABASE IF NOT EXISTS chatManagement;
+CREATE USER 'prodUser'@'%' IDENTIFIED BY 'prod@mypassword.mariadb';
+GRANT ALL PRIVILEGES ON chatManagement.* TO 'prodUser'@'%';
+FLUSH PRIVILEGES;
+
+USE chatManagement;
+
+
 DROP TABLE IF EXISTS `assoc_request`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -32,7 +40,7 @@ CREATE TABLE `assoc_request` (
   KEY `receiver_id` (`receiver_id`),
   CONSTRAINT `assoc_request_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `consumer` (`id`),
   CONSTRAINT `assoc_request_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `consumer` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,13 +49,10 @@ CREATE TABLE `assoc_request` (
 
 LOCK TABLES `assoc_request` WRITE;
 /*!40000 ALTER TABLE `assoc_request` DISABLE KEYS */;
-INSERT INTO `assoc_request` VALUES
-(6,8,5),
-(8,10,5),
-(9,10,6),
-(11,12,11);
+set autocommit=0;
 /*!40000 ALTER TABLE `assoc_request` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `consumer`
@@ -72,7 +77,7 @@ CREATE TABLE `consumer` (
   `visibility` tinyint(1) DEFAULT 0,
   `folder` varchar(120) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -81,18 +86,13 @@ CREATE TABLE `consumer` (
 
 LOCK TABLES `consumer` WRITE;
 /*!40000 ALTER TABLE `consumer` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `consumer` VALUES
-(4,'Limule','','1744844214065.jpeg',NULL,'','$2b$05$MuBKZkgdXb3kyg7fDhYo4.5GzPYcZchYdprmuDZkNvHpD9XqQzjLS','limule@org.com','$2b$05$5EtyAV0lX9C2IeWbAVozDuOtBfsSA4eVjP/yFAP5O8XSRmEZptwGy',0,NULL,0,0,'3c931fc7-5bdb-43a9-9202-e0c1c8a1dbb8'),
-(5,'Itadori yuji','','17449717723441744971772337.jpeg',1,'','$2b$05$cTnxibVmRA6CEe9Z1fP2d.Wt3Iv8wnF7j.37mXCrCP/Ev5jGbf3We','yuji@jjk.com','$2b$05$Nzryy5myQTLTU1uj2f/FwuuFP1OZfImkrGytiJKlr1K7Qtp29k6ha',0,NULL,0,1,'1268d1d1-3fa6-4ed4-ad9f-9b39caf85582'),
-(6,'Gojo satoru','','1744966977292.png',1,'','$2b$05$r6SDI9R5sOyCX.3SwoZ1P.tDu9zrJsBvKFthvRkS70CpjSUEhkIpC','satoru@gmail.com','$2b$05$lDoNZ.8HH.ilBkLU1.QC7ebj7WJhBNJHZw3f/bpEnV7NJcQKkNGeK',0,NULL,0,1,'7d0a4d8e-1714-4e80-84b6-4d45c23d23ad'),
-(7,'rudeus','','1745012416651.jpg',1,'','$2b$05$23QWMUgp9IVxT.a6/RcRl.3VULDCcrrcRtC.8fU7LTvBn4i/oayI2','rudeus@gmail.com','$2b$05$qcc43Wy7ernVxYCA4WQwYuxjjmjqnKiEtUTzskrps3CEtUWtNvZIy',0,NULL,0,0,'4c620513-be3d-4a5e-bd6c-1b5c016fd5bd'),
-(8,'Gojo Satoru','','1745158530367.jpeg',1,'','$2b$05$MH9EISMHhAd0chu6g6mKJu59AVmryrbmP/ntLm55cLMmyRTIWzOmS','gojo@gmail.com','$2b$05$ix6cIesnilQn9Yir1p5WJ.vA01NNhcpErAnlZJQejdUbw3zs48BcS',0,NULL,0,0,'03b8f031-5ecc-43f2-b714-56474be9288a'),
-(9,'Gojo Satoru','','1746584036522.jpg',1,'','$2b$05$bxRgJXZFYYe8IeSMiMljXei.2oO6j/mVJMrAvPH0HNjmiTkp5dfZG','gojoadmin@jjk.com','$2b$05$5g5mUdh.u6S4vUkFi99n9.B2v0gpsngqr6hIOiA6SrXmK5wiKdCl.',0,NULL,0,1,'f2e238fc-67e6-4284-b8dd-7d6b9fcbb032'),
-(10,'Jojo','','1746584229537.jpg',1,'','$2b$05$sXbKkM6pIhm84wYqgnRB8ufRapwDQdp6WFULwsJ2wFLy3O3khDmIa','jojo@gmail.com','$2b$05$M1ayoyhPSy/Rlb6iUOec/OgQPX3O0CywTz4bPQjTQ57c5gV8lZ1Am',0,NULL,0,0,'e7bf8da8-3f3a-471f-831b-33e8de15b8cb'),
-(11,'uzumaki narutkdkdkkd','','17478177962371747817796226.jpeg',1,'','$2b$05$..DfLXH51XgqfBj7vxID8OAtBi662fmLGxGXm2Et1TB56QAfkpH1S','naruto@uzumaki.com','$2b$05$lK07sFM.PDGYuLcn7mCOIOuqIeDYc//JN6NYCK1ev7o9H2LumLm3m',0,NULL,1,1,'bb60fd44-70f6-484f-b0c0-6dd3aaf34f5d'),
-(12,'Cebastian','','1747833287240.avif',1,'','$2b$05$k2rvBgDIlZRYXyU9IytQxuCn7SowpAzFbNAR/owb1Joe634vZKaa.','cebastian@bblutler.com','$2b$05$AHzxll5JpArwY3HM8r9Bt.HNTMtCszVBndRdIVrKDGKufHLFGoB2u',0,NULL,0,0,'17772f51-7ee7-4a46-b9db-6e0e8149d95a');
+(1,'Gabimaru','','1759360645285.jpg',1,'','$2b$05$CfaszxyjlwpMFMLgSPTy9.KE55MjJPhjgn01LMbeOuB6C8LwtZdwu','gabimaru@hell.com','$2b$05$H0ylWFW0wojmG0.c1qg6oeLsWzGZMhA045Y2oqOWc0c6vFR4q2aY2',0,NULL,1,1,'fc603f81-dc3f-4f95-88de-ff43699b6c4c'),
+(2,'Natsuki Subaru','','1759360770660.jpg',1,'','$2b$05$vmFU8nIAtlrphdQu12V1ZeUqZP/fNfwNYyeJoY9y/oL3kzfISch9m','natsukisubaru@zero.com','$2b$05$l5EM5yFNcNnjbSoKqbjqVuOTyRWuwVDOZmoGi1.6Jy7WDAinNLvty',0,NULL,1,1,'71b65898-8717-466e-a579-cc39c2743ebc');
 /*!40000 ALTER TABLE `consumer` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `consumer_settings`
@@ -110,7 +110,7 @@ CREATE TABLE `consumer_settings` (
   UNIQUE KEY `settings_id` (`settings_id`),
   CONSTRAINT `consumer_settings_ibfk_1` FOREIGN KEY (`consumer_id`) REFERENCES `consumer` (`id`),
   CONSTRAINT `consumer_settings_ibfk_2` FOREIGN KEY (`settings_id`) REFERENCES `settings` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,18 +119,13 @@ CREATE TABLE `consumer_settings` (
 
 LOCK TABLES `consumer_settings` WRITE;
 /*!40000 ALTER TABLE `consumer_settings` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `consumer_settings` VALUES
-(4,4,4),
-(5,5,5),
-(6,6,6),
-(7,7,7),
-(8,8,8),
-(9,9,9),
-(10,10,10),
-(11,11,11),
-(12,12,12);
+(1,1,1),
+(2,2,2);
 /*!40000 ALTER TABLE `consumer_settings` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `consumer_talksphere`
@@ -155,21 +150,13 @@ CREATE TABLE `consumer_talksphere` (
 
 LOCK TABLES `consumer_talksphere` WRITE;
 /*!40000 ALTER TABLE `consumer_talksphere` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `consumer_talksphere` VALUES
-(5,2),
-(6,2),
-(5,3),
-(7,3),
-(6,4),
-(7,4),
-(6,5),
-(8,5),
-(9,6),
-(11,6),
-(9,7),
-(12,7);
+(1,1),
+(2,1);
 /*!40000 ALTER TABLE `consumer_talksphere` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `is_befriended`
@@ -194,21 +181,13 @@ CREATE TABLE `is_befriended` (
 
 LOCK TABLES `is_befriended` WRITE;
 /*!40000 ALTER TABLE `is_befriended` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `is_befriended` VALUES
-(6,5),
-(7,5),
-(5,6),
-(7,6),
-(8,6),
-(5,7),
-(6,7),
-(6,8),
-(11,9),
-(12,9),
-(9,11),
-(9,12);
+(2,1),
+(1,2);
 /*!40000 ALTER TABLE `is_befriended` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `media`
@@ -225,7 +204,7 @@ CREATE TABLE `media` (
   PRIMARY KEY (`id`),
   KEY `fk_media_message` (`message_id`),
   CONSTRAINT `fk_media_message` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -234,22 +213,15 @@ CREATE TABLE `media` (
 
 LOCK TABLES `media` WRITE;
 /*!40000 ALTER TABLE `media` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `media` VALUES
-(1,116,'1744989321962.webm','audio/webm'),
-(2,118,'1745012924768.webm','audio/webm'),
-(11,135,'1745162696709.webm','audio/webm'),
-(12,136,'1745167087363.webm','audio/webm'),
-(13,137,'1745167124340.webm','audio/webm'),
-(14,140,'1746982678830.webm','audio/webm'),
-(15,143,'1746983796528.webm','audio/webm'),
-(16,145,'1747049659780.webm','audio/webm'),
-(17,146,'1747051747311.webm','audio/webm'),
-(18,147,'1747051873636.webm','audio/webm'),
-(19,148,'1747052339865.webm','audio/webm'),
-(20,149,'1747052817168.webm','audio/webm'),
-(21,150,'1747052922027.webm','audio/webm');
+(1,2,'1759360952912_1759360952912.webm','audio/webm'),
+(2,3,'1759360973137_1759360973137.webm','audio/webm'),
+(3,4,'1759360978720_1759360978720.webm','audio/webm'),
+(4,5,'1759360990825_1759360990825.webm','audio/webm');
 /*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `message`
@@ -269,7 +241,7 @@ CREATE TABLE `message` (
   KEY `talksphere_id` (`talksphere_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `consumer` (`id`),
   CONSTRAINT `message_ibfk_2` FOREIGN KEY (`talksphere_id`) REFERENCES `talksphere` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -278,40 +250,16 @@ CREATE TABLE `message` (
 
 LOCK TABLES `message` WRITE;
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `message` VALUES
-(108,'Yo','2025-04-18 13:29:57',5,2),
-(109,'Yep','2025-04-18 13:52:14',6,2),
-(110,'How have you been since then ? ','2025-04-18 13:52:31',5,2),
-(111,'Fine not bones broken and what about you ? ','2025-04-18 13:52:48',6,2),
-(112,'same ','2025-04-18 13:52:57',5,2),
-(113,'','2025-04-18 13:56:16',5,2),
-(115,'muryokusho','2025-04-18 14:41:16',6,2),
-(116,'','2025-04-18 15:15:21',5,2),
-(117,'listen to this ! ','2025-04-18 21:32:05',5,2),
-(118,'fdfgdfg','2025-04-18 21:48:44',7,3),
-(132,'Salut bro ','2025-04-20 15:24:13',8,5),
-(133,'Yo how are tou ','2025-04-20 15:24:31',6,5),
-(134,'Fine bro','2025-04-20 15:24:44',8,5),
-(135,'','2025-04-20 15:24:56',8,5),
-(136,'','2025-04-20 16:38:07',8,5),
-(137,'','2025-04-20 16:38:44',8,5),
-(138,'yo satoru','2025-05-11 16:57:30',11,6),
-(139,'salut uzumaki naruto','2025-05-11 16:57:42',9,6),
-(140,'','2025-05-11 16:57:58',11,6),
-(141,'take','2025-05-11 17:16:31',9,6),
-(142,'','2025-05-11 17:16:31',9,6),
-(143,'','2025-05-11 17:16:36',9,6),
-(144,'succed ','2025-05-12 11:32:31',9,6),
-(145,'','2025-05-12 11:34:19',11,6),
-(146,'','2025-05-12 12:09:07',11,6),
-(147,'','2025-05-12 12:11:13',11,6),
-(148,'','2025-05-12 12:18:59',9,6),
-(149,'take it ','2025-05-12 12:26:57',9,6),
-(150,'','2025-05-12 12:28:42',9,6),
-(151,'yo','2025-05-21 13:15:57',9,7),
-(152,'Butler ','2025-05-21 13:16:43',12,7);
+(1,'Salut','2025-10-01 23:22:21',1,1),
+(2,NULL,'2025-10-01 23:22:32',2,1),
+(3,NULL,'2025-10-01 23:22:53',1,1),
+(4,NULL,'2025-10-01 23:22:58',2,1),
+(5,NULL,'2025-10-01 23:23:10',2,1);
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `settings`
@@ -334,7 +282,7 @@ CREATE TABLE `settings` (
   `dialect` varchar(50) DEFAULT NULL,
   `full` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,18 +291,13 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `settings` VALUES
-(4,1.00,15,0,0,0,0,0,0,'cat.jpg',NULL,0),
-(5,0.65,15,0,0,0,0,0,0,'1745018346389_customize_theme_1745018346373.jpeg',NULL,1),
-(6,0.55,15,0,0,0,0,0,0,'1744984497129_customize_theme_1744984497108.jpeg',NULL,1),
-(7,0.70,15,0,0,0,0,0,0,'1745012900473_customize_theme_1745012900465.jpeg',NULL,1),
-(8,1.00,15,0,0,0,0,0,0,'1745159264577_customize_theme_1745159264570.jpeg',NULL,1),
-(9,1.00,15,0,0,0,0,0,0,'1746982564201_customize_theme_1746982564191.jpeg',NULL,1),
-(10,0.70,15,0,0,0,0,0,0,'1746584406619_customize_theme_1746584406611.jpeg',NULL,0),
-(11,1.00,15,0,0,0,0,0,0,'1746982641339_customize_theme_1746982641329.jpeg',NULL,1),
-(12,0.88,15,0,0,0,0,0,0,'1747836805732_customize_theme_1747836805724.jpeg',NULL,1);
+(1,0.86,15,0,0,0,0,0,0,'1759360913280_customize_theme_1759360913269.jpeg',NULL,1),
+(2,0.84,15,0,0,0,0,0,0,'1759360928161_customize_theme_1759360928153.jpeg',NULL,1);
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `talksphere`
@@ -369,7 +312,7 @@ CREATE TABLE `talksphere` (
   `name` varchar(120) DEFAULT NULL,
   `folder` varchar(120) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -378,15 +321,12 @@ CREATE TABLE `talksphere` (
 
 LOCK TABLES `talksphere` WRITE;
 /*!40000 ALTER TABLE `talksphere` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `talksphere` VALUES
-(2,NULL,NULL,'0fc411ca-54bc-4387-b7a7-b3d6cadce1d4'),
-(3,NULL,NULL,'4b62501d-1052-4ba8-895f-fcdfe58e77f6'),
-(4,NULL,NULL,'f8d10866-dfd9-4e8c-a35d-26506d6c53ec'),
-(5,NULL,NULL,'a0fd6685-ac4c-4e80-8718-7bf88db7972a'),
-(6,NULL,NULL,'d0583d0c-0048-4a22-9dca-7ab9b806ef9d'),
-(7,NULL,NULL,'500dc653-cc27-49fb-87be-ed66b60c1043');
+(1,NULL,NULL,'025f1abb-b7f7-42fb-b3fd-c446385bc7b0');
 /*!40000 ALTER TABLE `talksphere` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `talksphere_media`
@@ -411,8 +351,10 @@ CREATE TABLE `talksphere_media` (
 
 LOCK TABLES `talksphere_media` WRITE;
 /*!40000 ALTER TABLE `talksphere_media` DISABLE KEYS */;
+set autocommit=0;
 /*!40000 ALTER TABLE `talksphere_media` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -423,4 +365,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-05-24 15:58:58
+-- Dump completed on 2025-10-02 16:17:43

@@ -1,7 +1,7 @@
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-11.8.3-MariaDB, for Win64 (AMD64)
 --
--- Host: localhost    Database: chatManagement
+-- Host: localhost    Database: chatmanagement
 -- ------------------------------------------------------
 -- Server version	11.8.3-MariaDB
 
@@ -20,12 +20,14 @@
 -- Table structure for table `assoc_request`
 --
 
-CREATE DATABASE IF NOT EXISTS chatManagement;
+
+
+CREATE DATABASE IF NOT EXISTS chatmanagement;
 CREATE USER 'prodUser'@'%' IDENTIFIED BY 'prod@mypassword.mariadb';
-GRANT ALL PRIVILEGES ON chatManagement.* TO 'prodUser'@'%';
+GRANT ALL PRIVILEGES ON chatmanagement.* TO 'prodUser'@'%';
 FLUSH PRIVILEGES;
 
-USE chatManagement;
+USE chatmanagement;
 
 
 DROP TABLE IF EXISTS `assoc_request`;
@@ -365,4 +367,4 @@ commit;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-10-02 16:17:43
+-- Dump completed on 2025-10-03 20:58:14

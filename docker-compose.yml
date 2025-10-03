@@ -17,6 +17,7 @@ services:
     
     volumes:
       - db_data:/var/lib/mysql
+      - ./ressources/db/my_cf.cnf:/etc/mysql/conf.d/my_cf.cnf:ro
 
 
   backend:
@@ -26,8 +27,13 @@ services:
 
     container_name: my_backend
 
-    env_file:
-      - ./back-end/.env
+    environment:
+      DB_HOST: "db"
+      DB_PORT: 3306
+      DB_USER: prodUser
+      DB_NAME: chatmanagement
+      DB_PASSWORD: prod@mypassword.mariadb
+
 
     depends_on:
       - db

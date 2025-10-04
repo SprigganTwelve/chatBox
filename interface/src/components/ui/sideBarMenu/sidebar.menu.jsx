@@ -13,7 +13,7 @@ import AboutOverlay from "/src/components/ui/aboutOverlay/about.overlay";
 
 import styles from "./sidebar.menu.module.css"
 
-const SideBarMenu = () => {
+const SideBarMenu = ({baseApiURL}) => {
 
     const navigate = useNavigate()
     const { userData, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
@@ -79,7 +79,7 @@ const SideBarMenu = () => {
                                 userData?.image
                                 ? (userData.image.startsWith("blob") 
                                     ? userData.image 
-                                    : `http://localhost:3000/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
+                                    : `${baseApiURL.current}/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
                                 : "/image/randomUser.png"
                             }
                         />

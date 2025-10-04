@@ -8,12 +8,12 @@ import Switch from "/src/components/ui/switch/switch"
 import styles from "./notification.settings.module.css"
 import { useCallback } from "react";
 
-const NotificationSettings = ({ defaultSettings }) => {
+const NotificationSettings = ({ defaultSettings, baseApiURL }) => {
     
     const handleChangeBasicsSettings = useCallback(async ({key, value, id}) => {
         if (!id || !key) return;
         try{
-            const response = await axios.patch('http://localhost:3000/settings/general/basics', {key, value, id})
+            const response = await axios.patch(`${baseApiURL.current}/settings/general/basics`, {key, value, id})
             if(response.status !== 200) {
                 console.log("Something went wrong when changing the setting, response : ", response)
                 return;

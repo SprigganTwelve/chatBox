@@ -6,8 +6,9 @@ import VideoReader from './components/videoReader/video.reader'
 import styles from "./message.buddle.module.css"
 import PhotoReader from "./components/photoReader/photoReader"
 import DocumentReader from "./components/documentReader/documentReader"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useState } from "react"
+import { ChatBoxApiContext } from "/src/context/context"
 
 
 const MessageBuddle = (
@@ -22,6 +23,7 @@ const MessageBuddle = (
     }
 ) => {
 
+    const { baseApiURL } = useContext(ChatBoxApiContext)
     const [enableContainerBackgroundColor, setEnableContainerBackgroundColor] = useState(true) 
 
     useEffect(() => {
@@ -60,6 +62,7 @@ const MessageBuddle = (
                             media.length > 0  && media[0].type.includes('audio') && media[0].name ? (
                                 <AudioReader
                                     media={ media[0] }
+                                    baseApiURL = {baseApiURL}
                                     talkSphereFolder= { talkSphereFolder  }
                                 />
                             )
@@ -71,16 +74,19 @@ const MessageBuddle = (
                                         ?   <VideoReader 
                                                 key={ index }
                                                 name = { item.name }
+                                                baseApiURL= {baseApiURL}
                                                 talkSphereFolder = { talkSphereFolder }
                                             />
                                         : item.type.includes('image') ?
                                                 <PhotoReader
                                                     key={ index }
                                                     name = { item.name }
+                                                    baseApiURL = {baseApiURL}
                                                     talkSphereFolder = { talkSphereFolder }
                                                 />
-                                        :    <DocumentReader
+                                        :       <DocumentReader
                                                     key={ index }
+                                                    baseApiURL= {baseApiURL}
                                                 />
                                         }
                                     </div>

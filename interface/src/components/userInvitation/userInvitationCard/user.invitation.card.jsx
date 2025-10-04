@@ -7,7 +7,7 @@ import styles from "./user.invitaion.card.module.css"
 import isAvailableIcon from "/src/assets/svg/userIsAvailable.svg"
 import isNotAvailablilityIcon from "/src/assets/svg/userIsNotAvailable.svg"
 
-const UserInvitationCard = ({userId}) => {
+const UserInvitationCard = ({userId , setPopUp, baseApiURL}) => {
 
     const { setPopUp } = useContext(ChatBoxApiContext)
 
@@ -24,7 +24,7 @@ const UserInvitationCard = ({userId}) => {
 
     const handleSendInvitation = async (data) => {
         try{
-            const response = await axios.post("http://localhost:3000/invitation/userAssocRequest", data)
+            const response = await axios.post(`${baseApiURL.current}/invitation/userAssocRequest`, data)
             setPopUp({ message: response.data?.message, type: "sucess"  })
         }
         catch(err){
@@ -35,7 +35,7 @@ const UserInvitationCard = ({userId}) => {
     const getVisibleUser = useCallback(async () => {
         try{
             if (userId) {
-                const response = await axios.get(`http://localhost:3000/invitation/userVisible/${userId}`)
+                const response = await axios.get(`${baseApiURL.current}/invitation/userVisible/${userId}`)
                 setUserVisbibleList(response.data)
                 console.log(response)
             }
@@ -60,7 +60,7 @@ const UserInvitationCard = ({userId}) => {
                                 >
                                     <img 
                                         src={ user.image ? 
-                                            `http://localhost:3000/uploads/users/${user.folder}/parameters/` + user.image 
+                                            `${baseApiURL.current}/uploads/users/${user.folder}/parameters/` + user.image 
                                             : "/image/randomUser.png"
                                         }
                                         className={styles.profilImage}

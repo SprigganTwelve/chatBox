@@ -11,7 +11,7 @@ import styles from "./home.module.css"
 const Home = () => {
     const navigate = useNavigate()
     const [imageUploaded, setImageUploaded] = useState("")
-    const { socket, userId, userData, userChatDefaultSettings, talkSphereId } = useContext(ChatBoxApiContext)
+    const { socket, userId, userData, userChatDefaultSettings, talkSphereId, baseApiURL } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(!userId){
@@ -23,12 +23,12 @@ const Home = () => {
         if (userChatDefaultSettings) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:3000/uploads/themes/${userChatDefaultSettings.theme}`
+            imageLoader.src = `${baseApiURL.current}/uploads/themes/${userChatDefaultSettings.theme}`
            
             imageLoader.onload = ()=>{ setImageUploaded(() => imageLoader.src) }
 
             imageLoader.onerror = ()=>{
-                imageLoader.src= `http://localhost:3000/uploads/users/${ userData.folder }/parameters/${userChatDefaultSettings.theme}`
+                imageLoader.src= `${baseApiURL.current}/uploads/users/${ userData.folder }/parameters/${userChatDefaultSettings.theme}`
                
                 imageLoader.onload = ()=>{setImageUploaded(() => imageLoader.src)}
 

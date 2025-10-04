@@ -15,6 +15,7 @@ import styles from './chat.board.module.css';
 const ChatBoard = ({ uploadedBackground }) => {
 
     const { allChats, 
+            baseApiURL,
             currentChat,
             talkSphereId,
             setCurrentChat,
@@ -46,6 +47,7 @@ const ChatBoard = ({ uploadedBackground }) => {
             {talkSphereId !== null ? (
                 <div>
                     <ChatHeader
+                        baseApiURL = {baseApiURL}
                         currentBasicData = { currentChat &&  { 
                             name: currentChat.name, 
                             imageData: currentChat.image_data

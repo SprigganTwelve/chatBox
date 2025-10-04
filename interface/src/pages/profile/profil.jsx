@@ -20,6 +20,7 @@ const Profil = () => {
     const { 
         userId,
         userData,
+        baseApiURL,
         setUserId,
         setUserData,
         userChatDefaultSettings,
@@ -58,7 +59,7 @@ const Profil = () => {
                                     userData?.image
                                     ? (userData.image.startsWith("blob") 
                                         ? userData.image 
-                                        : `http://localhost:${import.meta.env.VITE_API_PORT }/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
+                                        : `${baseApiURL.current}/uploads/users/${ userData.folder }/parameters/`+ userData.image.trim() )
                                     : "/image/randomUser.png"
                                 }
                             className={styles.imageProfil}
@@ -93,7 +94,7 @@ const Profil = () => {
                             inputRef= { inputFileRef }
                             folder = { userData.folder }
                             setCroppedFile = { setCroppedProfileImge }
-                            url= "http://localhost:3000/users/profile/image"
+                            url= { `${baseApiURL.current}/users/profile/image` }
                             fileUrl={ selectedFile && URL.createObjectURL(selectedFile) }
                         />   
                     </Modal>
@@ -153,12 +154,16 @@ const Profil = () => {
                 <div className={styles.rightBoard}>
                     {
                         userData && isButtonActive=="Edit" && (
-                            <EditProfileSettings userData={userData}/>
+                            <EditProfileSettings 
+                                userData={userData}
+                                baseApiURL={baseApiURL}
+                            />
                         )
                     }
                     {
                         userData && isButtonActive =="Discussion" && (
-                            <InterfaceSettings 
+                            <InterfaceSettings
+                                baseApiURL = {baseApiURL}
                                 userFolder= { userData.folder }
                                 defaultSettings={userChatDefaultSettings}
                             />
@@ -167,6 +172,7 @@ const Profil = () => {
                     {
                         userData && isButtonActive == "confidentiality" && (
                             <Confidentiality
+                                baseApiURL = { baseApiURL }
                                 defaultSettings = {userChatDefaultSettings}
                             />
                         )
@@ -174,6 +180,7 @@ const Profil = () => {
                     {
                         userData && isButtonActive == "Notification" && (
                             <NotificationSettings
+                                baseApiURL= {baseApiURL}
                                 defaultSettings = { userChatDefaultSettings }
                             />
                         )

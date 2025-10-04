@@ -17,7 +17,7 @@ const LoginSingUp = () => {
     const [ formResponse, setFormResponse ] = useState(null)
     const [ isNotRegistered, setIsNotRegistered ] = useState(false) // if it is set to false then we proceed with login, otherwise we sign up 
 
-    const { userId, setUserId } = useContext(ChatBoxApiContext)
+    const { userId, setUserId, baseApiURL } = useContext(ChatBoxApiContext)
 
     useEffect(()=>{
         if(userId){
@@ -55,8 +55,8 @@ const LoginSingUp = () => {
                         }
                     } 
                     url= {isNotRegistered ?  
-                            `http://localhost:${import.meta.env.VITE_API_PORT}/users/signUp` 
-                            : `http://localhost:${import.meta.env.VITE_API_PORT}/users/login`}
+                            `${baseApiURL.current}/users/signUp` 
+                            : `${baseApiURL.current}:${import.meta.env.VITE_API_PORT}/users/login`}
                 >
                     {  !isNotRegistered ?
                         (

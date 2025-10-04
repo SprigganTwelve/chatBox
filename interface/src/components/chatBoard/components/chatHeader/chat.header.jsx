@@ -4,9 +4,10 @@ import PropTypes from "prop-types"
 import styles from "./chat.header.module.css"
 
 
+
     
 const ChatHeader = ({  fullBackgroundOpacity, currentBasicData }) => {
-
+    
     return (
         <>
             { currentBasicData ? (
@@ -18,7 +19,7 @@ const ChatHeader = ({  fullBackgroundOpacity, currentBasicData }) => {
                 >
                     <img 
                         src={ currentBasicData.imageData != "" ?
-                            `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${currentBasicData.imageData.folder}/parameters/${currentBasicData.imageData.image}` 
+                            `${baseApiURL.current}/uploads/users/${currentBasicData.imageData.folder}/parameters/${currentBasicData.imageData.image}` 
                             : "/image/user/png-transparent-avatar-default-head-person-unknown-user-anonym-user-pictures-icon.png"
                         }
                         alt="profil"

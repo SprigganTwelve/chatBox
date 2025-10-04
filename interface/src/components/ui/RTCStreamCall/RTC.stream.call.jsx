@@ -32,8 +32,9 @@ const StreamCall = ({
     const { 
         socket,
         userData,
-        currentChat,
         activeCall,
+        baseApiURL,
+        currentChat,
         PeerConnection,
         setActiveCall,
     } = useContext(ChatBoxApiContext)
@@ -127,9 +128,9 @@ const StreamCall = ({
                             className={styles.profileImage}
                             src={
                                 activeCall &&  activeCall.initiate ?
-                                    `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${currentChat.image_data.folder}/parameters/${currentChat.image_data.image}`
+                                    `${baseApiURL.current}/uploads/users/${currentChat.image_data.folder}/parameters/${currentChat.image_data.image}`
                                     : activeCall.currentActiveCall  && activeCall.currentActiveCall.senderImageData.image ?
-                                        `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${activeCall.currentActiveCall.senderImageData.folder}/parameters/${activeCall.currentActiveCall.senderImageData.image}`
+                                        `${baseApiURL.current}/uploads/users/${activeCall.currentActiveCall.senderImageData.folder}/parameters/${activeCall.currentActiveCall.senderImageData.image}`
                                         : "#"
                             }
                         />

@@ -2,7 +2,7 @@
 
 import styles from "./document.reader.module.css";
 
-const DocumentReader = () => {
+const DocumentReader = ({baseApiURL}) => {
     return ( 
         <div className={styles.container}>
 

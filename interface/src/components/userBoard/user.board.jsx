@@ -11,6 +11,7 @@ const UserBoard = () => {
     const { 
         socket,
         allChats, 
+        baseApiURL,
         talkSphereId,
         setTalkSphereId,
         setUsersTemporaryChat,
@@ -66,7 +67,7 @@ const UserBoard = () => {
                         return(
                             <UserCard  
                                 key={ index }
-                                url={  `http://localhost:3000/uploads/users/${imageData.folder}/parameters/${imageData.image}`  }
+                                url={  `${baseApiURL.current}/uploads/users/${imageData.folder}/parameters/${imageData.image}`  }
                                 online={ false }
                                 name={ chat.name }
                                 isActive={isUserActive[index]}

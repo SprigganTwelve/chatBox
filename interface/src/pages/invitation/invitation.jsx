@@ -13,7 +13,7 @@ import styles from "./invitation.module.css"
 
 const Invitation = () => {
     const navigate = useNavigate()
-    const { userId } = useContext(ChatBoxApiContext)
+    const { userId, setPopUp, baseApiURL } = useContext(ChatBoxApiContext)
 
     const [ isActive, setIsActive ] = useState(1);
 
@@ -63,11 +63,19 @@ const Invitation = () => {
             <div className={styles.separator} />
             <div className={styles.userInvitationCardSection}>
                 { isActive == 1 && 
-                            <UserInvitationCard userId={userId}/>
+                            <UserInvitationCard 
+                                userId= { userId }
+                                setPopUp= { setPopUp }
+                                baseApiURL = { baseApiURL }
+                            />
                 }
 
                 {
-                   isActive == 2 &&  <InvitationRequests userId={userId} />
+                   isActive == 2 &&  <InvitationRequests 
+                                        userId= { userId }
+                                        setPopUp = { setPopUp }
+                                        baseApiURL = { baseApiURL }
+                                     />
                 }
             </div>
         </div>

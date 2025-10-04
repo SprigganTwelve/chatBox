@@ -1,23 +1,20 @@
 import axios from "axios"
 import PropTypes from "prop-types"
-import { ChatBoxApiContext } from "/src/context/context";
-import { useEffect, useState, useCallback, useContext } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import styles from "./invitation.requests.module.css"
 
 import isAvailableIcon from "/src/assets/svg/userIsAvailable.svg"
 import isNotAvailablilityIcon from "/src/assets/svg/userIsNotAvailable.svg"
 
-const InvitationRequests = ({ userId }) => {
-
-    const { setPopUp } = useContext(ChatBoxApiContext)
+const InvitationRequests = ({ userId, setPopUp, baseApiURL, }) => {
 
     const [userInvitationRequest, setUserInvitationRequest] = useState([])
 
     //Handle the getting
     const userInvitationRequestHandler = useCallback(async () => {
         try{
-            const response = await axios.get(`http://localhost:3000/invitation/userInvitation/${userId}`)
+            const response = await axios.get(`${baseApiURL.current}/invitation/userInvitation/${userId}`)
             if (response.status === 200) {
                 setUserInvitationRequest(response.data)
             }
@@ -29,7 +26,7 @@ const InvitationRequests = ({ userId }) => {
     //handle the confirmation 
     const handleConfirmInvitation = async (id) => {
         try{
-            const response = await axios.post(`http://localhost:3000/invitation/confirm/`,{
+            const response = await axios.post(`${baseApiURL.current}/invitation/confirm/`,{
                 senderId: id,
                 receiverId: userId, 
             })
@@ -60,7 +57,7 @@ const InvitationRequests = ({ userId }) => {
                         <div className={styles.userCardLeading}>
                             <img
                                 className={styles.userImage}
-                                src={`http://localhost:3000/uploads/users/${user.folder}/parameters/${user.image}`}
+                                src={`${baseApiURL.current}/uploads/users/${user.folder}/parameters/${user.image}`}
                                 alt=""
                             />
                             <div>

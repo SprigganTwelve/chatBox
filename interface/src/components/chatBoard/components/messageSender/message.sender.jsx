@@ -21,7 +21,7 @@ import styles from './message.sender.module.css'
 const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSphereFolder }) => {
 
     const [ value, setValue ] = useState("")
-    const { socket, userId, setUsersTemporaryChat } = useContext(ChatBoxApiContext)
+    const { socket, userId, setUsersTemporaryChat, baseApiURL } = useContext(ChatBoxApiContext)
 
     const sendMessage = useCallback(async ({ media, content, createdAt }) => {
         try{
@@ -57,7 +57,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                     .replace(/[^\w.-]/g, '');
 
             const response = await fetch(
-                                    `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/${talkSphereId}/${talkSphereFolder}/sendFiles`,{
+                                    `${baseApiURL.current}/talkSphere/messages/${talkSphereId}/${talkSphereFolder}/sendFiles`,{
                                     body: file,
                                     method: "POST",
                                     headers: {
@@ -97,7 +97,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                         console.log('Uploading ended.');
 
                         await axios.post(
-                                    `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/store/files`,{
+                                    `${baseApiURL.current}/talkSphere/messages/store/files`,{
                                      userId, talkSphereId, fileName, fileType: file.type
                         })
     
@@ -139,7 +139,7 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                     if(event.key == "Enter"){
                         try{
                             const createdAt = Date.now()
-                            await axios.post( `http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/messages/store`,{
+                            await axios.post( `${baseApiURL.current}/talkSphere/messages/store`,{
                                 content: value, userId, talkSphereId, createdAt
                             })
                             sendMessage({ media: null, content: value, createdAt })

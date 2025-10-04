@@ -7,14 +7,14 @@ import styles from './video.reader.module.css'
 
 
 
-const VideoReader = ({ name, talkSphereFolder }) => {
+const VideoReader = ({ name, talkSphereFolder, baseApiURL }) => {
     
     
     return ( 
         <div className={styles.container}>
             <VideoFrameSnapper
-                onClick={ ()=> window.open(`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`, '_blank') }
-                httpUrl = {`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`}
+                onClick={ ()=> window.open(`${baseApiURL.current}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`, '_blank') }
+                httpUrl = {`${baseApiURL.current}/uploads/talkspheres/${talkSphereFolder}/videos/${name}`}
             />
         </div>
      );

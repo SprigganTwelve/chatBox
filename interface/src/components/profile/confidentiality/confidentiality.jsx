@@ -5,12 +5,14 @@ import ViewOption from "/src/components/ui/viewOption/view.option";
 import Switch from "/src/components/ui/switch/switch"
 
 import styles from "./confidentiality.module.css"
+import { useContext } from "react";
+import { ChatBoxApiContext } from "/src/context/context";
 
-const Confidentiality = ({ defaultSettings }) => {
+const Confidentiality = ({ defaultSettings, baseApiURL }) => {
 
     const handleChangeBasicsSettings = async ({key, value, id}) => {
         try{
-            const response = await axios.patch('http://localhost:3000/settings/general/basics', {key, value, id})
+            const response = await axios.patch(`${baseApiURL.current}/settings/general/basics`, {key, value, id})
             if(response.status !== 200) {
                 console.log("Something went wrong when changing the setting, response : ", response)
                 return ;

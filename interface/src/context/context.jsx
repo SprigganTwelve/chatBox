@@ -44,6 +44,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
     const socket = useRef(null);
+    const baseApiURL = useRef(import.meta.env.PROD ? VITE_PROD_BASE_API_URL : `http://localhost:${import.meta.env.VITE_API_PORT}`)
     const PeerConnection = useRef({ peer: null, isAvailable: false, callOfferArray: [] });
 
 
@@ -52,7 +53,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const initializeSocket = useCallback(() => {
         
         if (!socket.current) {
-            socket.current =  io(`http://localhost:${import.meta.env.VITE_API_PORT}`);
+            socket.current =  io(baseApiURL.current);
             socket.current.emit("register", { userId: userId.toString() });
 
             socket.current.messagesSocketHandlers = messagesSocketHandlers(socket.current);
@@ -119,8 +120,8 @@ const ChatBoxApiContextProvider = ({ children }) => {
             initializeSocket();
 
             const [userRes, chatRes] = await Promise.all([
-                axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/users/${userId}`),
-                axios.get(`http://localhost:${import.meta.env.VITE_API_PORT}/talkSphere/${userId}`)
+                axios.get(`${baseApiURL.current}/users/${userId}`),
+                axios.get(`${baseApiURL.current}/talkSphere/${userId}`)
             ]);
 
             const {
@@ -172,7 +173,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
             setUserId, setUserData, setCurrentChat, setActiveCall,
             allChats, loading, popUp, talkSphereId, usersTemporaryChat,
             socket, PeerConnection, userId, userData, userChatDefaultSettings,
-            fullBackgroundOpacity, currentChat, activeCall
+            fullBackgroundOpacity, currentChat, activeCall, baseApiURL
         }}>
             {children}
         </ChatBoxApiContext.Provider>

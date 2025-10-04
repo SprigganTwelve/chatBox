@@ -16,14 +16,14 @@ import styles from "./message.content.module.css";
 const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     const container = useRef(null)
     const [ userChatFromBdd, setUserChatFromBdd ] = useState([])
-    const { socket, userId, setUsersTemporaryChat, usersTemporaryChat } = useContext(ChatBoxApiContext)
+    const { socket, userId, setUsersTemporaryChat, usersTemporaryChat, baseApiURL } = useContext(ChatBoxApiContext)
 
 
     const getUserChat = useCallback(async () => {
         if (!talkSphereId) return; 
         try {
             if (talkSphereId) {
-                let response = await axios.get(`http://localhost:3000/talkSphere/messages/${talkSphereId}`);
+                let response = await axios.get(`${baseApiURL.current}/talkSphere/messages/${talkSphereId}`);
                 insertFormattedDateFromArray(response.data)
                 setUserChatFromBdd(()=> response.data);
             }

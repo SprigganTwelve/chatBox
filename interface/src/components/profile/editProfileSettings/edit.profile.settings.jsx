@@ -21,7 +21,7 @@ import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
 import Modal from "/src/components/ui/modal/modal";
 
 
-const EditProfileSettings = ({ userData }) => {
+const EditProfileSettings = ({ userData, baseApiURL }) => {
 
     const { setUserData, setPopUp } = useContext( ChatBoxApiContext )
     const [ ModalManager, setModalManger ] = useState({ args: null, children: null })
@@ -30,7 +30,7 @@ const EditProfileSettings = ({ userData }) => {
         if (!id || !key) return;
         
         try {
-          await axios.patch(`http://localhost:${import.meta.env.VITE_API_PORT}/users/`, { id, key, value });
+          await axios.patch(`${baseApiURL.current}/users/`, { id, key, value });
     
           setUserData?.((previous) => {
             if (previous[key] === value) return previous;
@@ -262,7 +262,7 @@ const EditProfileSettings = ({ userData }) => {
                                 children: () => 
                             (
                                 <ChatBoxForm
-                                     url={`http://localhost:${import.meta.env.VITE_API_PORT}/users/login`}
+                                     url={`${baseApiURL.current}/users/login`}
                                      btnContent = "Add new account"
                                      formStyle={{
                                          width: "fit-content",
@@ -293,7 +293,7 @@ const EditProfileSettings = ({ userData }) => {
                                         showCancelAndConfirmButtons: true,
                                         onContinueHandler:async  () => {
                                             try{
-                                                await axios.delete(`http://localhost:${import.meta.env.VITE_API_PORT}/users/delete/${userData.id}`)
+                                                await axios.delete(`${baseApiURL.current}/users/delete/${userData.id}`)
                                                 localStorage.clear()
                                                 window.location.reload()
                                             }

@@ -20,7 +20,7 @@ import Modal from "/src/components/ui/modal/modal";
 
 
 
-const InterfaceSettings = ({ defaultSettings, userFolder }) => {
+const InterfaceSettings = ({ defaultSettings, userFolder, baseApiURL }) => {
 
     const inputFileRef = useRef(null)
 
@@ -29,7 +29,6 @@ const InterfaceSettings = ({ defaultSettings, userFolder }) => {
     const [isActive, setIsActive] = useState(defaultSettings.fontsize)
 
     const [ selectedFile, setSelectedFile  ] = useState(false)
-
 
     const fontSize = {
         fontSize1: 15,
@@ -42,7 +41,7 @@ const InterfaceSettings = ({ defaultSettings, userFolder }) => {
 
     const handleChangeBasicsSettings = async ({key, value, id}) => {
         try{
-            const response = await axios.patch(`http://localhost:${import.meta.env.VITE_API_PORT}/settings/general/basics`, {key, value, id})
+            const response = await axios.patch(`${baseApiURL.current}/settings/general/basics`, {key, value, id})
             if(response.status !== 200) {
                 console.log("Something went wrong when changing the setting, response : ", response)
                 return ;
@@ -66,7 +65,7 @@ const InterfaceSettings = ({ defaultSettings, userFolder }) => {
         if (defaultSettings && userFolder && !croppedFile) {
             const imageLoader = new Image()
 
-            imageLoader.src = `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/users/${userFolder}/parameters/${defaultSettings.theme}`
+            imageLoader.src = `${baseApiURL.current}/uploads/users/${userFolder}/parameters/${defaultSettings.theme}`
            
             imageLoader.onload = ()=>{ 
                 setCroppedFile(imageLoader.src)
@@ -89,7 +88,7 @@ const InterfaceSettings = ({ defaultSettings, userFolder }) => {
                    return (
                         <VibeBox
                             key={key}
-                            imageUrl={`http://localhost:${import.meta.env.VITE_API_PORT}/uploads/themes/` + item }
+                            imageUrl={`${baseApiURL.current}/uploads/themes/` + item }
                             isFocus={isFocus === key}
                             onClick={()=> {
                                 setFocus(key)
@@ -145,7 +144,7 @@ const InterfaceSettings = ({ defaultSettings, userFolder }) => {
                         folder = { userFolder }
                         idInBdd={ defaultSettings.settings_id }
                         setCroppedFile = {setCroppedFile}
-                        url= {`http://localhost:${import.meta.env.VITE_API_PORT}/settings/general/image`}
+                        url= {`${baseApiURL.current}/settings/general/image`}
                         fileUrl={ selectedFile &&  URL.createObjectURL(selectedFile)}
                     />
                 </div> 

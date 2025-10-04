@@ -4,19 +4,19 @@ import styles from "./photo.reader.module.css";
 
 
 
-const PhotoReader = ({ name, talkSphereFolder }) => {
+const PhotoReader = ({ name, talkSphereFolder, baseApiURL }) => {
     
 
     return ( 
         <div 
             className={styles.container}
-            onClick={ () => window.open( `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/photos/${name}`, '_blank') }
+            onClick={ () => window.open( `${baseApiURL.current}/uploads/talkspheres/${talkSphereFolder}/photos/${name}`, '_blank') }
         >
             <img 
                 alt=""
                 className={ styles.image }
                 src={
-                    `http://localhost:${import.meta.env.VITE_API_PORT}/uploads/talkspheres/${talkSphereFolder}/photos/${name}`
+                    `${baseApiURL.current}/uploads/talkspheres/${talkSphereFolder}/photos/${name}`
                 }
             />
         </div>

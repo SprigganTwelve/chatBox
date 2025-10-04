@@ -14,13 +14,13 @@ import { useContext } from 'react';
 const Layout = () => {
 
     const location = useLocation()
-    const { activeCall } = useContext(ChatBoxApiContext)
+    const { activeCall, baseApiURL } = useContext(ChatBoxApiContext)
 
     return ( 
         <div className={styles.layoutContainer}>
             {  
                 !(activeCall && activeCall.initiate) && location.pathname !== '/' && (
-                    <SideBarMenu/>
+                    <SideBarMenu baseApiURL={baseApiURL}/>
             )}
             <Outlet />
             <PopUp />

@@ -12,8 +12,9 @@ import { convertDuration } from "/src/utils/time.utils";
 
 
 
-const AudioReader = ({ media, talkSphereFolder }) => {
+const AudioReader = ({ media, talkSphereFolder, baseApiURL }) => {
 
+  
   const [ isPlaying, setIsPlaying ] = useState(false);
   const [ audioDuration, setAudioDuration ] = useState()
   const [ audioProgression, setAudioProgression ] = useState(0);
@@ -23,7 +24,7 @@ const AudioReader = ({ media, talkSphereFolder }) => {
 
   const audioPath =
     media?.name && talkSphereFolder
-      ? `http://localhost:3000/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`
+      ? `${baseApiURL.current}/uploads/talkspheres/${talkSphereFolder}/audios/${media.name}`
       : null;
 
   useEffect(() => {

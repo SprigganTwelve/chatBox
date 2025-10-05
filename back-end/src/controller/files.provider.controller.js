@@ -2,7 +2,7 @@
 const path = require('path')
 
 
-exports.getUserFilesInParametersDirectory =  (req, res )=>{
+exports.getUserFilesInParametersDirectory =  (req, res)=>{
     try{
         const { folder, filename } = req.params;
         const filePath = path.join(__dirname, '../uploads/users', folder, 'parameters', filename);

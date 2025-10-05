@@ -56,7 +56,7 @@ const LoginSingUp = () => {
                     } 
                     url= {isNotRegistered ?  
                             `${baseApiURL.current}/users/signUp` 
-                            : `${baseApiURL.current}:${import.meta.env.VITE_API_PORT}/users/login`}
+                            : `${baseApiURL.current}/users/login`}
                 >
                     {  !isNotRegistered ?
                         (

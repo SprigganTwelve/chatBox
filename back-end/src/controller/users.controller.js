@@ -2,26 +2,33 @@
 const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcrypt')
-const db = require("../database/connexion")
+const pool = require("../database/connexion");
+
+
 const { v4: uuidv4 } = require('uuid');
 
 exports.getAllUsers = async (req, res) => {
+    let conn;
     try{
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
         const users = await conn.query("SELECT * FROM Consumer")
         return  res.status(200).json( users )
     }
     catch(err){
         console.log(err)
     }
+    finally{
+        if(conn) conn.release()
+    }
 };
 
 
 
 exports.getSpecialUser = async (req, res) => {
+    let conn;
     try {
         let user;
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
         const response = await conn.query(
             `
                 SELECT 
@@ -68,16 +75,19 @@ exports.getSpecialUser = async (req, res) => {
         console.log(err);
         res.status(500).json({ message: "Erreur serveur" });
     }
+    finally{
+        if(conn) conn.release()
+    }
 };
 
 
 
 exports.getMyFriends = async (req, res) => {
+    let connexion;
     try{
-
         const { id } = req.params;
         let allFriendData = [];
-        const connexion = await db.connexion;
+        connexion = await pool.getConnection();
         const friendIdArray = await connexion.query( "SELECT * from Is_BeFriended where consumer_id  = ?", [id]);
         
         for(const friendId  of friendIdArray){
@@ -91,41 +101,34 @@ exports.getMyFriends = async (req, res) => {
     catch(err){
         console.log(err)
     }
+    finally{
+        if(connexion) connexion.release()
+    }
 };
 
 
-exports.getLoginConnection = async (req, res) => {
+
+exports.getLoginConnection = async (req, res) => { 
+    const { email, password } = req.body;
+
+    if (!email || !password) return res.json({ message: "You must fill out the form" });
+
+    let conn;
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.json({ message: "You must fill out the form" });
-        }
-
-        const conn = await db.connexion;
-
+        conn = await pool.getConnection();
         const response = await conn.query(
             "SELECT id, password FROM Consumer WHERE email = ?", 
             [email]
         );
 
-        if (response.length === 0) {
-            return res.json({ message: "User doesn't exist" });
-        }
+        if (response.length === 0) return res.json({ message: "User doesn't exist" });
 
         const user = response[0];
-
         const passwordMatch = await bcrypt.compare(password, user.password);
 
-        if (!passwordMatch) {
-            return res.json({ message: "Incorrect password" });
-        }
+        if (!passwordMatch) return res.json({ message: "Incorrect password" });
 
-        await conn.query(
-            "UPDATE Consumer SET online= ? WHERE id=?", 
-            [1, user.id]
-        );
-
+        await conn.query("UPDATE Consumer SET online= ? WHERE id=?", [1, user.id]);
         delete user.password;
 
         return res.status(200).json({ message: "", user });
@@ -133,6 +136,8 @@ exports.getLoginConnection = async (req, res) => {
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Something went wrong" });
+    } finally {
+        if (conn) conn.release(); // très important : libère la connexion
     }
 };
 
@@ -142,6 +147,7 @@ exports.getLoginConnection = async (req, res) => {
 
 
 exports.getSignedUpToBDD = async (req, res) => {
+    let conn;
     try{
         let filePath;
         let fileName;
@@ -155,7 +161,7 @@ exports.getSignedUpToBDD = async (req, res) => {
             return res.json( {message: "Name, email and password must not be empty"} )
         }
         
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
         
         const emailAlreadyExist = await conn.query("SELECT * FROM Consumer WHERE email = ? ", [email])
         if(emailAlreadyExist.length > 0){
@@ -229,6 +235,9 @@ exports.getSignedUpToBDD = async (req, res) => {
         console.log(err)
         return res.status(404).json( { message: "Something went wrong" } )
     }
+    finally{
+        if(conn) conn.release()
+    }
 }
 
 
@@ -239,8 +248,9 @@ exports.getSignedUpToBDD = async (req, res) => {
 
 
 exports.changeValueInClientInBDDWithKeyAndValue = async (req, res) => {
+    let conn;
     try{
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
         const { id, key, value } = req.body;
         console.log({ id, key, value } )
         if(!id || !key || (value == null || value == undefined) ){
@@ -257,15 +267,19 @@ exports.changeValueInClientInBDDWithKeyAndValue = async (req, res) => {
         console.log("Something went wrong : " + err)
         return res.status(500).json( { message: "something went wrong" } )
     }
+    finally{
+        if(conn) conn.release()
+    }
 }
 
 
 
 
 exports.changeImageProfil = async (req, res) => {
+    let conn;
     try{
         const file = req.file
-        const conn = await db.connexion
+        conn = await pool.getConnection()
 
         const { id, opacity, folder } = req.body
         if(!id | !opacity | !file |!folder){
@@ -306,18 +320,22 @@ exports.changeImageProfil = async (req, res) => {
         console.log("Something went wrong : " + error)
         return res.status(500).json( { message: "something went wrong" } )
     }
+    finally {
+        if(conn) conn.release()
+    }
 }
 
 
 
 exports.deleteOneUserAccount = async (req, res) => {
+    let conn;
     try{
         const userId = req.params.id
         if(!userId){
             console.log("[DELETE, function: deleteOneUserAccount ] Missing props")
             return res.status(500).json({ message: "Id is not passed" })
         }
-        const conn = await db.connexion
+        conn = await pool.getConnection()
         const [ selectedUserInBdd ] = await  conn.query("SELECT image FROM Consumer WHERE id = ?", [userId])
 
         if(!selectedUserInBdd){
@@ -348,5 +366,8 @@ exports.deleteOneUserAccount = async (req, res) => {
     catch(error){
         console.log("Something went wrong : " + error)
         return res.status(500).json( { message: "something went wrong" } )
+    }
+    finally{
+        if(conn) conn.release()
     }
 }

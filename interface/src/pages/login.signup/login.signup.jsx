@@ -30,7 +30,6 @@ const LoginSingUp = () => {
         console.log("isNotRegistered : ",isNotRegistered);
         console.log("formResponse : ", formResponse);
         console.log("Status : ", formResponse?.data.status)
-        
         if(formResponse && (formResponse.status === 200 || formResponse.status === 204) ){
             if(isNotRegistered) setIsNotRegistered(false)
         }

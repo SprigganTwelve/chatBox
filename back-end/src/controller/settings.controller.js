@@ -1,7 +1,7 @@
 
 const fs = require('fs')
 const path = require("path")
-const db = require("../database/connexion")
+const pool = require("../database/connexion")
 
 
 
@@ -9,9 +9,10 @@ const db = require("../database/connexion")
 //Here we change the global properties settings which is not a large or a binary object
 
 exports.changeGeneralSettingPropertyInBdd = async (req, res) => {
+    let connexion;
     try{
         const { key , value, id } = req.body
-        const connexion = await db.connexion;
+        connexion = await pool.getConnection();
         if(!key || !id || (value == null || value == undefined) ){
             return res.status(500).json({ message: "Props missing" })
         }
@@ -23,6 +24,9 @@ exports.changeGeneralSettingPropertyInBdd = async (req, res) => {
         console.log("[route: setting/ ; function:  changeGeneralSettingPropertyInBdd] Something went wrong, error : ", error)
         return res.status(400).json({ message: "Something went wrong while modifying the settings table in database" })
     }
+    finally{
+        if(connexion) connexion.release()
+    }
 }
 
 
@@ -30,11 +34,10 @@ exports.changeGeneralSettingPropertyInBdd = async (req, res) => {
 //Here we change the global image setting in the database 
 
 exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
-
-    const conn = await db.connexion;
-    await conn.beginTransaction()
-
+    let conn;
     try{
+        conn = await pool.getConnection();
+        await conn.beginTransaction()
         const file = req.file;
         const { id, opacity, folder } = req.body;
         console.log()
@@ -91,9 +94,13 @@ exports.changeGeneralImageSettingsPropertyInBdd = async (req, res) => {
         }
     }
     catch(error){
-        await conn.rollback()
+        if(conn)
+            await conn.rollback()
         console.log("[POST, function: changeGeneralImageSettingPropertyInBdd] Something went wrong : ", error)
         return res.status(400).json({message: "Failed to insert image"})
+    }
+    finally{
+        if(conn) conn.release()
     }
 
 }

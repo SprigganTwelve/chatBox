@@ -3,14 +3,15 @@ const fs = require('fs')
 const path = require('path')
 const bcrypt = require("bcrypt")
 const { v4: uuidv4 } =require('uuid')
-const db = require("../database/connexion")
+const pool = require("../database/connexion")
 
 
 
 exports.getUserVisible = async (req,res) => {
+    let conn;
     try{
         const { userId } = req.params
-        const conn = await db.connexion
+        conn = await pool.getConnection()
         const response = await conn.query(
            `SELECT id, name, image, availability, folder
             FROM Consumer
@@ -30,16 +31,20 @@ exports.getUserVisible = async (req,res) => {
         console.log("Something went wrong, error : "+ err)
         res.status(500).json({ message: "Something went wrong" })
     }
+    finally{
+        if(conn) conn.release()
+    }
 }
 
 
 
 exports.getUserInvitation = async (req, res) => {
+    let conn;
     try{
         const data = []
         const { receiverId } = req.params
         console.log(receiverId)
-        const conn = await db.connexion
+        conn = await pool.getConnection()
         const assocRequestReponse =  await conn.query(
             "SELECT * FROM Assoc_request WHERE receiver_id = ?",
             [receiverId]
@@ -63,14 +68,18 @@ exports.getUserInvitation = async (req, res) => {
         console.log(err)
         return res.status(400).json({ message: "Something went wrong" })
     }
+    finally{
+        if(conn) conn.release()
+    }
 }
 
 
 
 exports.MakeAnAssocRequest = async (req, res) => {
+    let conn;
     try{
         const { senderId, receiverId } = req.body
-        const conn = await db.connexion
+        conn = await pool.getConnection()
         const assocRequestReponse =  await conn.query(
             "INSERT INTO assoc_request(sender_id, receiver_id) VALUES(?,?)",
             [senderId, receiverId]
@@ -86,14 +95,18 @@ exports.MakeAnAssocRequest = async (req, res) => {
         console.log(err)
         return res.status(400).json({ message: "Something went wrong" })
     }
+    finally{
+        if(conn) conn.release()
+    }
 }
 
 
 exports.ConfirmAnInvitation = async (req, res) => {
-    const conn = await db.connexion;
+    let conn;
     const { senderId, receiverId } = req.body;
-
+    
     try {
+        conn = await pool.getConnection();
         await conn.beginTransaction();
 
         // Insert friendship in both directions in a single query
@@ -159,9 +172,14 @@ exports.ConfirmAnInvitation = async (req, res) => {
         await conn.commit();
         return res.status(200).json({ message: "Now you just have got a friend" });
 
-    } catch (error) {
-        await conn.rollback();
+    }
+    catch (error) {
+        if(conn)
+            await conn.rollback();
         console.error(error.message);
         return res.status(500).json({ message: "Something went wrong", error: error.message });
+    }
+    finally{
+        if(conn) conn.release()
     }
 };

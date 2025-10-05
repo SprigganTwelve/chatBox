@@ -53,6 +53,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
     const initializeSocket = useCallback(() => {
         
         if (!socket.current) {
+
             console.log("baseURl", baseApiURL.current)
             socket.current =  io(baseApiURL.current);
             socket.current.emit("register", { userId: userId.toString() });

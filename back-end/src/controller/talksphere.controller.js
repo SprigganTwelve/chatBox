@@ -1,5 +1,5 @@
 
-const db = require("../database/connexion")
+const pool = require("../database/connexion")
 const path = require('path')
 const fs = require('fs')
 const { PassThrough } = require('stream')
@@ -7,9 +7,10 @@ const { PassThrough } = require('stream')
 
 
 exports.getAllChatsStoredInBdd = async (req, res)=>{
+  let conn;
     try {
         const { userId  } = req.params
-        const conn = await db.connexion
+        conn = await pool.getConnection()
         const response = await conn.query(`
             SELECT
                 T.id AS id,
@@ -71,6 +72,9 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
         console.log(`Something went wrong: ${err}`);
         return res.status(500).json({ message: "An error occurred" });
     }
+    finally{
+      if(conn) conn.release()
+    }
 }
 
 
@@ -79,6 +83,7 @@ exports.getAllChatsStoredInBdd = async (req, res)=>{
 //Here retrive all the field of one specific talksphere stored in bdd  
 
 exports.getTalkSphere = async (req, res) => {
+  let conn;
     try {
         const { senderId, receiverId } = req.params;
         
@@ -87,7 +92,7 @@ exports.getTalkSphere = async (req, res) => {
             return res.status(500).json({ message: "Props missing" })
         }
 
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
 
         // Requête pour trouver une TalkSphere commune
         const data = await conn.query(`
@@ -98,9 +103,9 @@ exports.getTalkSphere = async (req, res) => {
             WHERE c1.consumer_id = ? AND c2.consumer_id = ?;
         `, [senderId, receiverId]);
         console.log("Talksphere")
-        // Vérifier si une TalkSphere existe
+        // check if at leat one TalkSphere is available
         if (data.length > 0) {
-            return res.status(200).json(data[0]); // Renvoie la première TalkSphere trouvée
+            return res.status(200).json(data[0]); // Return the first found
         } else {
             return res.status(404).json({ message: "No common TalkSphere found" });
         }
@@ -108,6 +113,9 @@ exports.getTalkSphere = async (req, res) => {
     catch (err) {
         console.log(`Something went wrong: ${err}`);
         return res.status(500).json({ message: "An error occurred" });
+    }
+    finally{
+      if(conn) conn.release()
     }
 };
 
@@ -117,9 +125,10 @@ exports.getTalkSphere = async (req, res) => {
 //Retreive all the messages about one talsphereId
 
 exports.getMessagesFromTalkSphere = async (req, res) => {
+    let connexion;
     try{
         const { id } = req.params
-        const connexion = await db.connexion;
+        connexion = await pool.getConnection();
         const data = await connexion.query(
             `
                 SELECT 
@@ -154,11 +163,15 @@ exports.getMessagesFromTalkSphere = async (req, res) => {
         console.log(`Something wrong hapenned : ${err}`)
         return res.status(404).json({ message: "Something wrong happend" })
     }
+    finally{
+      if(connexion) connexion.release()
+    }
 }
 
 
 
-exports.insertMessageIntoBdd = async ( req, res )=>{   
+exports.insertMessageIntoBdd = async ( req, res )=>{
+  let connexion;
   try {
 
     const { userId, content,  talkSphereId, createdAt } = req.body
@@ -169,7 +182,7 @@ exports.insertMessageIntoBdd = async ( req, res )=>{
           return res.status(500).json({ message: "Mising or incorrect sent data" })
     }
 
-    const connexion = await db.connexion;
+    connexion = await pool.getConnection();
     await connexion.beginTransaction();
 
     let dateObj = createdAt instanceof Date ? createdAt : new Date(createdAt);
@@ -200,12 +213,16 @@ exports.insertMessageIntoBdd = async ( req, res )=>{
     console.log("Something went wrong while inserting the message into the bdd", err)
     return res.status(500).json({ message: "Something went wrong"})
   }
+  finally{
+    if(connexion) connexion.release()
+  }
 }
 
 
 
 
 exports.recordMediaIntoBdd = async (req, res)=>{
+    let conn;
     try {
 
         const { userId, talkSphereId, fileName, fileType } = req.body
@@ -215,7 +232,7 @@ exports.recordMediaIntoBdd = async (req, res)=>{
           return res.status(500).json({ message: "Mising or incorrect sent data" })
         }
 
-        const conn = await db.connexion;
+        conn = await pool.getConnection();
         await conn.beginTransaction();
 
         const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -248,6 +265,9 @@ exports.recordMediaIntoBdd = async (req, res)=>{
       }
       catch (dbErr) {
         console.error('Erreur DB :', dbErr);
+      }
+      finally{
+        if(conn) conn.release()
       }
 }
 

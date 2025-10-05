@@ -73,7 +73,7 @@ app.use("/talkSphere", talkSphereRouter);
 app.use('/settings', userSettingsRouters)
 app.use("/invitation", userInvitationRouter)
 
-app.get("test", (_,res)=> res.send("<h1>THE TEST IS OKAY</h1>") )
+app.get("/test", (_,res)=> res.send("<h1>THE TEST IS OKAY</h1>") )
 
 //----statics 
 

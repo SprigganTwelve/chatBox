@@ -1,7 +1,7 @@
 
 //---port
 
-const API_PORT = 3000
+const API_PORT = process.env.PORT | 3000
 const users = new Map()
 
 //--- library import
@@ -68,11 +68,12 @@ const fileProvider = require('./routes/files.provider.routes')
 
 
 app.use("/users", usersRouter);
-app.use("/uploads", fileProvider)
+app.use("/uploads", fileProvider);
 app.use("/talkSphere", talkSphereRouter);
 app.use('/settings', userSettingsRouters)
 app.use("/invitation", userInvitationRouter)
 
+app.get("test", (_,res)=> res.send("<h1>THE TEST IS OKAY</h1>") )
 
 //----statics 
 

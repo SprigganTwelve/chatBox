@@ -6,7 +6,7 @@ import styles from "./chat.header.module.css"
 
 
     
-const ChatHeader = ({  fullBackgroundOpacity, currentBasicData }) => {
+const ChatHeader = ({  fullBackgroundOpacity, currentBasicData, baseApiURL }) => {
     
     return (
         <>

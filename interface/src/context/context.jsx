@@ -44,7 +44,7 @@ const ChatBoxApiContextProvider = ({ children }) => {
 
 
     const socket = useRef(null);
-    const baseApiURL = useRef(import.meta.env.PROD ? VITE_PROD_BASE_API_URL : `http://localhost:${import.meta.env.VITE_API_PORT}`)
+    const baseApiURL = useRef(import.meta.env.PROD ? import.meta.env.VITE_PROD_BASE_API_URL : `http://localhost:${import.meta.env.VITE_API_PORT}`)
     const PeerConnection = useRef({ peer: null, isAvailable: false, callOfferArray: [] });
 
 

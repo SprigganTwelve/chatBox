@@ -6,7 +6,7 @@ exports.getUserFilesInParametersDirectory =  (req, res)=>{
     try{
         const { folder, filename } = req.params;
         const filePath = path.join(__dirname, '../uploads/users', folder, 'parameters', filename);
-        res.sendFile(filePath);
+        return res.sendFile(filePath);
     }
     catch(err){
         console.log("Something wrong happenned")
@@ -20,7 +20,7 @@ exports.getTalksphereMedias =  (req, res )=>{
         const { folder, folder2, filename } = req.params;
         const filePath = path.join(__dirname, '../uploads/talkspheres', folder, folder2, filename);
         console.log(filePath)
-        res.sendFile(filePath);
+        return res.sendFile(filePath);
     }
     catch(err){
         console.log("Something wrong happenned")

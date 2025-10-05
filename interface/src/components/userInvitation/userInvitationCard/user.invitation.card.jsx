@@ -9,8 +9,6 @@ import isNotAvailablilityIcon from "/src/assets/svg/userIsNotAvailable.svg"
 
 const UserInvitationCard = ({userId , setPopUp, baseApiURL}) => {
 
-    const { setPopUp } = useContext(ChatBoxApiContext)
-
     const [userVisibleList, setUserVisbibleList] = useState([])
     const [invitedUsers, setInvitedUsers] = useState({})
 

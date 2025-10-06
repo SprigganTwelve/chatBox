@@ -1,7 +1,8 @@
 services:
   - type: web
-    name: interface
+    name: chatbox-frontend
     env: static
+    rootDir: interface
     staticPublishPath: dist
     routes:
       - type: rewrite

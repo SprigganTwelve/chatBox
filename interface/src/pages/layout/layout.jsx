@@ -18,10 +18,7 @@ const Layout = () => {
 
     return ( 
         <div className={styles.layoutContainer}>
-            {  
-                !(activeCall && activeCall.initiate) && location.pathname !== '/' && (
-                    <SideBarMenu baseApiURL={baseApiURL}/>
-            )}
+            <SideBarMenu baseApiURL={baseApiURL}/>
             <Outlet />
             <PopUp />
             {

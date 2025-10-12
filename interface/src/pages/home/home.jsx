@@ -42,22 +42,19 @@ const Home = () => {
         <>
             <div 
                 className={styles.container}
-                style={{ background: talkSphereId ? 'rgba(0, 0, 0)' : 'rgb(67, 65, 65)' }}
             >
                 <div className={styles.jsxComponentsContainer}>
                     <UserBoard />
-                    <ChatBoard 
-                        uploadedBackground = { 
-                            userChatDefaultSettings && !userChatDefaultSettings?.full  
-                                ? imageUploaded 
-                                : null
-                        }
-                    />
+                    <ChatBoard />
                     <Action />
                 </div>
                 {
                     userChatDefaultSettings && userChatDefaultSettings.full && (
                         <div className={styles.fullBackground}>
+                            <div 
+                                className={styles.blackForeground}
+                                style={{ background: talkSphereId ? 'rgba(0, 0, 0)' : 'rgb(67, 65, 65)'}}
+                            />
                             <img src={imageUploaded} className={styles.img} style={{ opacity: userChatDefaultSettings.opacity  }}/>
                         </div>
                     )

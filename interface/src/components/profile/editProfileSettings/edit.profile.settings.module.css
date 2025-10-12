@@ -14,7 +14,7 @@
 
 .options{
     gap: 20px;
-    position: relative;
     display: flex;
+    position: relative;
     flex-direction: column;
 }

@@ -16,3 +16,9 @@
     font-weight: bold;
     align-items: center;
 }
+
+@media(width <= 656px) {
+    .container{
+        display: none;
+    }
+}

@@ -18,6 +18,11 @@ import SVGfile from "/src/assets/svg/file.svg"
 import styles from './message.sender.module.css'
 
 
+
+
+export const MESSAGE_SENDER_HEIGHT = 69
+
+
 const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSphereFolder }) => {
 
     const [ value, setValue ] = useState("")
@@ -125,7 +130,8 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
         <div
             className={styles.container}
             style={{
-                "--opacityBackground" : fullBackgroundOpacity
+                "--opacityBackground" : fullBackgroundOpacity,
+                "--message-sender-height": MESSAGE_SENDER_HEIGHT + "px"
             }}
         >
             <div className={styles.inputbefore} />

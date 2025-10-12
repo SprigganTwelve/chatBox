@@ -4,6 +4,7 @@ import PropTypes from "prop-types"
 import styles from "./chat.header.module.css"
 
 
+export const CHAT_HEADER_HEIGHT = 90
 
     
 const ChatHeader = ({  fullBackgroundOpacity, currentBasicData, baseApiURL }) => {
@@ -14,7 +15,8 @@ const ChatHeader = ({  fullBackgroundOpacity, currentBasicData, baseApiURL }) =>
                 <div 
                     className={styles.header}
                     style={{
-                        "--opacityBackground" : fullBackgroundOpacity
+                        "--opacityBackground" : fullBackgroundOpacity,
+                        "--chat-header-height": CHAT_HEADER_HEIGHT + "px"
                     }}
                 >
                     <img 

@@ -9,7 +9,8 @@ import Input from "/src/components/ui/input/input";
 import Switch from "/src/components/ui/switch/switch"
 import FlexEdit from "/src/components/ui/flexEdit/flex.edit"
 import ViewOption from "/src/components/ui/viewOption/view.option";
-import styles from "./edit.profile.settings.module.css"
+import Modal from "/src/components/ui/modal/modal";
+
 
 import SVGabout from "/src/assets/svg/about-filled-svgrepo-com.svg"
 import SVGdisponibility from "/src/assets/svg/telephone-line-24-hours-service-svgrepo-com.svg"
@@ -18,7 +19,10 @@ import SVGdchange from "/src/assets/svg/change-style-svgrepo-com.svg"
 import SVGddoublecheck from "/src/assets/svg/double-check-svgrepo-com.svg"
 import SVGaccount from "/src/assets/svg/account-svgrepo-com.svg"
 import SVGdelete from "/src/assets/svg/close-circle-svgrepo-com.svg"
-import Modal from "/src/components/ui/modal/modal";
+
+import styles from "./edit.profile.settings.module.css"
+
+
 
 
 const EditProfileSettings = ({ userData, baseApiURL }) => {

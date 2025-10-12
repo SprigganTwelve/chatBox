@@ -9,7 +9,7 @@ import styles from './modal.module.css'
 /* For make this work you must provide the following object type to the set modal state function created in the context :
         { open: boolean, showCancelAndConfirmButtons?: boolean, onContinueHandler?: function , stylesContainer: objectStyles, styleContent?: styleObject  }
     The modal is close by turning open into false;
-    The modal is clear by passing null or false to the setModal function
+    The modal is clear by passing null or false to the "open" variable
 */
 
 /* {
@@ -29,11 +29,11 @@ import styles from './modal.module.css'
 const Modal = ({
     open,
     onClose,
-    onContinueHandler,
-    showCancelAndConfirmButtons = false,
     children,
+    onContinueHandler,
     styleContent = {},
     stylesContainer = {},
+    showCancelAndConfirmButtons = false,
     lockClosingWithTouchOnBackground = true,
 }) => {
     const modalRef = useRef(null)

@@ -1,3 +1,29 @@
+.container{
+    /* background-color: aqua; */
+
+}
+
+.modalContainer{
+    top: 0;
+    right: 0;
+    z-index: 80;
+    position: fixed;
+}
 
 
+.modalContainer > .modalWrapper {
+    position: relative;
+}
 
+/* .modalContainer > .modalWrapper > div {
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 30;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    align-items: center; 
+    justify-content: center;
+    background: blueviolet;
+} */

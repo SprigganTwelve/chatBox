@@ -40,7 +40,6 @@ exports.getSpecialUser = async (req, res) => {
                     C.folder,
                     C.online,
                     C.number,
-                    C.password,
                     C.key_friend,
                     C.visibility,
                     C.description,
@@ -125,11 +124,11 @@ exports.getLoginConnection = async (req, res) => {
 
         const user = response[0];
         const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) return res.json({ message: "Incorrect password" });
-
-        await conn.query("UPDATE Consumer SET online= ? WHERE id=?", [1, user.id]);
+        
+        if (!passwordMatch) 
+            return res.json({ message: "Incorrect password" });
         delete user.password;
+        await conn.query("UPDATE Consumer SET online= ? WHERE id=?", [1, user.id]);
 
         return res.status(200).json({ message: "", user });
 

@@ -1,10 +1,11 @@
 
 .main{
-    height: 800px;
     width: 500px;
+    height: 500px;
+    /* min-height: 220px; */
     position: relative;
     scrollbar-width: 0;
-    padding: 15px 25px;
+    padding: 45px 25px;
     border-radius: 20px;
     background-color: rgb(55, 56, 57);
 }
@@ -14,7 +15,7 @@
 .options{
     display: flex;
     justify-content: space-around;
-    margin: -15px -25px 0px -25px ;
+    margin: -45px -25px 0px -25px ;
 }
 
 
@@ -27,6 +28,14 @@
     align-items: center;
     justify-content: center;
     transition: all 1s ease;
+}
+
+.options div:nth-child(1){
+    border-top-left-radius: 20px;
+}
+
+.options div:nth-child(3){
+    border-top-right-radius: 20px;
 }
 
 

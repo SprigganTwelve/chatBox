@@ -18,12 +18,12 @@ const UserBoard = () => {
         fullBackgroundOpacity,
     } = useContext(ChatBoxApiContext)
 
-    const [isUserActive, setIsUserActive] = useState({})
+    const [isUserActive, setIsUserActive] = useState( { [allChats?.[0]?.id] :  true } )
 
 
     const toggleActive = useCallback((id) => {
         setIsUserActive((prev) => ({
-            [id]: !prev[id]
+            [id]: !prev?.[id]
         }));
     }, [])
 

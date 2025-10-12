@@ -2,6 +2,7 @@
 .container{
     left: 0;
     height: 80%;
+    z-index: 3;
     display: flex;
     margin-top: 8%;
     position: absolute;
@@ -9,8 +10,8 @@
     align-items: center;
     transition: all 1s ease;
     justify-content: space-between;
-    z-index: 30;
 }
+
 
 .menu{
     gap: 50px;
@@ -18,6 +19,8 @@
     flex-direction: column;
     align-items: center;
 }
+
+
 
 .img {
     width: 30px;
@@ -27,11 +30,13 @@
     transition: all 1s ease;
 }
 
+
 .img:hover{
     padding: 10px;
     border-radius: 10px;
     background-color: rgb(55, 56, 57);
 }
+
 
 .isActive{
     padding: 10px;
@@ -39,11 +44,14 @@
     background-color: rgb(55, 56, 57, var(--backGroundOpacity));
 }
 
+
 .profilSection{
     gap: 10px;
     display: flex;
     flex-direction: column;
 }
+
+
 
 .profilSection > * {
     display: flex;
@@ -55,9 +63,13 @@
     background-color: rgb(55, 56, 57);
 }
 
+
+
 .profilSection > *:hover{
     padding: 10px;
 }
+
+
 
 .profilSection .profilImage{
     gap: 20px;
@@ -65,4 +77,217 @@
     height: 30px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+
+/*---small screen-----*/
+
+
+.burgerMenuContainer{
+    left: 20px;
+    z-index: 2;
+    position: absolute;
+    transform: translateY(-55%);
+}
+
+
+
+.burgerMenuContainer .burgerImg{
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+}
+
+
+
+.dropdown{
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5 ;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    box-sizing: border-box;
+    padding: 40px 37px  0 37px;
+    background: rgba(48, 47, 47, 0.966);
+}
+
+
+
+
+.dropdown > img.closeDropdownIcon {
+    top: 10px;
+    left: 10px;
+    position: absolute;
+}
+
+
+
+.dropdown > .dropdownProfilConatiner {
+    gap: 25px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+}
+
+
+
+.dropdown > .dropdownProfilConatiner > img {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+
+.dropdown > .dropdownProfilConatiner > div {
+    flex: 1;
+    min-width: 0;
+    font-weight: bold;
+}
+
+
+
+.dropdown > .dropdownProfilConatiner p {
+    font-size: 25px;
+    overflow: hidden; 
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    word-break: break-word; 
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    width: calc(100% - 25px);
+}
+
+
+
+.dropdown > .dropdownProfilConatiner p.pseudo{
+    font-size: 15px;
+}
+
+
+
+.dropdown .dropdownControlBox{
+    padding: 10px;
+    height: 400px;
+    display: flex ;
+    overflow-y: auto;
+    margin-top: 45px;
+    border-radius: 30px;
+    flex-direction: column;
+    background: #000000b7;
+    scrollbar-width: none;
+    justify-content: space-between;
+}
+
+.dropdown .dropdownControlBox::-webkit-scrollbar{
+    display: none;
+    -ms-overflow-style: none; 
+}
+
+
+.dropdown > .dropdownControlBox .desc, .desc > div {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+
+.dropdown > .dropdownControlBox .desc {
+}
+
+
+
+.dropdown > .dropdownControlBox .desc > div img {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+}
+
+
+
+.dropdown > .dropdownControlBox .desc > div span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+
+.dropdown > .dropdownControlBox .desc > p {
+    text-align: center;
+}
+
+
+
+.dropdown  menu  {
+    list-style: none;
+}
+
+.dropdown  .dropdownControlBox > menu {
+    margin-top: 10px;
+}
+
+.dropdown  .dropdownControlBox > menu > li {
+    gap: 25px;
+    margin: -10px;
+    display: flex;
+    margin-top: 0;
+    padding: 25px 15px;
+    align-items: center;
+    position: relative;
+}
+
+
+.dropdown  .dropdownControlBox > menu > li:nth-child(-n+2)::after{
+    content: "";
+    left: 5px;
+    right: 5px;
+    bottom: 8px;
+    height: 2px;
+    border-radius: 30px;
+    position: absolute;
+    background-color: white;
+}
+
+
+@media (max-width: 306px){
+    .dropdown{
+        padding: 0;
+    }
+    
+    .dropdown .dropdownProfilConatiner{
+        padding-top: 20px;
+        flex-direction: column;
+    }
+
+    .dropdown > .dropdownProfilConatiner p {
+        width: 100%;
+        padding: 0px 20px;
+    }
+
+    .dropdown .dropdownControlBox > .desc {
+        transform: translateX(12px);
+    }
+    
+    .dropdown > .dropdownControlBox .desc{
+        width: 100%;
+        margin-left: -10px;
+    }
+}
+
+
+
+@media (max-width: 232px){
+    .more{
+        display: none;
+    }
 }

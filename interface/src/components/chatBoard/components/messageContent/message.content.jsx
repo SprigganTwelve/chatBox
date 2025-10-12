@@ -11,13 +11,16 @@ import { insertFormattedDate, insertFormattedDateFromArray } from "/src/utils/ti
 import SVGsmile from "/src/assets/svg/smile-svgrepo-com.svg"
 import styles from "./message.content.module.css";
 
+import { CHAT_HEADER_HEIGHT } from "/src/components/chatBoard/components/chatHeader/chat.header";
+import { MESSAGE_SENDER_HEIGHT } from "/src/components/chatBoard/components/messageSender/message.sender";
+
+
 
 
 const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
     const container = useRef(null)
     const [ userChatFromBdd, setUserChatFromBdd ] = useState([])
     const { socket, userId, setUsersTemporaryChat, usersTemporaryChat, baseApiURL } = useContext(ChatBoxApiContext)
-
 
     const getUserChat = useCallback(async () => {
         if (!talkSphereId) return; 
@@ -78,7 +81,14 @@ const MessageContent = ({ talkSphereId, talkSphereFolder  }) => {
 
     return (
         <>
-            <div ref={container} className={styles.container}>
+            <div 
+                ref={container}
+                className={styles.container}
+                style={{ 
+                    "--chat-header-height"   : CHAT_HEADER_HEIGHT + "px",
+                    "--message-sender-height": MESSAGE_SENDER_HEIGHT + "px"
+                }}
+            >
                     { userChatFromBdd.length > 0 && (
                     userChatFromBdd.map((message, index) => {
                         return (

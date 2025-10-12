@@ -2,10 +2,10 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 26;
+    z-index: 30;
     height: 100%;
     display: flex;
-    position: fixed;
+    position: absolute;
     align-items: center; 
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -25,7 +25,6 @@
 }
 
 .children {
-    z-index: 100;
     padding: 5px;
     color: white;
     position: relative;

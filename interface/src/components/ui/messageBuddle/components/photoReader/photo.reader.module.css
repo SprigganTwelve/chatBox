@@ -13,3 +13,15 @@
     object-fit: cover;
     border-radius: 20px;
 }
+
+@media (width <= 821px) {
+    .container{
+      height: 120px;
+    }      
+}
+
+@media (max-width: 299px){
+    .container{
+      height: 80px;
+    } 
+}

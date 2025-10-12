@@ -1,32 +1,45 @@
 .header{
-    top: 0;
-    left: 0;
     gap: 10px;
-    z-index: 10;
     width: 100%;
+    height: var(--chat-header-height);
     display: flex;
     color: white;
-    position: absolute;
     align-items: center;
     background-color: rgb(43, 43, 43, var(--opacityBackground));
 }
 
 .header > img {
     margin: 5px;
-    width: 50px;
+    margin-left: 20px;
     width: 70px;
-    height: 50px;
     height: 70px;
     border: none;
     outline: none;
     cursor: pointer;
     object-fit: cover;
-    border-radius: 50%; 
+    border-radius: 50%;
     object-position: center;
 }
 
 .name {
+    flex: 1;
+    line-clamp: 1;
     font-size: 15px;
     font-weight: 700;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    overflow: hidden;
+    margin-right: 40px;
+    display: -webkit-box;
+    word-wrap: break-word;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    /* background: #000; */
 }
+
+@media (max-width: 655px){
+    .header > img{
+        margin-left: 70px;
+    }
+}
+
+

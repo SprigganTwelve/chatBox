@@ -12,7 +12,7 @@ import styles from './chat.board.module.css';
 
 
 
-const ChatBoard = ({ uploadedBackground }) => {
+const ChatBoard = ({ }) => {
 
     const { allChats, 
             baseApiURL,
@@ -43,9 +43,10 @@ const ChatBoard = ({ uploadedBackground }) => {
     return (
         <div
             className={styles.container}
+            style={{ width: "100%", height: "100%" }}
         >
             {talkSphereId !== null ? (
-                <div>
+                <>
                     <ChatHeader
                         baseApiURL = {baseApiURL}
                         currentBasicData = { currentChat &&  { 
@@ -66,18 +67,7 @@ const ChatBoard = ({ uploadedBackground }) => {
                         }
                         talkSphereFolder = { currentChat && currentChat['talksphere_folder']}
                     />
-                    {
-                        userChatDefaultSettings && uploadedBackground  && (
-                            <div
-                                className={styles.themesContainer}
-                                style={userChatDefaultSettings && { opacity: userChatDefaultSettings.opacity,}
-                                }
-                            >
-                                <img className={styles.imgBackground} src={uploadedBackground}/>
-                            </div>
-                        )
-                    }
-                </div>
+                </>
             ) : (
                 <div className={styles.welcomeSection}>
                     <img src={MessageSVG} width={90} height={90} />
@@ -91,5 +81,4 @@ const ChatBoard = ({ uploadedBackground }) => {
 export default ChatBoard;
 
 ChatBoard.propTypes = {
-    uploadedBackground: PropTypes.object
 }

@@ -1,22 +1,108 @@
 .container{
+    gap: 20px;
+    z-index: 2;
     top: 20px;
     z-index: 20;
     right: 10px;
-    gap: 20px;
     display: flex;
     position: absolute;
-    z-index: 90;
 }
 
-.icon {
+
+
+.icon, .more {
     width: 20px;
     padding: 5px;
     cursor: pointer;
+    transform: translateY(20%);
     transition: all 1s ease;
 }
 
-.icon:hover{
+
+
+.icon:hover, .more:hover{
     padding: 10px;
     border-radius: 10px;
     background-color: rgb(55, 56, 57);
+}
+
+
+
+
+.actionOptionsConatiner, .actionOptionsConatiner > .desc{
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+
+.actionOptionsConatiner .desc {
+    gap: 15px;
+    font-size: 15px;
+}
+
+
+
+.actionOptionsConatiner .desc > img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+
+
+.actionOptionsConatiner .desc > p{
+    max-width: 320px;
+    text-align: center;
+}
+
+
+
+
+.actionOptionsConatiner .options {
+    gap: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.actionOptionsConatiner .options > div {
+    width: 100%;
+}
+
+
+.actionOptionsConatiner .options > div:nth-last-child(-n+2){
+    display: none;
+}
+
+
+@media ( max-width: 442px ){
+    .icon{
+        display: none;
+    }
+    .actionOptionsConatiner .options > div:nth-last-child(-n+2){
+        display: block;
+    }
+    .actionOptionsConatiner .options{
+        overflow-y: scroll;
+        height: 320px;
+    }
+
+    @media (max-height: 486px){
+        .actionOptionsConatiner{
+            height: 240px;
+        }
+    }
+}
+
+
+
+@media (max-width: 232px){
+    .more{
+        display: none;
+    }
 }

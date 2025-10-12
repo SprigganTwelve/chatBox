@@ -1,18 +1,21 @@
 
 .audioSection{
     gap: 20px;
+    width: 99%;
     border: none;
-    width: 421px;
-    margin: -5px;
     display: flex;
-    margin-top: 5px ;
-    margin-bottom: 5px;
+    margin-top: -5px;
+    padding: 5px 10px;
+    margin-left: -10px;
     border-radius: 10px;
     align-items: center;
+    margin-bottom: -20px;
     justify-content: center;
-    padding: 5px 10px;
     background-color:  rgba(55, 56, 57, 0.365);
-  }
+}
+
+
+
 
 
 .icon{
@@ -53,4 +56,19 @@
     border-radius: 100%;
     transform: translate(10px, 12%);
     background-image: linear-gradient(to right, #e100ff, #008cff);
+}
+
+
+
+
+@media (max-width: 299px){
+    .audioSection{
+        gap: 9px;
+    }
+    .icon{
+      height: 15px;
+    }
+    .time{
+        font-size: 10px;
+    }
 }

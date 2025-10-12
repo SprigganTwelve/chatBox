@@ -105,7 +105,7 @@ const MessageBuddle = (
                         </div>
                     )
                 }
-                <div className={styles.time}>{time}</div>
+                <div className={styles.time} >{time}</div>
             </div>
       </div>
      );

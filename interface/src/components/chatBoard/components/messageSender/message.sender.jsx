@@ -195,20 +195,22 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                                 onClick={ ()=> setOptionBoxConfig( prev => ({ ...prev, overlayTrigger: "audio" }) ) }
                             >
                                 <div className={ optionBoxConfig.overlayTrigger === "audio" ? styles.overlayTrigger : "" }>           
-                                    <AboutOverlay
-                                        text="Audio recorder"
-                                    >
-                                        <AudioRecorder
-                                            mediaRecorderRef = {mediaRecorderRef}
-                                            onDataAvailableHandler = { async (blob)=>{
-                                                if(!talkSphereFolder){
-                                                    return
-                                                }
-                                                console.log("AUDIO BLOB", blob)
-                                                await sendFile(blob);
-                                            }}
-                                        />
-                                    </AboutOverlay>
+                                    <div>
+                                        <AboutOverlay
+                                            text="Audio recorder"
+                                        >
+                                            <AudioRecorder
+                                                mediaRecorderRef = {mediaRecorderRef}
+                                                onDataAvailableHandler = { async (blob)=>{
+                                                    if(!talkSphereFolder){
+                                                        return
+                                                    }
+                                                    console.log("AUDIO BLOB", blob)
+                                                    await sendFile(blob);
+                                                }}
+                                            />
+                                        </AboutOverlay>
+                                    </div>
                                 </div>
                             </div>
                             <div className={styles.iconSet}>

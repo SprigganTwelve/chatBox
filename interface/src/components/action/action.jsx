@@ -19,7 +19,7 @@ import SVGvideo from "/src/assets/svg/video-call-svgrepo-com.svg"
 import SVGcall from "/src/assets/svg/call-receive-svgrepo-com.svg"
 import SVGdelete from "/src/assets/svg/delete-email-svgrepo-com.svg"
 import SVGoptions from "/src/assets/svg/options-vertical-svgrepo-com.svg"
-
+import SVGclose from '/src/assets/svg/close-circle-svgrepo-com.svg'
 
 import styles from "./action.module.css"
 
@@ -72,12 +72,12 @@ const Action = () => {
                         <div className={styles.container}>
                             <img 
                                 src={SVGcall}
-                                className={styles.icon}
+                                className={styles.callIcon}
                                 onClick={ handleActivateAudioCall }
                             />
                             <img 
                                 src={SVGvideo}
-                                className={styles.icon}
+                                className={styles.callIcon}
                                 onClick={ handleActivateVideoCall }
                             />
                             <AboutOverlay text = "Options">
@@ -94,6 +94,12 @@ const Action = () => {
                             onClose = { ()=>  setShowActionOptions(false) }
                         >
                             <div className={styles.actionOptionsConatiner}>
+                                <img 
+                                    alt="Close"
+                                    src={SVGclose}
+                                    onClick={()=> setShowActionOptions(false)}
+                                    className={styles.closeIcon}
+                                />
                                 <div className={styles.desc}>
                                     <img className={styles.svgBox} src={SVGbox} alt="chatBox" />
                                     <p>

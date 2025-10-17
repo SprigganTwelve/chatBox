@@ -44,15 +44,14 @@ function insertFormattedDate(message){
     // Convert time (in seconds) to a human-readable format (hours-minutes-seconds)
 
 const convertDuration = (time) => {
-    if (time) {
-        const seconds = Math.round(time % 60)
-        const minutes = Math.round(time / 60);
-        const hours = Math.trunc(time / 60);
-        return  {
-            hours, minutes, seconds
-        }
-    }
-}
+    if (!time) return null;
+
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60)
+    const seconds = time % 60;
+
+    return { hours, minutes, seconds };
+};
     
 
 

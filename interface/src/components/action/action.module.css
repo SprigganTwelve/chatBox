@@ -1,3 +1,5 @@
+
+
 .container{
     gap: 20px;
     z-index: 2;
@@ -10,7 +12,13 @@
 
 
 
-.icon, .more {
+.closeIcon{
+    display: none;
+}
+
+
+
+.callIcon, .closeIcon, .more {
     width: 20px;
     padding: 5px;
     cursor: pointer;
@@ -20,10 +28,17 @@
 
 
 
-.icon:hover, .more:hover{
+.callIcon:hover, .more:hover{
     padding: 10px;
     border-radius: 10px;
     background-color: rgb(55, 56, 57);
+}
+
+
+
+
+.actionOptionsConatiner{
+    position: relative;
 }
 
 
@@ -38,10 +53,12 @@
 
 
 
+
 .actionOptionsConatiner .desc {
     gap: 15px;
     font-size: 15px;
 }
+
 
 
 
@@ -50,6 +67,7 @@
     height: 30px;
     object-fit: cover;
 }
+
 
 
 
@@ -70,9 +88,12 @@
 
 
 
+
 .actionOptionsConatiner .options > div {
     width: 100%;
 }
+
+
 
 
 .actionOptionsConatiner .options > div:nth-last-child(-n+2){
@@ -80,23 +101,40 @@
 }
 
 
+
+
 @media ( max-width: 442px ){
-    .icon{
+
+    .callIcon{
         display: none;
     }
+
+
+    .closeIcon{
+        left: 0;
+        top: -5px;
+        display: block;
+        position: absolute;
+    }
+
+
     .actionOptionsConatiner .options > div:nth-last-child(-n+2){
         display: block;
     }
+
+
     .actionOptionsConatiner .options{
         overflow-y: scroll;
         height: 350px;
     }
+
 
     @media (max-height: 486px){
         .actionOptionsConatiner{
             height: 240px;
         }
     }
+
 }
 
 

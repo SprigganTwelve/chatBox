@@ -107,7 +107,7 @@
 }
 
 
-@media (max-width: 356px){
+@media (max-width: 430px){
 
     .recorders{
         margin-right: 5px;
@@ -126,6 +126,7 @@
         width: 100%;
         height: 100%;
         position: relative;
+        border-radius: 10px 0 0 10px;
     }
 
     .recorders > .optionsPart.showBox > .iconSet > .overlayTrigger > div > div{  /*  the audio recorder components */

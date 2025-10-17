@@ -13,7 +13,7 @@ const AboutOverlay = ({
 }) => {
 
     const overlayRef = useRef(null)
-    const [showText, setShowText] = useState(false)
+    const [ showText, setShowText ] = useState(false)
 
     useEffect(() => {
         const overlayHtmlController = overlayRef.current;
@@ -30,10 +30,14 @@ const AboutOverlay = ({
                 setShowText(false);
             }, 600);
         };
-    
+
+        if("maxTouchPoints" in navigator && navigator.maxTouchPoints > 0){      //check the device type 
+            return
+        }
+
         overlayHtmlController.addEventListener("mouseenter", handleOnMouseEnter);
         overlayHtmlController.addEventListener("mouseleave", handleOnMouseLeave);
-    
+
         return () => {
             overlayHtmlController.removeEventListener("mouseenter", handleOnMouseEnter);
             overlayHtmlController.removeEventListener("mouseleave", handleOnMouseLeave);

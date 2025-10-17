@@ -45,8 +45,8 @@ function insertFormattedDate(message){
 
 const convertDuration = (time) => {
     if (time) {
-        const seconds = Math.trunc(time % 60)
-        const minutes = Math.trunc(time / 60);
+        const seconds = Math.round(time % 60)
+        const minutes = Math.round(time / 60);
         const hours = Math.trunc(time / 60);
         return  {
             hours, minutes, seconds

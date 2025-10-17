@@ -1,0 +1,16 @@
+
+.icon{
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 1s ease;
+}
+
+@media (max-width: 229px){
+    .icon{
+      height: 15px;
+    }
+}

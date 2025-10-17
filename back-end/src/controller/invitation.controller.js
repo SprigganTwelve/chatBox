@@ -141,8 +141,10 @@ exports.ConfirmAnInvitation = async (req, res) => {
         fs.mkdirSync( pathRepertory + '/photos', { recursive: true } )
         fs.mkdirSync( pathRepertory + '/documents', { recursive: true } )
 
-        const areCreeatedFiles = !fs.existsSync(pathRepertory + "/audios") && !fs.existsSync( pathRepertory + '/videos' ) && !fs.existsSync(pathRepertory + '/photos');
-        if(areCreeatedFiles){
+        const areCreatedRepository = !fs.existsSync(pathRepertory + "/audios") 
+                                    && !fs.existsSync( pathRepertory + '/videos' ) 
+                                    && !fs.existsSync(pathRepertory + '/photos');
+        if(areCreatedRepository){
             await conn.rollback()
             throw new Error("Failed to create the talksphere folder in local storage");
         }

@@ -19,7 +19,6 @@ const ChatBoard = ({ }) => {
             currentChat,
             talkSphereId,
             setCurrentChat,
-            userChatDefaultSettings,
             fullBackgroundOpacity,
         } = useContext(ChatBoxApiContext)
 
@@ -37,7 +36,7 @@ const ChatBoard = ({ }) => {
 
             }
         }
-    },[allChats, setCurrentChat, talkSphereId])
+    },[ allChats, setCurrentChat, talkSphereId ])
 
 
     return (
@@ -46,28 +45,31 @@ const ChatBoard = ({ }) => {
             style={{ width: "100%", height: "100%" }}
         >
             {talkSphereId !== null ? (
-                <>
-                    <ChatHeader
-                        baseApiURL = {baseApiURL}
-                        currentBasicData = { currentChat &&  { 
-                            name: currentChat.name, 
-                            imageData: currentChat.image_data
-                        }}
-                        fullBackgroundOpacity = { fullBackgroundOpacity }
-                    />
-                    <MessageContent
-                        talkSphereId={talkSphereId}
-                        talkSphereFolder = { currentChat && currentChat.talksphere_folder }
-                    />
-                    <MessageSender
-                        talkSphereId={ talkSphereId }
-                        fullBackgroundOpacity= { fullBackgroundOpacity }
-                        receivers={ currentChat&& currentChat['receivers'] &&
-                            currentChat.receivers
-                        }
-                        talkSphereFolder = { currentChat && currentChat['talksphere_folder']}
-                    />
-                </>
+                currentChat && 
+                (
+                    <>
+                        <ChatHeader
+                            baseApiURL = {baseApiURL}
+                            currentBasicData = { currentChat &&  { 
+                                name: currentChat.name, 
+                                imageData: currentChat.image_data
+                            }}
+                            fullBackgroundOpacity = { fullBackgroundOpacity }
+                        />
+                        <MessageContent
+                            talkSphereId={talkSphereId}
+                            talkSphereFolder = { currentChat && currentChat.talksphere_folder }
+                        />
+                        <MessageSender
+                            talkSphereId={ talkSphereId }
+                            fullBackgroundOpacity= { fullBackgroundOpacity }
+                            receivers={ currentChat&& currentChat['receivers'] &&
+                                currentChat.receivers
+                            }
+                            talkSphereFolder = { currentChat && currentChat['talksphere_folder']}
+                        />
+                    </>
+                )
             ) : (
                 <div className={styles.welcomeSection}>
                     <img src={MessageSVG} width={90} height={90} />

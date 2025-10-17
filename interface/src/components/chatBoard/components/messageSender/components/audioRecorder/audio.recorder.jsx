@@ -1,37 +1,54 @@
-import { useState, useRef, useContext, useCallback } from 'react'
 import PropTypes from 'prop-types'
-
-import styles from './audio.recorder.module.css'
-
-import SVGvoicerecorder from '/src/assets/svg/callrecorder.svg'
-import SVGsend from '/src/assets/svg/send-email-svgrepo-com.svg'
-import SVGclose from '/src/assets/svg/close-circle-svgrepo-com.svg'
+import { useState, useRef, useContext, useCallback } from 'react'
 
 import { ChatBoxApiContext } from '/src/context/context'
+
+import SVGvoicerecorder from '/src/assets/svg/callrecorder.svg'
+import SVGclose from '/src/assets/svg/close-circle-svgrepo-com.svg'
+
+
 import CoundtDown from '/src/components/ui/countdown/countdown'
+import WavePlayControl from "/src/components/ui/wavePlayControl/wavePlayControl";
+
+import styles from './audio.recorder.module.css'
+import clsx from 'clsx'
 
 
-const AudioRecorder = ({ onSend = ()=>{} }) => {
 
-    const chunks = useRef([])                               // Store chunks in useRef to persist across re-renders
-    const shouldSend = useRef(true)
+const AudioRecorder = ({ 
+    mediaRecorderRef,
+    onDataAvailableHandler = ()=> {},
+}) => {
+                  
+    
+    const chunks = useRef([])
     const permission = useRef(null)
-    const mediaRecorder = useRef(null)
+    const manualStopRef = useRef(false)
 
     const { setPopUp } = useContext(ChatBoxApiContext)
+
+    const [ isPlaying, setIsPlaying ] = useState(true)      //initial value
     const [ isRecording, setIsRecording ] = useState(false)
-    const [ countdownManager, setCountdownManager ] = useState({
-        reset: false,
-        pause: true,
-    })
+    const [ countdownManager, setCountdownManager ] = useState()
     
+
+    
+    // Reset the recording process
+    const resetRecording = useCallback(() => {
+        manualStopRef.current = true
+        mediaRecorderRef.current.stop()
+        setIsRecording(false);
+        setCountdownManager({ pause: true, reset: true })
+    }, [])
+
+
 
     const startRecording = useCallback( async () => {
         try{
 
-            if ( mediaRecorder.current && mediaRecorder.current.state !== "inactive" ) {
-                mediaRecorder.current.stream.getTracks().forEach( track => track.stop() );
-                mediaRecorder.current.stop();
+            if ( mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive" ) {
+                mediaRecorderRef.current.stream.getTracks().forEach( track => track.stop() );
+                mediaRecorderRef.current.stop();
             }
 
             if(!permission.current){
@@ -39,7 +56,7 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
             }
 
             if( permission.current && permission.current.state === "denied" ){
-                setPopUp( ()=> ({ message: "Something unexpected happen", type: "error" }) )
+                setPopUp( ()=> ({ message: "Something unexpected happen: Permission is not granted!!", type: "error" }) )
                 return
             }
 
@@ -47,73 +64,65 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
 
 
             const stream = await navigator.mediaDevices.getUserMedia( { audio: true } )
-            mediaRecorder.current = new MediaRecorder(stream)
+            mediaRecorderRef.current = new MediaRecorder(stream)
 
             const track = stream.getAudioTracks()[0];
-            console.log("Track info:", track); 
 
             track.onmute = () => console.warn("Micro désactivé (muted)");
             track.onunmute = () => console.log("Micro actif");
 
 
-            mediaRecorder.current.ondataavailable = (event) => {
-                console.log(event.data)
-                chunks.current.push(event.data)  
+            mediaRecorderRef.current.ondataavailable = (event) => {
+                if( event.data.size > 0 )
+                    chunks.current.push(event.data)  
             }
 
-            mediaRecorder.current.onstop = ()=> {
-                if(shouldSend.current){
-                    const blob = new Blob(chunks.current, { type: "audio/webm" })
-                    onSend(blob)                                     // callback for retreiving the blob object from the parent component
+            mediaRecorderRef.current.onstop = async ()=> {
+                try {
+                    mediaRecorderRef.current.stream.getTracks().forEach( track => { track.stop() } );
+
+                    if(manualStopRef.current){
+                        manualStopRef.current = false
+                        return
+                    }
+                        
+                    const blob = new Blob(chunks.current, { type: "audio/webm" });
+                    blob.name = Date.now() + '.' + blob.type.split('/')[1];
+                    await onDataAvailableHandler(blob);
+
+                } 
+                catch (err) {
+                    console.error("Something went wrong while sending the audio", err);
                 }
-                shouldSend.current = true
+                finally {
+                    chunks.current = []
+                    resetRecording();
+                }
             }
 
-            mediaRecorder.current.onerror = (err) => {
+            mediaRecorderRef.current.onerror = (err) => {
                 console.log("Error: ", err)
                 if(setPopUp) setPopUp(() => ({ message: "Something unexpected happen" }))
             }
 
-            mediaRecorder.current.onstart = () => {
+            mediaRecorderRef.current.onstart = () => {
                 setIsRecording(() => true)
             }
 
             // Start the recording
-            mediaRecorder.current.start()
+            mediaRecorderRef.current.start()
 
-            setCountdownManager(( previous )=> ({ ...previous, pause: false }))
+            setCountdownManager(( previous )=> ({ reset: false, pause: false }))
         }
         catch(err){
             console.log("Something went wrong while starting recording : ", err)
         }
 
-    }, [ onSend, setPopUp ])
+    }, [ setPopUp ])
 
 
-    // Reset the recording process
-    const resetRecording = useCallback(() => {
-        shouldSend.current = false;
-        if (mediaRecorder.current && mediaRecorder.current.state !== "inactive") {
-            mediaRecorder.current.stream.getTracks().forEach( track => { console.log({track}); track.stop()} );
-        }
-        chunks.current = []
-        setIsRecording(false);
-        setCountdownManager((previous)=> ({ ...previous, reset: true, pause: true }))
-    }, [])
-
-
-    // Stop the media recorder and cleanup
-    const sendAudioHandlers = useCallback(async () => {
-        if (mediaRecorder.current && mediaRecorder.current.stream) {
-            await mediaRecorder.current.stop()
-            mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
-        }
-        setIsRecording(false);
-    }, [])
-
-    
     return (
-        <div>
+        <div className={styles.audioContainer}>
             {!isRecording && (
                 <div>
                     <img
@@ -126,20 +135,31 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
 
             {isRecording && (
                 <div className={styles.recordContainer}>
-                    <img
-                        src={SVGclose}
-                        className={styles.icon}
-                        onClick={ resetRecording }
+                    <WavePlayControl
+                        isPlaying= { isRecording && isPlaying }
+                        customeStyle= {{ width: 25, height: 25 }}
+                        togglePlayback = { () => {
+                            if(isPlaying){
+                                mediaRecorderRef.current.pause()
+                                setCountdownManager((prev)=> ({ ...prev, pause: true }))
+                            }
+                            else{
+                                mediaRecorderRef.current.resume()
+                                setCountdownManager((prev)=> ({ ...prev, pause: false }))
+                            }
+                                
+                            setIsPlaying((prev)=> !prev)
+                        }} 
                     />
                     <div className={styles.slideSection}>
                         <CoundtDown { ...countdownManager } />
-                        <div className={styles.redRecorderButton} />
+                        <div className={clsx(styles.redRecorderButton, isPlaying ? styles.pulseAnimation : "")} />
                         <div className={styles.gauge} />
                     </div>
                     <img
-                        src={SVGsend}
+                        src={SVGclose}
                         className={styles.icon}
-                        onClick={sendAudioHandlers}
+                        onClick={ resetRecording}
                     />
                 </div>
             )}
@@ -148,7 +168,10 @@ const AudioRecorder = ({ onSend = ()=>{} }) => {
 }
 
 AudioRecorder.propTypes = {
-    onSend: PropTypes.func
+    mediaRecorderRef: PropTypes.shape({
+        current: PropTypes.object | null
+    }),
+    onDataAvailableHandler: PropTypes.func
 }
 
 export default AudioRecorder;

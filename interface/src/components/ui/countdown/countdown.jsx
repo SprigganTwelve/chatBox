@@ -19,16 +19,30 @@ const CoundtDown = ({
     const [ audioDuration, setAudioDuration ] = useState(null);
     const [ audioCountdown, setAudioCountdonwn ] = useState(0)
 
+    const countdownRef = useRef(0);
+
     useEffect(() => {
-        if (!pause && !reset) {
+        countdownRef.current = audioCountdown;
+    }, [audioCountdown]);
+
+    
+    useEffect(() => {
+        if (reset) {
+            clearInterval(timer.current);
+            setAudioCountdonwn(0);
+            setAudioDuration(null);
+            return;
+        }
+
+        if (!pause) {
+            clearInterval(timer.current);    // clean old interval
             timer.current = setInterval(() => {
-            setAudioCountdonwn((prev) => prev + 1);
+                setAudioCountdonwn(prev => prev + 1);
             }, 1000);
-        } 
+        }
         else {
             clearInterval(timer.current);
-            if(pause)
-                onPause(audioCountdown) // execute callback when paused is triggered
+            onPause(countdownRef.current);          // use ref for updating
         }
 
         return () => clearInterval(timer.current);
@@ -62,7 +76,7 @@ const CoundtDown = ({
     }, [reset]);
 
 
-    if(audioCountdown === 0)
+    if( audioCountdown === 0 )
             return <span className={styles.span}>00:00</span>
 
 

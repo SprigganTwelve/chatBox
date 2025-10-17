@@ -1,11 +1,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 
-import SVGpause from "/src/assets/svg/pause-svgrepo-com.svg";
-import SVGplayaudiowhite from "/src/assets/svg/play-alt-svgrepo-com-white.svg";
+
 
 import styles from './audio.reader.module.css';
 import CoundtDown from "/src/components/ui/countdown/countdown";
+import WavePlayControl from "/src/components/ui/wavePlayControl/wavePlayControl";
+
+
 import { convertDuration } from "/src/utils/time.utils";
 
 
@@ -87,13 +89,10 @@ const AudioReader = ({ media, talkSphereFolder, baseApiURL }) => {
   return (
     <div className={styles.audioSection}>
         <audio hidden preload="auto" ref={audioRef} src={audioPath} />
-
-        <img
-          alt={isPlaying ? "Pause audio" : "Play audio"}
-          src={isPlaying ? SVGpause : SVGplayaudiowhite}
-          className={styles.icon}
-          onClick={togglePlayback}
-        />
+            <WavePlayControl 
+                isPlaying={isPlaying}
+                togglePlayback={togglePlayback}
+            />
             <div style={{ display: isPlaying ? "initial" : "none" }} className={styles.time}>
                 <CoundtDown
                     pause = { !isPlaying }

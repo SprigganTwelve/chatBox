@@ -1,8 +1,9 @@
 
-const pool = require("../database/connexion")
-const path = require('path')
 const fs = require('fs')
+const path = require('path')
+const pool = require("../database/connexion")
 const { PassThrough } = require('stream')
+const { chatFileRepository } = require("./utils/files")
 
 
 
@@ -225,12 +226,19 @@ exports.recordMediaIntoBdd = async (req, res)=>{
     let conn;
     try {
 
-        const { userId, talkSphereId, fileName, fileType } = req.body
+        const { userId, talkSphereId, fileName, fileType, talkSphereFolder } = req.body
 
         
         if(!userId || !talkSphereId || !fileName || !fileType ){
           return res.status(500).json({ message: "Mising or incorrect sent data" })
         }
+
+
+        const folder = chatFileRepository(fileType)
+        const dirPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/${folder}/${fileName}`);
+        console.log("[ func: recordMediaIntoBdd ]", dirPath)
+        if(!fs.existsSync(dirPath))
+          return res.status(500).json({ message: "File not recognized" })
 
         conn = await pool.getConnection();
         await conn.beginTransaction();
@@ -289,10 +297,7 @@ exports.saveFiles = async (req, res) => {
     }
 
 
-    let folder = 'documents';
-    if (fileType.includes('image')) folder = 'photos';
-    else if (fileType.includes('video')) folder = 'videos';
-    else if (fileType.includes('audio')) folder = 'audios';
+    const folder = chatFileRepository(fileType)
 
     const dirPath = path.join(__dirname, `../uploads/talkspheres/${talkSphereFolder}/${folder}`);
     fs.mkdirSync( dirPath, { recursive: true } );
@@ -302,14 +307,14 @@ exports.saveFiles = async (req, res) => {
 
     const writeStream = fs.createWriteStream(filePath);
 
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Transfer-Encoding', 'chunked');
     res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Transfer-Encoding', 'chunked');
     res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
 
-    const passThrough = new PassThrough();
     let receivedBytes = 0;
     let responseEnded = false;
+    const passThrough = new PassThrough();
 
     const safeWritting = (data)=>{
       if(!responseEnded) res.write(data)
@@ -333,12 +338,16 @@ exports.saveFiles = async (req, res) => {
       }
     });
 
-    writeStream.on('finish', ()=>{
-      if(!responseEnded){
+    writeStream.on('finish', async()=>{
+      try{
+        await fs.promises.access(filePath)
         res.write('DONE \n')
-        res.end()
-        responseEnded = true
       }
+      catch {
+        safeWritting(`ERROR: File not written at ${filePath}\n`);
+      }
+      res.end();
+      responseEnded = true
     })
 
     writeStream.on('error', (err)=>{

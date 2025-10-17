@@ -14,19 +14,6 @@
     background-color:  rgba(55, 56, 57, 0.365);
 }
 
-
-
-
-
-.icon{
-    width: 30px;
-    height: 30px;
-    border: none;
-    cursor: pointer;
-    object-fit: cover;
-    border-radius: 50%;
-    transition: all 1s ease;
-}
   
 
 .gaugeContainer{
@@ -64,9 +51,6 @@
 @media (max-width: 299px){
     .audioSection{
         gap: 9px;
-    }
-    .icon{
-      height: 15px;
     }
     .time{
         font-size: 10px;

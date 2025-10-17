@@ -89,7 +89,7 @@
     }
     .actionOptionsConatiner .options{
         overflow-y: scroll;
-        height: 320px;
+        height: 350px;
     }
 
     @media (max-height: 486px){

@@ -1,11 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
-import { ChatBoxApiContext } from '/src/context/context'
 import { useNavigate } from "react-router-dom"
+import { useContext, useEffect, useState } from 'react'
+
+import { ChatBoxApiContext } from '/src/context/context'
+import SideBarContextProvider from '/src/context/sidebar.context';
 
 import UserBoard from '/src/components/userBoard/user.board'
 import ChatBoard from '/src/components/chatBoard/chat.board'
 import Action from '/src/components/action/action'
+
 import styles from "./home.module.css"
+
 
 
 const Home = () => {
@@ -44,7 +48,9 @@ const Home = () => {
                 className={styles.container}
             >
                 <div className={styles.jsxComponentsContainer}>
-                    <UserBoard />
+                    <SideBarContextProvider>
+                        <UserBoard />
+                    </SideBarContextProvider>
                     <ChatBoard />
                     <Action />
                 </div>

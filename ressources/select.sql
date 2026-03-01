@@ -1,0 +1,10 @@
+SELECT * FROM TABLE assoc_request;
+SELECT * FROM consumer;
+SELECT * FROM consumer_settings;
+SELECT * FROM consumer_talksphere;
+SELECT * FROM  is_befriended;
+SELECT * FROM media;
+SELECT * FROM message;
+SELECT * FROM settings;
+SELECT * FROM talksphere;
+SELECT * FROM talksphere_media;

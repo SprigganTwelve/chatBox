@@ -1,10 +1,16 @@
 import { useCallback, useContext, useState } from "react";
+
 import { ChatBoxApiContext } from "../../context/context"
+import { SideBarContext } from "/src/context/sidebar.context"
+
 import UserCard from "./components/userCard/user.card";
 import SearchBar from "/src/components/ui/searchBar/searchbar"
 
 import SVGbox from "/src/assets/svg/box-svgrepo-com.svg"
+
 import styles from "./user.board.module.css"
+
+
 
 const UserBoard = () => {
 
@@ -18,6 +24,8 @@ const UserBoard = () => {
         fullBackgroundOpacity,
     } = useContext(ChatBoxApiContext)
 
+    const { breakPoint, isUserPanelVisibleOnMobile  } = useContext(SideBarContext)
+    
     const [isUserActive, setIsUserActive] = useState( { [allChats?.[0]?.id] :  true } )
 
 

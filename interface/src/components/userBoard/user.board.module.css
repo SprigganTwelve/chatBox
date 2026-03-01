@@ -17,7 +17,7 @@
     align-items: center;
 }
 
-@media(width <= 656px) {
+@media(width <= 593px) {
     .container{
         display: none;
     }

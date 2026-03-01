@@ -1,6 +1,8 @@
 
 import { Outlet, useLocation } from 'react-router-dom';
+
 import { ChatBoxApiContext } from '/src/context/context';
+import SideBarContextProvider from '/src/context/sidebar.context';
 
 import PopUp from "/src/components/ui/popUp/pop.up"
 import Modal from "/src/components/ui/modal/modal"
@@ -18,7 +20,9 @@ const Layout = () => {
 
     return ( 
         <div className={styles.layoutContainer}>
-            <SideBarMenu baseApiURL={baseApiURL}/>
+            <SideBarContextProvider >
+                <SideBarMenu baseApiURL={baseApiURL}/>
+            </SideBarContextProvider>
             <Outlet />
             <PopUp />
             {

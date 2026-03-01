@@ -255,8 +255,8 @@ const MessageSender = ({ talkSphereId, fullBackgroundOpacity, receivers, talkSph
                         <img 
                             alt="options"
                             src={SVGsendingOption}
-                            onClick={()=> setOptionBoxConfig((prev) => ({ open: !prev.open }))}
-                            className={clsx(styles.icon, styles.sendingOptions)}
+                            onClick={()=> setOptionBoxConfig((prev) => ({ ...prev,open: !prev.open }))}
+                            className={ clsx(styles.icon, styles.sendingOptions, optionBoxConfig.open ? styles.activate : "" ) }
                         />
                     </div>
             </div>

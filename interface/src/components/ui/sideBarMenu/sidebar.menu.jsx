@@ -3,7 +3,9 @@ import clsx from 'clsx';
 import { useCallback, useContext, useEffect, useState } from "react"
 
 import { useNavigate } from "react-router-dom"
+
 import { ChatBoxApiContext } from "/src/context/context"
+import { SideBarContext } from "/src/context/sidebar.context"
 
 import SVGmessage from "/src/assets/svg/message-square-list-svgrepo-com.svg"
 import SVGinvit from "/src/assets/svg/invitation-svgrepo-com.svg"
@@ -24,10 +26,12 @@ import styles from "./sidebar.menu.module.css"
 const SideBarMenu = ({baseApiURL}) => {
 
     const navigate = useNavigate()
+    
     const { userData, fullBackgroundOpacity } = useContext(ChatBoxApiContext)
+    const { breakPoint, setIsUserPanelVisibleOnMobile  } = useContext(SideBarContext)
 
-    const [ showDropdown, setShowDropdown ] = useState(false)            //dropdown for responsive design
-    const [ showBurgerMenu, setShowBurgerMenu ] = useState(false)       //dropdown 
+    const [ showDropdown, setShowDropdown ] = useState(false)            // dropdown for responsive design
+    const [ showBurgerMenu, setShowBurgerMenu ] = useState(false)       //  dropdown 
 
     const [ isActive, setIsActive ] = useState(()=>{
         const saved = JSON.parse(localStorage.getItem("menu"))
@@ -44,24 +48,18 @@ const SideBarMenu = ({baseApiURL}) => {
 
 
     const loadAndResizehandler = useCallback(() => {
-        const isSmall = window.innerWidth <= 428;
-        if (isSmall) {
+        if (breakPoint) {
             setShowBurgerMenu(true);
         }
         else{
             setShowBurgerMenu(false)
         }
-    },[setShowBurgerMenu]);
+    },[setShowBurgerMenu, breakPoint]);
 
 
     useEffect(() => {
         loadAndResizehandler()
-        window.addEventListener("resize", loadAndResizehandler);
-
-        return () => {
-            window.removeEventListener("resize", loadAndResizehandler);
-        }
-    }, []);
+    }, [loadAndResizehandler]);
 
 
 
@@ -128,7 +126,7 @@ const SideBarMenu = ({baseApiURL}) => {
                     <div>
                         <div 
                             className={ styles.burgerMenuContainer }
-                            style={{ top: (CHAT_HEADER_HEIGHT/2) + "px" }}
+                            style = {{ top: (CHAT_HEADER_HEIGHT/2) + "px" }}
                             onClick={ ()=> setShowDropdown(prev => (!prev)) }
                         >
                             <img className={styles.burgerImg} src={SVGburger} alt="Menu" />
@@ -181,7 +179,7 @@ const SideBarMenu = ({baseApiURL}) => {
                                             <menu>
                                                 <li 
                                                     onClick={ ()=> {
-
+                                                        setIsUserPanelVisibleOnMobile((prev)=> ! prev)
                                                     } }
                                                 >
                                                     <img 
